@@ -7,7 +7,6 @@ import { getDictionary, locales, Locale } from "@/lib/i18n/getDictionary";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 import Header from "@/components/layout/Header";
-import ServiceWorkerRegistration from "@/components/layout/ServiceWorkerRegistration";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -64,7 +63,6 @@ export default async function RootLayout({
             </div>
           </LocaleProvider>
         </AuthProvider>
-        <ServiceWorkerRegistration />
       </body>
     </html>
   );

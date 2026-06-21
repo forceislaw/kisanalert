@@ -25,7 +25,11 @@ export default function ReportsPage() {
   const [filterDistrict, setFilterDistrict] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
   const [showMine, setShowMine] = useState(false)
+  const [selectedReport, setSelectedReport] = useState<Report | null>(null)
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
+  const limit = 20
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -36,9 +40,12 @@ export default function ReportsPage() {
         if (filterDistrict) params.set('district', filterDistrict)
         if (filterStatus) params.set('status', filterStatus)
         if (showMine) params.set('mine', 'true')
+        params.set('page', String(page))
+        params.set('limit', String(limit))
         const res = await fetch(`/api/reports?${params}`)
         const json = await res.json()
         if (json.data) setReports(json.data)
+        if (typeof json.total === 'number') setTotal(json.total)
       } catch (err) {
         console.error('Failed to fetch reports', err)
       } finally {
@@ -46,7 +53,9 @@ export default function ReportsPage() {
       }
     }
     fetchReports()
-  }, [filterSeverity, filterDistrict, filterStatus, showMine])
+  }, [filterSeverity, filterDistrict, filterStatus, showMine, page])
+
+  const totalPages = Math.ceil(total / limit)
 
   const getCropName = (id: number) => CROPS[id - 1]?.key_name || `crop-${id}`
   const getPestName = (id: number) => PESTS[id - 1]?.key_name || `pest-${id}`
@@ -106,6 +115,35 @@ export default function ReportsPage() {
         </button>
       </div>
 
+      {selectedReport && (
+        <div className="border border-stone bg-parchment-tint p-4 relative">
+          <button
+            onClick={() => setSelectedReport(null)}
+            className="absolute top-2 right-2 text-xs text-charcoal-muted hover:text-charcoal cursor-pointer"
+          >
+            Close
+          </button>
+          <h3 className="text-sm font-bold text-charcoal mb-3">Report Details</h3>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
+            <span className="text-charcoal-muted">District</span>
+            <span className="text-charcoal font-medium">{getDistrictName(selectedReport.district_id)}</span>
+            <span className="text-charcoal-muted">Crop</span>
+            <span className="text-charcoal">{getCropName(selectedReport.crop_id)}</span>
+            <span className="text-charcoal-muted">Pest</span>
+            <span className="text-charcoal">{getPestName(selectedReport.detected_pest_id)}</span>
+            <span className="text-charcoal-muted">Severity</span>
+            <span><SeverityBadge severity={severityMap[selectedReport.severity_level] || selectedReport.severity_level || 'low'} /></span>
+            <span className="text-charcoal-muted">Status</span>
+            <span className={`text-xs px-2 py-0.5 font-medium border w-fit ${
+              selectedReport.status === 'verified' ? 'status-verified' :
+              selectedReport.status === 'action_taken' ? 'status-action' : 'status-pending'
+            }`}>{selectedReport.status || 'pending'}</span>
+            <span className="text-charcoal-muted">Date</span>
+            <span className="text-charcoal">{new Date(selectedReport.reported_at).toLocaleString()}</span>
+          </div>
+        </div>
+      )}
+
       <div className="card-editorial overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -130,7 +168,11 @@ export default function ReportsPage() {
                 </tr>
               ) : (
                 reports.map((r) => (
-                  <tr key={r.id} className="border-b border-stone/50">
+                  <tr
+                    key={r.id}
+                    className="border-b border-stone/50 cursor-pointer hover:bg-parchment-tint transition-colors"
+                    onClick={() => setSelectedReport(r)}
+                  >
                     <td className="py-3 px-4 text-charcoal-muted text-xs">{new Date(r.reported_at).toLocaleDateString()}</td>
                     <td className="py-3 px-4 text-charcoal font-medium">{getDistrictName(r.district_id)}</td>
                     <td className="py-3 px-4 text-charcoal-muted">{getCropName(r.crop_id)}</td>
@@ -152,6 +194,29 @@ export default function ReportsPage() {
           </table>
         </div>
       </div>
+
+      {total > limit && (
+        <div className="flex items-center justify-between pt-2">
+          <span className="text-xs text-charcoal-muted">{total} total reports</span>
+          <div className="flex gap-2">
+            <button
+              disabled={page <= 1}
+              onClick={() => setPage(p => p - 1)}
+              className="px-3 py-1 text-xs border border-stone disabled:opacity-30 cursor-pointer disabled:cursor-default"
+            >
+              Previous
+            </button>
+            <span className="px-3 py-1 text-xs text-charcoal-muted">{page} / {totalPages}</span>
+            <button
+              disabled={page >= totalPages}
+              onClick={() => setPage(p => p + 1)}
+              className="px-3 py-1 text-xs border border-stone disabled:opacity-30 cursor-pointer disabled:cursor-default"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
