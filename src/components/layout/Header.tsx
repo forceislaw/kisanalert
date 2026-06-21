@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
@@ -20,6 +20,7 @@ export default function Header() {
   const { dict } = useLocale()
   const { user, loading, signOut } = useAuth()
   const pathname = usePathname()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const currentPath = pathname.replace(/^\//, '')
 
@@ -27,6 +28,8 @@ export default function Header() {
     if (href === 'dashboard') return currentPath === 'dashboard' || currentPath === ''
     return currentPath.startsWith(href)
   }
+
+  const handleNavClick = () => setMenuOpen(false)
 
   return (
     <header className="editorial-header bg-parchment">
@@ -51,8 +54,46 @@ export default function Header() {
                 </React.Fragment>
               ))}
             </nav>
+            <button
+              className="md:hidden ml-4 p-1 cursor-pointer"
+              onClick={() => setMenuOpen(v => !v)}
+              aria-label="Toggle menu"
+            >
+              <svg className="w-6 h-6 text-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {menuOpen ? (
+                  <path strokeLinecap="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
           </div>
-          <div className="flex items-center gap-3">
+          {menuOpen && (
+            <div className="absolute top-16 left-0 right-0 z-50 bg-parchment border-b border-stone shadow-md md:hidden">
+              <div className="flex flex-col px-4 py-3 gap-1">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={`/${item.href}`}
+                    onClick={handleNavClick}
+                    className={`px-3 py-2 text-sm ${isActive(item.href) ? 'bg-parchment-tint font-medium' : ''}`}
+                  >
+                    {dict.nav[item.labelKey]}
+                  </Link>
+                ))}
+                <div className="border-t border-stone my-2" />
+                <div className="flex items-center gap-3 px-3 py-2">
+                  {loading ? null : user ? (
+                    <button onClick={signOut} className="btn-secondary text-xs px-3 py-1">Sign Out</button>
+                  ) : (
+                    <Link href="/login" onClick={handleNavClick} className="btn-primary text-xs px-3 py-1 no-underline">Sign In</Link>
+                  )}
+                  <LanguageSwitcher />
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="hidden md:flex items-center gap-3">
             {loading ? null : user ? (
               <button onClick={signOut} className="btn-secondary text-xs px-3 py-1">
                 Sign Out
