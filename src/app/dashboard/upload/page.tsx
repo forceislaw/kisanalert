@@ -1,0 +1,181 @@
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import { useLocale } from '@/lib/i18n/LocaleProvider'
+import { useRouter } from 'next/navigation'
+import UploadDropzone from '@/components/upload/UploadDropzone'
+import VisionResultCard from '@/components/upload/VisionResultCard'
+import { DistrictSearch } from '@/components/ui/DistrictSearch'
+import { VisionAnalysisResult } from '@/app/api/vision-analyze/route'
+import { RAIN_SHADOW_DISTRICTS } from '@/lib/seed/districts'
+import { CROPS } from '@/lib/seed/crops'
+import { PESTS } from '@/lib/seed/pests'
+
+export default function UploadPage() {
+  const { dict } = useLocale()
+  const router = useRouter()
+
+  const [analysisResult, setAnalysisResult] = useState<VisionAnalysisResult | null>(null)
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+
+  const [selectedDistrict, setSelectedDistrict] = useState(1)
+  const [observationDate, setObservationDate] = useState(new Date().toISOString().split('T')[0])
+  const [userLat, setUserLat] = useState<number | null>(null)
+  const [userLng, setUserLng] = useState<number | null>(null)
+  const [submitted, setSubmitted] = useState(false)
+
+  const resetForm = () => {
+    setAnalysisResult(null)
+    setImageUrl(null)
+    setSubmitted(false)
+    setSubmitError(null)
+  }
+
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords
+          setUserLat(latitude)
+          setUserLng(longitude)
+          let closest = 0
+          let minDist = Infinity
+          RAIN_SHADOW_DISTRICTS.forEach((d, i) => {
+            const dist = Math.hypot(d.latitude - latitude, d.longitude - longitude)
+            if (dist < minDist) { minDist = dist; closest = i + 1 }
+          })
+          if (minDist < 2) setSelectedDistrict(closest)
+        },
+        () => {},
+        { enableHighAccuracy: false, timeout: 5000 }
+      )
+    }
+  }, [])
+
+  const handleAnalysisComplete = (result: VisionAnalysisResult, url: string) => {
+    setAnalysisResult(result)
+    setImageUrl(url)
+    setSubmitError(null)
+  }
+
+  const findCropIndex = (guess: string): number => {
+    const lower = guess.toLowerCase()
+    const crop = CROPS.find(c => c.key_name.includes(lower) || lower.includes(c.key_name))
+    return crop ? CROPS.indexOf(crop) + 1 : 1
+  }
+
+  const findPestIndex = (name: string): number => {
+    const lower = name.toLowerCase()
+    const pest = PESTS.find(p => p.key_name.includes(lower) || lower.includes(p.key_name) || p.scientific_name.toLowerCase().includes(lower))
+    return pest ? PESTS.indexOf(pest) + 1 : 1
+  }
+
+  const handleConfirm = async () => {
+    if (!analysisResult || !imageUrl) return
+
+    setIsSubmitting(true)
+    setSubmitError(null)
+
+    try {
+      const body = {
+        district_id: selectedDistrict,
+        crop_id: findCropIndex(analysisResult.crop_guess),
+        detected_pest_id: findPestIndex(analysisResult.pest_name),
+        severity_level: analysisResult.severity_estimate === 'medium' ? 'moderate' as const : analysisResult.severity_estimate,
+        image_storage_path: '',
+        confidence_score: analysisResult.confidence,
+        latitude: userLat,
+        longitude: userLng,
+      }
+
+      const res = await fetch('/api/reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+
+      if (!res.ok) {
+        const json = await res.json()
+        throw new Error(json.error || 'Failed to submit report')
+      }
+
+      setSubmitted(true)
+    } catch (err: unknown) {
+      setSubmitError(err instanceof Error ? err.message : dict.common.error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const showAnalysis = analysisResult && imageUrl
+
+  const handleDiscard = () => {
+    setAnalysisResult(null)
+    setImageUrl(null)
+    if (imageUrl) URL.revokeObjectURL(imageUrl)
+  }
+
+  return (
+    <div className="space-y-12 max-w-3xl mx-auto">
+      <div className="border-b border-stone pb-5">
+        <h1 className="text-4xl font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
+          {dict.upload.title}
+        </h1>
+        <p className="eyebrow mt-1">{dict.upload.subtitle}</p>
+      </div>
+
+      {submitError && (
+        <div className="p-4 border border-terra bg-terra/10 text-terra-dark text-sm flex items-center gap-3">
+          <span>{submitError}</span>
+        </div>
+      )}
+
+      {submitted ? (
+        <div className="text-center py-12 space-y-4">
+          <div className="text-4xl text-forest mb-2">&#10003;</div>
+          <h2 className="text-2xl font-bold text-charcoal">Report Submitted</h2>
+          <p className="text-charcoal-muted text-sm">Your pest report has been recorded successfully.</p>
+          <div className="flex justify-center gap-4 pt-4">
+            <button onClick={() => router.push('/reports')} className="btn-editorial">
+              View Reports
+            </button>
+            <button onClick={resetForm} className="btn-editorial-outline">
+              Upload Another
+            </button>
+          </div>
+        </div>
+      ) : !analysisResult ? (
+        <UploadDropzone onAnalysisComplete={handleAnalysisComplete} />
+      ) : showAnalysis ? (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="eyebrow block mb-1.5">Location (District)</label>
+              <DistrictSearch value={selectedDistrict} onChange={(id) => id && setSelectedDistrict(id)} />
+            </div>
+            <div>
+              <label className="eyebrow block mb-1.5">Date of Observation</label>
+              <input
+                type="date"
+                value={observationDate}
+                onChange={(e) => setObservationDate(e.target.value)}
+                max={new Date().toISOString().split('T')[0]}
+                className="select-editorial w-full"
+              />
+            </div>
+          </div>
+
+          <VisionResultCard
+            result={analysisResult}
+            imageUrl={imageUrl!}
+            onConfirm={handleConfirm}
+            onDiscard={handleDiscard}
+            isSubmitting={isSubmitting}
+          />
+        </div>
+      ) : null}
+    </div>
+  )
+}

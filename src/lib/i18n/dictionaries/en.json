@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "map": "Map",
+    "reports": "Reports",
+    "reportNew": "New Report",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Monitoring Dashboard",
+    "totalCrops": "Total Crops Monitored",
+    "activeAlerts": "Active Pest Alerts",
+    "regionsWatch": "Regions Under Watch",
+    "overallRisk": "Overall Risk Score",
+    "topDistricts": "Top Districts by Risk",
+    "outbreakTrend": "Outbreak Trend",
+    "district": "District",
+    "riskLevel": "Risk Level",
+    "activeReports": "Active Reports"
+  },
+  "map": {
+    "title": "Geospatial Monitoring",
+    "selectDistrict": "Select District",
+    "severityHigh": "High Severity",
+    "severityMedium": "Medium Severity",
+    "severityLow": "Low Severity",
+    "healthy": "Healthy"
+  },
+  "upload": {
+    "title": "Submit Pest Report",
+    "dragDrop": "Drag & drop an image here, or click to select",
+    "analyzing": "Analyzing image with AI...",
+    "confidence": "AI Confidence",
+    "submit": "Submit Report"
+  },
+  "reports": {
+    "title": "Pest Reports",
+    "date": "Date",
+    "crop": "Crop",
+    "pest": "Pest",
+    "severity": "Severity",
+    "status": "Status"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Operation successful",
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "unverified": "Unverified",
+    "verified": "Verified"
+  }
+}
