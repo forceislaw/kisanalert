@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 
 type ReportRow = {
   id: string
@@ -17,7 +17,7 @@ type DistrictRow = {
 }
 
 export async function GET() {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createServiceClient()
 
   const { data: reports, error: reportsError } = await supabase
     .from('pest_reports')
