@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { generateFakeReports } from '@/lib/seed/generateReports'
-import { RAIN_SHADOW_DISTRICTS } from '@/lib/seed/districts'
 import { z } from 'zod'
 import { sendNotification } from '@/lib/notifications'
+import type { Database } from '@/lib/supabase/types'
+
+type DistrictRow = Database['public']['Tables']['districts']['Row']
 
 const CreateReportSchema = z.object({
   district_id: z.number(),
@@ -16,86 +17,81 @@ const CreateReportSchema = z.object({
   longitude: z.number().optional().nullable(),
 })
 
+const selectFields = `
+  id,
+  user_id,
+  crop_id,
+  district_id,
+  detected_pest_id,
+  image_storage_path,
+  severity_level,
+  status,
+  confidence_score,
+  latitude,
+  longitude,
+  diagnosis_translations,
+  countermeasure_translations,
+  prevention_translations,
+  created_at,
+  crops:crop_id ( key_name ),
+  districts:district_id ( name_en, state_en ),
+  pests:detected_pest_id ( key_name, scientific_name )
+`
+
 export async function GET(req: NextRequest) {
-  try {
-    const supabase = await createServerSupabaseClient()
-    const { searchParams } = new URL(req.url)
+  const supabase = await createServerSupabaseClient()
+  const { searchParams } = new URL(req.url)
 
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20')))
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
+  const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20')))
 
-    let countQuery = supabase.from('pest_reports').select('*', { count: 'exact', head: true })
-    let dataQuery = supabase.from('pest_reports').select('*')
+  let countQuery = supabase.from('pest_reports').select('*', { count: 'exact', head: true })
+  let dataQuery = supabase.from('pest_reports').select(selectFields)
 
-    const district = searchParams.get('district')
-    if (district) { countQuery = countQuery.eq('district_id', parseInt(district)); dataQuery = dataQuery.eq('district_id', parseInt(district)) }
+  const district = searchParams.get('district')
+  if (district) { countQuery = countQuery.eq('district_id', parseInt(district)); dataQuery = dataQuery.eq('district_id', parseInt(district)) }
 
-    const severity = searchParams.get('severity')
-    if (severity) { countQuery = countQuery.eq('severity_level', severity); dataQuery = dataQuery.eq('severity_level', severity) }
+  const severity = searchParams.get('severity')
+  if (severity) { countQuery = countQuery.eq('severity_level', severity); dataQuery = dataQuery.eq('severity_level', severity) }
 
-    const status = searchParams.get('status')
-    if (status) { countQuery = countQuery.eq('status', status); dataQuery = dataQuery.eq('status', status) }
+  const status = searchParams.get('status')
+  if (status) { countQuery = countQuery.eq('status', status); dataQuery = dataQuery.eq('status', status) }
 
-    const mine = searchParams.get('mine')
-    if (mine === 'true') {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) { countQuery = countQuery.eq('user_id', user.id); dataQuery = dataQuery.eq('user_id', user.id) }
-    }
-
-    const days = searchParams.get('days')
-    if (days) {
-      const since = new Date()
-      since.setDate(since.getDate() - parseInt(days))
-      const iso = since.toISOString()
-      countQuery = countQuery.gte('created_at', iso)
-      dataQuery = dataQuery.gte('created_at', iso)
-    }
-
-    const { count } = await countQuery
-    const from = (page - 1) * limit
-    const to = from + limit - 1
-
-    const { data, error } = await dataQuery.order('created_at', { ascending: false }).range(from, to)
-
-    if (error) throw new Error(error.message)
-
-    const mapped = (data || []).map((r: Record<string, unknown>) => ({
-      ...r,
-      reported_at: r.created_at,
-    }))
-
-    return NextResponse.json({ data: mapped, total: count || 0, page, limit })
-  } catch {
-    let fakeData = generateFakeReports(RAIN_SHADOW_DISTRICTS.length, 80)
-
-    const { searchParams } = new URL(req.url)
-    const district = searchParams.get('district')
-    const severity = searchParams.get('severity')
-    const status = searchParams.get('status')
-    const mine = searchParams.get('mine')
-    const days = searchParams.get('days')
-
-    if (district) fakeData = fakeData.filter(r => r.district_id === parseInt(district))
-    if (severity) fakeData = fakeData.filter(r => r.severity_level === severity)
-    if (status) fakeData = fakeData.filter(r => r.status === status)
-    if (mine === 'true') fakeData = []
-    if (days) {
-      const since = new Date()
-      since.setDate(since.getDate() - parseInt(days))
-      fakeData = fakeData.filter(r => new Date(r.reported_at) >= since)
-    }
-
-    fakeData.sort((a, b) => new Date(b.reported_at).getTime() - new Date(a.reported_at).getTime())
-
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20')))
-    const total = fakeData.length
-    const from = (page - 1) * limit
-    const to = from + limit
-    const paginated = fakeData.slice(from, to)
-
-    return NextResponse.json({ data: paginated, total, page, limit })
+  const mine = searchParams.get('mine')
+  if (mine === 'true') {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) { countQuery = countQuery.eq('user_id', user.id); dataQuery = dataQuery.eq('user_id', user.id) }
   }
+
+  const days = searchParams.get('days')
+  if (days) {
+    const since = new Date()
+    since.setDate(since.getDate() - parseInt(days))
+    const iso = since.toISOString()
+    countQuery = countQuery.gte('created_at', iso)
+    dataQuery = dataQuery.gte('created_at', iso)
+  }
+
+  const { count, error: countError } = await countQuery
+  if (countError) throw new Error(countError.message)
+
+  const from = (page - 1) * limit
+  const to = from + limit - 1
+
+  const { data, error } = await dataQuery.order('created_at', { ascending: false }).range(from, to)
+
+  if (error) throw new Error(error.message)
+
+  const mapped = (data || []).map((r: Record<string, unknown>) => ({
+    ...r,
+    reported_at: r.created_at,
+    crop_name: (r.crops as { key_name: string } | null)?.key_name,
+    district_name: (r.districts as { name_en: string; state_en: string } | null)?.name_en,
+    district_state: (r.districts as { name_en: string; state_en: string } | null)?.state_en,
+    pest_name: (r.pests as { key_name: string } | null)?.key_name,
+  }))
+
+  return NextResponse.json({ data: mapped, total: count || 0, page, limit })
 }
 
 export async function POST(req: NextRequest) {
@@ -116,7 +112,18 @@ export async function POST(req: NextRequest) {
 
     const { data, error } = await supabase
       .from('pest_reports')
-      .insert([{ ...validation.data, status, user_id: userId }] as never[])
+      .insert([{
+        district_id: validation.data.district_id,
+        crop_id: validation.data.crop_id,
+        detected_pest_id: validation.data.detected_pest_id,
+        severity_level: validation.data.severity_level,
+        image_storage_path: validation.data.image_storage_path,
+        confidence_score: validation.data.confidence_score ?? null,
+        latitude: validation.data.latitude ?? null,
+        longitude: validation.data.longitude ?? null,
+        status,
+        user_id: userId,
+      }] as any)
       .select()
       .single()
 
@@ -125,20 +132,27 @@ export async function POST(req: NextRequest) {
     }
 
     if (userId) {
-      const prefResult = await (supabase as any)
+      const { data: prefData } = await supabase
         .from('user_notification_prefs')
         .select('email_alerts, sms_alerts, critical_only')
         .eq('user_id', userId)
         .maybeSingle()
-      const prefs = prefResult?.data as { email_alerts: boolean; sms_alerts: boolean; critical_only: boolean } | undefined
+
+      const prefs = prefData as { email_alerts: boolean; sms_alerts: boolean; critical_only: boolean } | null
 
       if (prefs?.email_alerts && user?.email) {
         const severity = validation.data.severity_level
         const isCritical = severity === 'high' || severity === 'critical'
         if (!prefs.critical_only || isCritical) {
+          const { data: districtData } = await supabase
+            .from('districts')
+            .select('name_en')
+            .eq('id', validation.data.district_id)
+            .maybeSingle()
+
           sendNotification({
             to: user.email,
-            subject: `KisanAlert: ${severity} severity pest report in ${RAIN_SHADOW_DISTRICTS[validation.data.district_id - 1]?.name_en || 'unknown'} district`,
+            subject: `KisanAlert: ${severity} severity pest report in ${(districtData as DistrictRow | null)?.name_en || 'unknown'} district`,
             text: `A new pest report has been recorded.\nSeverity: ${severity}\nStatus: ${status}\nConfidence: ${(confidence * 100).toFixed(0)}%`,
           })
         }

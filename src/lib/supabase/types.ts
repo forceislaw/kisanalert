@@ -36,10 +36,6 @@ export interface Database {
         Row: {
           id: number
           name_en: string
-          name_hi: string
-          name_mr: string
-          name_te: string
-          name_kn: string
           state_en: string
           latitude: number
           longitude: number
@@ -47,10 +43,6 @@ export interface Database {
         Insert: {
           id?: number
           name_en: string
-          name_hi: string
-          name_mr: string
-          name_te: string
-          name_kn: string
           state_en: string
           latitude: number
           longitude: number
@@ -58,10 +50,6 @@ export interface Database {
         Update: {
           id?: number
           name_en?: string
-          name_hi?: string
-          name_mr?: string
-          name_te?: string
-          name_kn?: string
           state_en?: string
           latitude?: number
           longitude?: number
@@ -138,6 +126,8 @@ export interface Database {
           severity_level: 'low' | 'moderate' | 'high' | 'critical'
           status: string
           confidence_score: number | null
+          latitude: number | null
+          longitude: number | null
           diagnosis_translations: Json | null
           countermeasure_translations: Json | null
           prevention_translations: Json | null
@@ -153,6 +143,8 @@ export interface Database {
           severity_level: 'low' | 'moderate' | 'high' | 'critical'
           status?: string
           confidence_score?: number | null
+          latitude?: number | null
+          longitude?: number | null
           diagnosis_translations?: Json | null
           countermeasure_translations?: Json | null
           prevention_translations?: Json | null
@@ -168,6 +160,8 @@ export interface Database {
           severity_level?: 'low' | 'moderate' | 'high' | 'critical'
           status?: string
           confidence_score?: number | null
+          latitude?: number | null
+          longitude?: number | null
           diagnosis_translations?: Json | null
           countermeasure_translations?: Json | null
           prevention_translations?: Json | null

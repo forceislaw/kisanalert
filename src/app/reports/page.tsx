@@ -4,9 +4,6 @@ import React, { useState, useEffect } from 'react'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
 import SeverityBadge from '@/components/ui/SeverityBadge'
 import { DistrictSearch } from '@/components/ui/DistrictSearch'
-import { RAIN_SHADOW_DISTRICTS } from '@/lib/seed/districts'
-import { CROPS } from '@/lib/seed/crops'
-import { PESTS } from '@/lib/seed/pests'
 
 interface Report {
   id: string
@@ -16,6 +13,10 @@ interface Report {
   severity_level: 'low' | 'moderate' | 'high' | 'critical'
   status: string
   reported_at: string
+  crop_name?: string
+  district_name?: string
+  district_state?: string
+  pest_name?: string
 }
 
 export default function ReportsPage() {
@@ -57,9 +58,9 @@ export default function ReportsPage() {
 
   const totalPages = Math.ceil(total / limit)
 
-  const getCropName = (id: number) => CROPS[id - 1]?.key_name || `crop-${id}`
-  const getPestName = (id: number) => PESTS[id - 1]?.key_name || `pest-${id}`
-  const getDistrictName = (id: number) => RAIN_SHADOW_DISTRICTS[id - 1]?.name_en || `district-${id}`
+  const getCropName = (report: Report) => report.crop_name || `crop-${report.crop_id}`
+  const getPestName = (report: Report) => report.pest_name || `pest-${report.detected_pest_id}`
+  const getDistrictName = (report: Report) => report.district_name || `district-${report.district_id}`
 
   const severityMap: Record<string, string> = {
     critical: 'critical',
@@ -126,11 +127,11 @@ export default function ReportsPage() {
           <h3 className="text-sm font-bold text-charcoal mb-3">Report Details</h3>
           <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
             <span className="text-charcoal-muted">District</span>
-            <span className="text-charcoal font-medium">{getDistrictName(selectedReport.district_id)}</span>
+            <span className="text-charcoal font-medium">{getDistrictName(selectedReport)}</span>
             <span className="text-charcoal-muted">Crop</span>
-            <span className="text-charcoal">{getCropName(selectedReport.crop_id)}</span>
+            <span className="text-charcoal">{getCropName(selectedReport)}</span>
             <span className="text-charcoal-muted">Pest</span>
-            <span className="text-charcoal">{getPestName(selectedReport.detected_pest_id)}</span>
+            <span className="text-charcoal">{getPestName(selectedReport)}</span>
             <span className="text-charcoal-muted">Severity</span>
             <span><SeverityBadge severity={severityMap[selectedReport.severity_level] || selectedReport.severity_level || 'low'} /></span>
             <span className="text-charcoal-muted">Status</span>
@@ -174,9 +175,9 @@ export default function ReportsPage() {
                     onClick={() => setSelectedReport(r)}
                   >
                     <td className="py-3 px-4 text-charcoal-muted text-xs">{new Date(r.reported_at).toLocaleDateString()}</td>
-                    <td className="py-3 px-4 text-charcoal font-medium">{getDistrictName(r.district_id)}</td>
-                    <td className="py-3 px-4 text-charcoal-muted">{getCropName(r.crop_id)}</td>
-                    <td className="py-3 px-4 text-charcoal-muted">{getPestName(r.detected_pest_id)}</td>
+                    <td className="py-3 px-4 text-charcoal font-medium">{getDistrictName(r)}</td>
+                    <td className="py-3 px-4 text-charcoal-muted">{getCropName(r)}</td>
+                    <td className="py-3 px-4 text-charcoal-muted">{getPestName(r)}</td>
                     <td className="py-3 px-4"><SeverityBadge severity={severityMap[r.severity_level] || r.severity_level || 'low'} /></td>
                     <td className="py-3 px-4">
                       <span className={`text-xs px-2 py-0.5 font-medium border ${

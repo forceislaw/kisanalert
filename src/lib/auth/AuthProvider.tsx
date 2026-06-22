@@ -45,19 +45,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, password: string, fullName?: string, phone?: string) => {
     const supabase = createClient()
-    const { data, error } = await supabase.auth.signUp({ email, password })
+    const { data, error } = await supabase.auth.signUp({ 
+      email, 
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+          phone: phone,
+        }
+      }
+    })
     
     if (error) return { error: error.message }
-
-    if (data.user) {
-      const { error: profileError } = await (supabase.from('profiles') as any).insert({
-        id: data.user.id,
-        full_name: fullName || null,
-        phone_number: phone || null,
-        preferred_lang: 'en',
-      })
-      if (profileError) console.error('Failed to create profile:', profileError)
-    }
 
     return { error: null }
   }
