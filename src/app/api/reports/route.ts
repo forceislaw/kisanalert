@@ -17,36 +17,33 @@ const CreateReportSchema = z.object({
   longitude: z.number().optional().nullable(),
 })
 
-const selectFields = `
-  id,
-  user_id,
-  crop_id,
-  district_id,
-  detected_pest_id,
-  image_storage_path,
-  severity_level,
-  status,
-  confidence_score,
-  latitude,
-  longitude,
-  diagnosis_translations,
-  countermeasure_translations,
-  prevention_translations,
-  created_at,
-  crops:crop_id ( key_name ),
-  districts:district_id ( name_en, state_en ),
-  pests:detected_pest_id ( key_name, scientific_name )
+const BASE_FIELDS = `
+  id, user_id, crop_id, district_id, detected_pest_id,
+  image_storage_path, severity_level, status, confidence_score,
+  latitude, longitude, diagnosis_translations,
+  countermeasure_translations, prevention_translations, created_at
 `
 
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient()
   const { searchParams } = new URL(req.url)
 
+  // Fetch lookup maps once
+  const [{ data: crops }, { data: districts }, { data: pests }] = await Promise.all([
+    supabase.from('crops').select('id, key_name').returns<{ id: number; key_name: string }[]>(),
+    supabase.from('districts').select('id, name_en').returns<{ id: number; name_en: string }[]>(),
+    supabase.from('pests').select('id, key_name').returns<{ id: number; key_name: string }[]>(),
+  ])
+
+  const cropMap = new Map((crops || []).map(c => [c.id, c.key_name]))
+  const districtMap = new Map((districts || []).map(d => [d.id, d.name_en]))
+  const pestMap = new Map((pests || []).map(p => [p.id, p.key_name]))
+
   const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
   const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20')))
 
   let countQuery = supabase.from('pest_reports').select('*', { count: 'exact', head: true })
-  let dataQuery = supabase.from('pest_reports').select(selectFields)
+  let dataQuery = supabase.from('pest_reports').select(BASE_FIELDS)
 
   const district = searchParams.get('district')
   if (district) { countQuery = countQuery.eq('district_id', parseInt(district)); dataQuery = dataQuery.eq('district_id', parseInt(district)) }
@@ -82,13 +79,12 @@ export async function GET(req: NextRequest) {
 
   if (error) throw new Error(error.message)
 
-  const mapped = (data || []).map((r: Record<string, unknown>) => ({
+  const mapped = (data || []).map((r: Record<string, number | string | null>) => ({
     ...r,
     reported_at: r.created_at,
-    crop_name: (r.crops as { key_name: string } | null)?.key_name,
-    district_name: (r.districts as { name_en: string; state_en: string } | null)?.name_en,
-    district_state: (r.districts as { name_en: string; state_en: string } | null)?.state_en,
-    pest_name: (r.pests as { key_name: string } | null)?.key_name,
+    crop_name: cropMap.get(r.crop_id as number) || null,
+    district_name: districtMap.get(r.district_id as number) || null,
+    pest_name: pestMap.get(r.detected_pest_id as number) || null,
   }))
 
   return NextResponse.json({ data: mapped, total: count || 0, page, limit })
