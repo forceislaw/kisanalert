@@ -43,9 +43,13 @@ export default function ReportsPage() {
         if (showMine) params.set('mine', 'true')
         params.set('page', String(page))
         params.set('limit', String(limit))
+        params.set('_t', String(Date.now()))
         const res = await fetch(`/api/reports?${params}`)
         const json = await res.json()
-        if (json.data) setReports(json.data)
+        if (json.data) {
+          console.log('API reports sample:', json.data[0])
+          setReports(json.data)
+        }
         if (typeof json.total === 'number') setTotal(json.total)
       } catch (err) {
         console.error('Failed to fetch reports', err)

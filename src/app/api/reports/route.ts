@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase/server'
 import { z } from 'zod'
 import { sendNotification } from '@/lib/notifications'
 import type { Database } from '@/lib/supabase/types'
@@ -25,7 +25,7 @@ const BASE_FIELDS = `
 `
 
 export async function GET(req: NextRequest) {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createServiceClient()
   const { searchParams } = new URL(req.url)
 
   // Fetch lookup maps once
