@@ -14,30 +14,32 @@ export default function MapPage() {
   const [markers, setMarkers] = useState<MarkerData[]>([])
   const [selectedDistrict, setSelectedDistrict] = useState<string>('')
   const [districtGeo, setDistrictGeo] = useState<Record<number, { latitude: number; longitude: number }>>({})
+  const [geoReady, setGeoReady] = useState(false)
 
   React.useEffect(() => {
-    Promise.all([
-      fetch('/api/heatmap?days=30').then(r => r.json()),
-      fetch('/api/lookups').then(r => r.json()),
-    ]).then(([heatJson, lookupsJson]) => {
-      if (heatJson.data) setHeatData(heatJson.data)
-      if (lookupsJson.districtGeo) setDistrictGeo(lookupsJson.districtGeo)
+    fetch('/api/lookups').then(r => r.json()).then((json) => {
+      if (json.districtGeo) setDistrictGeo(json.districtGeo)
+      setGeoReady(true)
     })
   }, [])
 
   React.useEffect(() => {
-    const fetchReports = async () => {
+    if (!geoReady) return
+    const fetchData = async () => {
       try {
-        const params = new URLSearchParams()
-        if (selectedDistrict) params.set('district', selectedDistrict)
-        params.set('days', '30')
-        const res = await fetch(`/api/reports?${params}`)
-        const json = await res.json()
-        if (json.data) {
-          const markersList: MarkerData[] = json.data.map((r: { id: string; district_id: number; severity_level?: string; confidence_score?: number; reported_at: string; latitude?: number | null; longitude?: number | null; crop_name?: string | null; pest_name?: string | null }) => {
+        const [heatRes, reportsRes] = await Promise.all([
+          fetch('/api/heatmap?days=30'),
+          fetch(`/api/reports?${new URLSearchParams(selectedDistrict ? { district: selectedDistrict, days: '30' } : { days: '30' })}`),
+        ])
+        const heatJson = await heatRes.json()
+        if (heatJson.data) setHeatData(heatJson.data)
+
+        const reportsJson = await reportsRes.json()
+        if (reportsJson.data) {
+          const markersList: MarkerData[] = reportsJson.data.map((r: { id: string; district_id: number; severity_level?: string; confidence_score?: number; reported_at: string; latitude?: number | null; longitude?: number | null; crop_name?: string | null; pest_name?: string | null }) => {
             const geo = (r.latitude && r.longitude)
               ? { latitude: r.latitude, longitude: r.longitude }
-              : districtGeo[r.district_id] || { latitude: 0, longitude: 0 }
+              : districtGeo[r.district_id] || { latitude: 20.5, longitude: 78.9 }
             return {
               id: r.id,
               lat: geo.latitude,
@@ -52,11 +54,11 @@ export default function MapPage() {
           setMarkers(markersList)
         }
       } catch (err) {
-        console.error('Failed to fetch reports', err)
+        console.error('Failed to fetch map data', err)
       }
     }
-    fetchReports()
-  }, [selectedDistrict, districtGeo])
+    fetchData()
+  }, [selectedDistrict, geoReady, districtGeo])
 
   return (
     <div className="space-y-12">
