@@ -48,7 +48,8 @@ export default function UploadPage() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          const { latitude, longitude } = pos.coords
+          let { latitude, longitude } = pos.coords
+          if (latitude < 6 || latitude > 37 || longitude < 68 || longitude > 98) { latitude = 0; longitude = 0 }
           setUserLat(latitude)
           setUserLng(longitude)
           let closestName = ''
@@ -180,7 +181,17 @@ export default function UploadPage() {
           </div>
         </div>
       ) : !analysisResult ? (
-        <UploadDropzone onAnalysisComplete={handleAnalysisComplete} />
+        <>
+          <UploadDropzone onAnalysisComplete={handleAnalysisComplete} />
+          <div className="border-t border-stone pt-6 mt-10">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted mb-2">Detectable Crops</p>
+            <div className="flex flex-wrap gap-1.5">
+              {['Cotton','Soybean','Groundnut','Jowar','Bajra','Tur','Chili','Sugarcane','Grapes','Pomegranate','Maize','Sunflower','Wheat','Rice'].map(c => (
+                <span key={c} className="text-[11px] px-2 py-0.5 bg-parchment-dark text-charcoal-muted rounded-sm">{c}</span>
+              ))}
+            </div>
+          </div>
+        </>
       ) : showAnalysis ? (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
