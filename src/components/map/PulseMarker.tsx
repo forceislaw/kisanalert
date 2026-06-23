@@ -16,51 +16,40 @@ interface PulseMarkerProps {
   reportedAt: string;
 }
 
-export default function PulseMarker({ lat, lng, severity, confidence, cropName, pestName, reportedAt }: PulseMarkerProps) {
+const COLORS: Record<string, string> = {
+  critical: '#CC3333',
+  high: '#CC6600',
+  medium: '#5A7744',
+  low: '#4A7A55',
+}
+
+export default function PulseMarker({ lat, lng, severity, cropName, pestName, reportedAt }: PulseMarkerProps) {
   const { dict, locale } = useLocale();
 
   const icon = React.useMemo(() => {
-    let bgColor = '';
-    const baseSize = 24;
-    const normalizedConfidence = confidence > 1 ? Math.min(confidence / 100, 1) : Math.min(confidence, 1);
-    const extraSize = normalizedConfidence * 16;
-    const totalSize = Math.round(baseSize + extraSize);
-
-    switch(severity) {
-      case 'critical':
-        bgColor = '#E07A5F';
-        break;
-      case 'high':
-        bgColor = '#C9973B';
-        break;
-      case 'medium':
-        bgColor = '#4A5D23';
-        break;
-      case 'low':
-        bgColor = '#7A9450';
-        break;
-    }
+    const color = COLORS[severity] || '#4A7A55'
+    const size = 30
 
     const html = `
-      <div class="relative flex items-center justify-center" style="width: ${totalSize}px; height: ${totalSize}px;">
-        <div class="absolute inset-0 rounded-full" style="background: ${bgColor}; opacity: 0.75;"></div>
-        ${severity === 'critical' || severity === 'high' ? `<div class="absolute inset-0 rounded-full border-2" style="border-color: ${bgColor}; animation: risk-pulse 1.5s ease-in-out infinite;"></div>` : ''}
-        <div class="relative w-3 h-3 rounded-full bg-white z-10"></div>
+      <div style="width:${size}px;height:${size}px;position:relative;display:flex;align-items:center;justify-content:center;">
+        <div style="position:absolute;inset:0;border-radius:50%;background:${color};border:3px solid #1a1a1a;"></div>
+        ${severity === 'critical' || severity === 'high' ? `<div style="position:absolute;inset:-6px;border-radius:50%;border:2px solid ${color};opacity:0.6;animation:brutal-pulse 1.5s ease-out infinite;"></div>` : ''}
+        <div style="width:8px;height:8px;border-radius:50%;background:#1a1a1a;z-index:1;"></div>
       </div>
-    `;
+    `
 
     return L.divIcon({
-      className: 'custom-pulse-marker',
+      className: '',
       html,
-      iconSize: [totalSize, totalSize],
-      iconAnchor: [totalSize / 2, totalSize / 2],
-      popupAnchor: [0, -(totalSize / 2)],
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
+      popupAnchor: [0, -(size / 2)],
     });
-  }, [severity, confidence]);
+  }, [severity]);
 
-  const dateStr = new Date(reportedAt).toLocaleString(locale, { 
-    dateStyle: 'medium', 
-    timeStyle: 'short' 
+  const dateStr = new Date(reportedAt).toLocaleString(locale, {
+    dateStyle: 'medium',
+    timeStyle: 'short'
   });
 
   return (
@@ -69,13 +58,13 @@ export default function PulseMarker({ lat, lng, severity, confidence, cropName, 
         <div className="p-1">
           <div className="font-bold text-sm mb-1">{pestName}</div>
           <div className="text-xs text-charcoal-muted mb-2">Crop: {cropName}</div>
-          
+
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs uppercase tracking-wider font-semibold opacity-70">Severity:</span>
             <span className={`text-xs px-2 py-0.5 font-bold border ${
-              severity === 'critical' ? 'severity-critical' : 
-              severity === 'high' ? 'severity-high' : 
-              severity === 'medium' ? 'severity-medium' : 
+              severity === 'critical' ? 'severity-critical' :
+              severity === 'high' ? 'severity-high' :
+              severity === 'medium' ? 'severity-medium' :
               'severity-low'
             }`}>
               {dict.common[severity]}
