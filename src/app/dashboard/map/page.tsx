@@ -13,18 +13,16 @@ export default function MapPage() {
   const [heatData, setHeatData] = useState<DistrictHeatData[]>([])
   const [markers, setMarkers] = useState<MarkerData[]>([])
   const [selectedDistrict, setSelectedDistrict] = useState<string>('')
+  const [districtGeo, setDistrictGeo] = useState<Record<number, { latitude: number; longitude: number }>>({})
 
   React.useEffect(() => {
-    const fetchHeatData = async () => {
-      try {
-        const res = await fetch('/api/heatmap?days=30')
-        const json = await res.json()
-        if (json.data) setHeatData(json.data)
-      } catch (err) {
-        console.error('Failed to fetch heat data', err)
-      }
-    }
-    fetchHeatData()
+    Promise.all([
+      fetch('/api/heatmap?days=30').then(r => r.json()),
+      fetch('/api/lookups').then(r => r.json()),
+    ]).then(([heatJson, lookupsJson]) => {
+      if (heatJson.data) setHeatData(heatJson.data)
+      if (lookupsJson.districtGeo) setDistrictGeo(lookupsJson.districtGeo)
+    })
   }, [])
 
   React.useEffect(() => {
@@ -37,10 +35,13 @@ export default function MapPage() {
         const json = await res.json()
         if (json.data) {
           const markersList: MarkerData[] = json.data.map((r: { id: string; district_id: number; severity_level?: string; confidence_score?: number; reported_at: string; latitude?: number | null; longitude?: number | null; crop_name?: string | null; pest_name?: string | null }) => {
+            const geo = (r.latitude && r.longitude)
+              ? { latitude: r.latitude, longitude: r.longitude }
+              : districtGeo[r.district_id] || { latitude: 0, longitude: 0 }
             return {
               id: r.id,
-              lat: r.latitude ?? 0,
-              lng: r.longitude ?? 0,
+              lat: geo.latitude,
+              lng: geo.longitude,
               severity: (r.severity_level === 'moderate' ? 'medium' : r.severity_level || 'low') as MarkerData['severity'],
               confidence: r.confidence_score || 0.7,
               cropName: r.crop_name || 'Unknown',
@@ -55,7 +56,7 @@ export default function MapPage() {
       }
     }
     fetchReports()
-  }, [selectedDistrict])
+  }, [selectedDistrict, districtGeo])
 
   return (
     <div className="space-y-12">
