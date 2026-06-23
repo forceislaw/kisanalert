@@ -24,6 +24,11 @@ const BASE_FIELDS = `
   countermeasure_translations, prevention_translations, created_at
 `
 
+function toDisplayName(key: string | null | undefined): string | null {
+  if (!key) return null
+  return key.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+}
+
 export async function GET(req: NextRequest) {
   const supabase = createServiceClient()
   const { searchParams } = new URL(req.url)
@@ -82,9 +87,9 @@ export async function GET(req: NextRequest) {
   const mapped = (data || []).map((r: Record<string, number | string | null>) => ({
     ...r,
     reported_at: r.created_at,
-    crop_name: cropMap.get(r.crop_id as number) || null,
+    crop_name: toDisplayName(cropMap.get(r.crop_id as number)),
     district_name: districtMap.get(r.district_id as number) || null,
-    pest_name: pestMap.get(r.detected_pest_id as number) || null,
+    pest_name: r.detected_pest_id ? (toDisplayName(pestMap.get(r.detected_pest_id as number)) || 'Unknown Pest') : 'No Pest',
   }))
 
   return NextResponse.json({ data: mapped, total: count || 0, page, limit })
