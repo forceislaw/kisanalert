@@ -7,9 +7,6 @@ import { DistrictHeatData } from '@/components/map/DistrictHeatLayer'
 import { MarkerData } from '@/components/map/MapInner'
 import SeverityBadge from '@/components/ui/SeverityBadge'
 import { DistrictSearch } from '@/components/ui/DistrictSearch'
-import { RAIN_SHADOW_DISTRICTS } from '@/lib/seed/districts'
-import { CROPS } from '@/lib/seed/crops'
-import { PESTS } from '@/lib/seed/pests'
 
 export default function MapPage() {
   const { dict } = useLocale()
@@ -39,17 +36,15 @@ export default function MapPage() {
         const res = await fetch(`/api/reports?${params}`)
         const json = await res.json()
         if (json.data) {
-          const markersList: MarkerData[] = json.data.map((r: { id: string; district_id: number; severity_level?: string; confidence_score?: number; crop_id: number; detected_pest_id: number; reported_at: string; lat?: number; lng?: number }) => {
-            const distIdx = r.district_id ? r.district_id - 1 : 0
-            const dist = RAIN_SHADOW_DISTRICTS[distIdx]
+          const markersList: MarkerData[] = json.data.map((r: { id: string; district_id: number; severity_level?: string; confidence_score?: number; reported_at: string; latitude?: number | null; longitude?: number | null; crop_name?: string | null; pest_name?: string | null }) => {
             return {
               id: r.id,
-              lat: r.lat || dist.latitude,
-              lng: r.lng || dist.longitude,
+              lat: r.latitude ?? 0,
+              lng: r.longitude ?? 0,
               severity: (r.severity_level === 'moderate' ? 'medium' : r.severity_level || 'low') as MarkerData['severity'],
               confidence: r.confidence_score || 0.7,
-              cropName: CROPS[r.crop_id ? r.crop_id - 1 : 0]?.key_name || 'Unknown',
-              pestName: PESTS[r.detected_pest_id ? r.detected_pest_id - 1 : 0]?.key_name || 'Unknown',
+              cropName: r.crop_name || 'Unknown',
+              pestName: r.pest_name || 'Unknown',
               reportedAt: r.reported_at,
             }
           })
@@ -61,9 +56,6 @@ export default function MapPage() {
     }
     fetchReports()
   }, [selectedDistrict])
-
-  const selectedIdx = selectedDistrict ? parseInt(selectedDistrict) - 1 : -1
-  const selectedDistrictData = selectedIdx >= 0 ? RAIN_SHADOW_DISTRICTS[selectedIdx] : null
 
   return (
     <div className="space-y-12">
@@ -110,16 +102,9 @@ export default function MapPage() {
             </div>
           </div>
 
-          {selectedDistrictData && (
+          {selectedDistrict && markers.length > 0 && (
             <div className="card-editorial p-4">
-              <h3 className="text-sm font-bold text-charcoal mb-1">{selectedDistrictData.name_en}</h3>
-              <p className="text-xs text-charcoal-muted mb-1">{selectedDistrictData.state_en}</p>
-              <p className="text-xs text-charcoal-muted mt-2">Active Reports: {markers.filter(m => {
-                const dist = RAIN_SHADOW_DISTRICTS.find(d =>
-                  Math.abs(d.latitude - m.lat) < 0.5 && Math.abs(d.longitude - m.lng) < 0.5
-                )
-                return dist === selectedDistrictData
-              }).length}</p>
+              <p className="text-xs text-charcoal-muted mt-2">Active Reports: {markers.length}</p>
             </div>
           )}
 
