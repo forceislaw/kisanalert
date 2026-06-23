@@ -28,22 +28,24 @@ export default function PulseMarker({ lat, lng, severity, cropName, pestName, re
 
   const icon = React.useMemo(() => {
     const color = COLORS[severity] || '#4A7A55'
-    const size = 30
+    const size = 34
 
     const html = `
-      <div style="width:${size}px;height:${size}px;position:relative;display:flex;align-items:center;justify-content:center;">
-        <div style="position:absolute;inset:0;border-radius:50%;background:${color};border:3px solid #1a1a1a;"></div>
-        ${severity === 'critical' || severity === 'high' ? `<div style="position:absolute;inset:-6px;border-radius:50%;border:2px solid ${color};opacity:0.6;animation:brutal-pulse 1.5s ease-out infinite;"></div>` : ''}
-        <div style="width:8px;height:8px;border-radius:50%;background:#1a1a1a;z-index:1;"></div>
+      <div class="brutal-pin" style="width:${size}px;height:${size}px;">
+        <div class="brutal-pin-shadow" style="position:absolute;inset:2px 0 0 2px;border-radius:50%;background:#1a1a1a;"></div>
+        <div class="brutal-pin-body" style="position:absolute;inset:0;border-radius:50%;background:${color};border:3px solid #1a1a1a;display:flex;align-items:center;justify-content:center;transition:transform 0.15s;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#1a1a1a;"></div>
+        </div>
+        ${severity === 'critical' || severity === 'high' ? `<div class="brutal-pin-ring" style="position:absolute;inset:-5px;border-radius:50%;border:2px solid ${color};opacity:0.5;"></div>` : ''}
       </div>
     `
 
     return L.divIcon({
       className: '',
       html,
-      iconSize: [size, size],
-      iconAnchor: [size / 2, size / 2],
-      popupAnchor: [0, -(size / 2)],
+      iconSize: [size + 10, size + 10],
+      iconAnchor: [(size + 10) / 2, (size + 10) / 2],
+      popupAnchor: [0, -(size + 10) / 2],
     });
   }, [severity]);
 

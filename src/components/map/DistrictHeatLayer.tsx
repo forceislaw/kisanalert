@@ -16,16 +16,23 @@ interface DistrictHeatLayerProps {
   data: DistrictHeatData[];
 }
 
+const COLORS: Record<string, string> = {
+  critical: '#CC3333',
+  high: '#CC6600',
+  medium: '#5A7744',
+  low: '#4A7A55',
+}
+
 export default function DistrictHeatLayer({ data }: DistrictHeatLayerProps) {
   const getColorForIntensity = (score: number) => {
-    if (score >= 75) return '#E07A5F';
-    if (score >= 40) return '#C9973B';
-    if (score > 0) return '#4A5D23';
-    return '#7A9450';
+    if (score >= 75) return COLORS.critical;
+    if (score >= 40) return COLORS.high;
+    if (score > 0) return COLORS.medium;
+    return COLORS.low;
   };
 
   const getRadiusForIntensity = (score: number) => {
-    return 15 + (score / 100) * 30;
+    return 20 + (score / 100) * 35;
   };
 
   return (
@@ -40,10 +47,10 @@ export default function DistrictHeatLayer({ data }: DistrictHeatLayerProps) {
             center={[district.lat, district.lng]}
             pathOptions={{
               fillColor: color,
-              fillOpacity: 0.3 + (district.intensityScore / 100) * 0.4,
-              color: color,
-              weight: 2,
-              opacity: 0.8,
+              fillOpacity: 0.25,
+              color: '#1a1a1a',
+              weight: 3,
+              opacity: 0.9,
             }}
             radius={radius}
           >

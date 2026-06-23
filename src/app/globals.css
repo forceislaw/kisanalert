@@ -338,6 +338,16 @@
   .pulse-ring {
     animation: risk-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
+  .brutal-pin:hover .brutal-pin-body {
+    transform: scale(1.15);
+  }
+  .brutal-pin:hover {
+    cursor: pointer;
+  }
+  .brutal-pin-ring {
+    animation: brutal-pulse 1.5s ease-out infinite;
+    pointer-events: none;
+  }
 }
 
 /* Leaflet Editorial Overrides */
