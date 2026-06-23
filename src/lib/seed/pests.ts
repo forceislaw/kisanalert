@@ -7,10 +7,10 @@ export interface PestSeed {
 export const PESTS: PestSeed[] = [
   { key_name: 'pink_bollworm', scientific_name: 'Pectinophora gossypiella', danger_level: 'critical' },
   { key_name: 'fall_armyworm', scientific_name: 'Spodoptera frugiperda', danger_level: 'critical' },
-  { key_name: 'pod_borer', scientific_name: 'Helicoverpa armigera', danger_level: 'high' },
+  { key_name: 'aphids', scientific_name: 'Aphis gossypii', danger_level: 'moderate' },
   { key_name: 'whitefly', scientific_name: 'Bemisia tabaci', danger_level: 'high' },
   { key_name: 'thrips', scientific_name: 'Thrips tabaci', danger_level: 'moderate' },
-  { key_name: 'aphids', scientific_name: 'Aphis gossypii', danger_level: 'moderate' },
+  { key_name: 'pod_borer', scientific_name: 'Helicoverpa armigera', danger_level: 'high' },
   { key_name: 'mealybug', scientific_name: 'Planococcus citri', danger_level: 'moderate' },
   { key_name: 'red_hairy_caterpillar', scientific_name: 'Amsacta albistriga', danger_level: 'high' },
   { key_name: 'wheat_rust', scientific_name: 'Puccinia triticina', danger_level: 'high' },
