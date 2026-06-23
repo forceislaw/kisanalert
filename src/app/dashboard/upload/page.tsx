@@ -115,6 +115,7 @@ export default function UploadPage() {
         district_id: selectedDistrict,
         crop_id: cropId,
         detected_pest_id: pestId,
+        ai_pest_name: analysisResult.pest_name && !pestId ? analysisResult.pest_name : null,
         severity_level: analysisResult.severity_estimate === 'medium' ? 'moderate' as const : analysisResult.severity_estimate,
         image_storage_path: '',
         confidence_score: analysisResult.confidence,

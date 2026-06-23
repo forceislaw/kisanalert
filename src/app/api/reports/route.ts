@@ -10,6 +10,7 @@ const CreateReportSchema = z.object({
   district_id: z.number(),
   crop_id: z.number(),
   detected_pest_id: z.number().nullable(),
+  ai_pest_name: z.string().optional().nullable(),
   severity_level: z.enum(['low', 'moderate', 'high', 'critical']),
   image_storage_path: z.string(),
   confidence_score: z.number().optional().nullable(),
@@ -84,13 +85,19 @@ export async function GET(req: NextRequest) {
 
   if (error) throw new Error(error.message)
 
-  const mapped = (data || []).map((r: Record<string, number | string | null>) => ({
-    ...r,
-    reported_at: r.created_at,
-    crop_name: toDisplayName(cropMap.get(r.crop_id as number)),
-    district_name: districtMap.get(r.district_id as number) || null,
-    pest_name: r.detected_pest_id ? (toDisplayName(pestMap.get(r.detected_pest_id as number)) || 'Unknown Pest') : 'No Pest',
-  }))
+  const mapped = (data || []).map((r: Record<string, unknown>) => {
+    const translations = r.diagnosis_translations as Record<string, string> | null
+    const rawAiName = translations?.en || null
+    const aiPestName = rawAiName ? toDisplayName(rawAiName.replace(/\s+/g, '_')) : null
+    const dbPestName = r.detected_pest_id ? (toDisplayName(pestMap.get(r.detected_pest_id as number)) || null) : null
+    return {
+      ...r,
+      reported_at: r.created_at,
+      crop_name: toDisplayName(cropMap.get(r.crop_id as number)),
+      district_name: districtMap.get(r.district_id as number) || null,
+      pest_name: dbPestName || aiPestName || 'No Pest',
+    }
+  })
 
   return NextResponse.json({ data: mapped, total: count || 0, page, limit })
 }
@@ -111,6 +118,11 @@ export async function POST(req: NextRequest) {
     const confidence = validation.data.confidence_score ?? 0
     const status = confidence >= 0.8 ? 'verified' : 'pending'
 
+    const diagnosis_translations: Record<string, string> = {}
+    if (validation.data.ai_pest_name) {
+      diagnosis_translations.en = validation.data.ai_pest_name
+    }
+
     const { data, error } = await supabase
       .from('pest_reports')
       .insert([{
@@ -124,6 +136,7 @@ export async function POST(req: NextRequest) {
         longitude: validation.data.longitude ?? null,
         status,
         user_id: userId,
+        diagnosis_translations: Object.keys(diagnosis_translations).length > 0 ? diagnosis_translations : null,
       }] as never[])
       .select()
       .single()
