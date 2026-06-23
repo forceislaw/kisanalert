@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
         longitude: validation.data.longitude ?? null,
         status,
         user_id: userId,
-      }] as any)
+      }] as never[])
       .select()
       .single()
 

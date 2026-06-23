@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { VisionAnalysisResult } from '@/app/api/vision-analyze/route';
 
 interface UploadDropzoneProps {
@@ -9,7 +8,6 @@ interface UploadDropzoneProps {
 }
 
 export default function UploadDropzone({ onAnalysisComplete }: UploadDropzoneProps) {
-  const { dict } = useLocale();
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

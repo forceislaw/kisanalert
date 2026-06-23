@@ -21,7 +21,6 @@ export default function PulseMarker({ lat, lng, severity, confidence, cropName, 
 
   const icon = React.useMemo(() => {
     let bgColor = '';
-    let borderClass = '';
     const baseSize = 24;
     const normalizedConfidence = confidence > 1 ? Math.min(confidence / 100, 1) : Math.min(confidence, 1);
     const extraSize = normalizedConfidence * 16;
@@ -30,11 +29,9 @@ export default function PulseMarker({ lat, lng, severity, confidence, cropName, 
     switch(severity) {
       case 'critical':
         bgColor = '#E07A5F';
-        borderClass = 'pulse-ring';
         break;
       case 'high':
         bgColor = '#C9973B';
-        borderClass = 'pulse-ring';
         break;
       case 'medium':
         bgColor = '#4A5D23';

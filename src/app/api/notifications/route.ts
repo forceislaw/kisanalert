@@ -1,23 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { z } from 'zod'
-import type { Database } from '@/lib/supabase/types'
 
 const PrefsSchema = z.object({
   sms_alerts: z.boolean(),
   email_alerts: z.boolean(),
   critical_only: z.boolean(),
 })
-
-type PrefsInsert = Database['public']['Tables']['user_notification_prefs']['Insert']
-
-const prefsInsertData = (userId: string, prefs: z.infer<typeof PrefsSchema>): PrefsInsert[] => [{
-  user_id: userId,
-  sms_alerts: prefs.sms_alerts,
-  email_alerts: prefs.email_alerts,
-  critical_only: prefs.critical_only,
-  updated_at: new Date().toISOString(),
-}]
 
 export async function GET() {
   const supabase = await createServerSupabaseClient()
@@ -54,7 +43,13 @@ export async function PUT(req: NextRequest) {
 
   const { data, error } = await supabase
     .from('user_notification_prefs')
-    .upsert(prefsInsertData(user.id, parsed.data) as any)
+    .upsert([{
+      user_id: user.id,
+      sms_alerts: parsed.data.sms_alerts,
+      email_alerts: parsed.data.email_alerts,
+      critical_only: parsed.data.critical_only,
+      updated_at: new Date().toISOString(),
+    }] as never[])
     .select()
     .single()
 

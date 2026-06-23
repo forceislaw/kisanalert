@@ -13,15 +13,12 @@ interface DistrictSearchProps {
 }
 
 export function DistrictSearch({ value, onChange, className, allowAll, placeholder }: DistrictSearchProps) {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(() => {
+    if (!value) return ''
+    return RAIN_SHADOW_DISTRICTS[value - 1]?.name_en || ''
+  })
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-
-  const selected = value ? RAIN_SHADOW_DISTRICTS[value - 1] : null
-  useEffect(() => {
-    if (selected) setQuery(selected.name_en)
-    else if (allowAll) setQuery('')
-  }, [value])
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {

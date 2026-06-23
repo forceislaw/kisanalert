@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useRef } from 'react'
-import { useLocale } from '@/lib/i18n/LocaleProvider'
 import { useRouter } from 'next/navigation'
 import { Upload, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -16,7 +15,6 @@ interface CropUploaderProps {
 }
 
 export default function CropUploader({ onComplete }: CropUploaderProps) {
-  const { dict, locale } = useLocale()
   const router = useRouter()
   const [isDragging, setIsDragging] = useState(false)
   const [file, setFile] = useState<File | null>(null)

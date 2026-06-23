@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { getDictionary, Dictionary, Locale, locales } from './getDictionary';
 
 const COOKIE_NAME = 'kisanalert-locale';
