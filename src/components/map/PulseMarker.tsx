@@ -36,7 +36,7 @@ export default function PulseMarker({ lat, lng, severity, cropName, pestName, re
         <div class="brutal-pin-body" style="position:absolute;inset:0;border-radius:50%;background:${color};border:3px solid #1a1a1a;display:flex;align-items:center;justify-content:center;transition:transform 0.15s;">
           <div style="width:10px;height:10px;border-radius:50%;background:#1a1a1a;"></div>
         </div>
-        ${severity === 'critical' || severity === 'high' ? `<div class="brutal-pin-ring" style="position:absolute;inset:-5px;border-radius:50%;border:2px solid ${color};opacity:0.5;"></div>` : ''}
+        <div class="brutal-pin-ring" style="position:absolute;inset:-5px;border-radius:50%;border:2px solid ${color};opacity:0.5;"></div>
       </div>
     `
 
