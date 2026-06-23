@@ -338,15 +338,20 @@
   .pulse-ring {
     animation: risk-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-  .brutal-pin:hover .brutal-pin-body {
-    transform: scale(1.15);
+
+  .pin-wrapper:hover .pin-body {
+    transform: scale(1.18);
   }
-  .brutal-pin:hover {
+  .pin-wrapper:hover {
     cursor: pointer;
   }
-  .brutal-pin-ring {
-    animation: brutal-pulse 1.5s ease-out infinite;
+  .pin-pulse {
+    animation: pin-pulse 1.8s ease-out infinite;
     pointer-events: none;
+  }
+  @keyframes pin-pulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.6); opacity: 0; }
   }
 }
 
