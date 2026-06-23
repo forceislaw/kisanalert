@@ -8,8 +8,6 @@ import VisionResultCard from '@/components/upload/VisionResultCard'
 import { DistrictSearch } from '@/components/ui/DistrictSearch'
 import { VisionAnalysisResult } from '@/app/api/vision-analyze/route'
 import { RAIN_SHADOW_DISTRICTS } from '@/lib/seed/districts'
-import { createClient } from '@/lib/supabase/client'
-
 export default function UploadPage() {
   const { dict } = useLocale()
   const router = useRouter()
@@ -30,23 +28,10 @@ export default function UploadPage() {
   const [lookupsReady, setLookupsReady] = useState(false)
 
   useEffect(() => {
-    const supabase = createClient()
-    Promise.all([
-      supabase.from('crops').select('id, key_name').returns<{ id: number; key_name: string }[]>(),
-      supabase.from('pests').select('id, key_name').returns<{ id: number; key_name: string }[]>(),
-      supabase.from('districts').select('id, name_en').returns<{ id: number; name_en: string }[]>(),
-    ]).then(([cropsRes, pestsRes, districtsRes]) => {
-      const cm: Record<string, number> = {}
-      for (const c of cropsRes.data || []) cm[c.key_name] = c.id
-      setCropMap(cm)
-
-      const pm: Record<string, number> = {}
-      for (const p of pestsRes.data || []) pm[p.key_name] = p.id
-      setPestMap(pm)
-
-      const dm: Record<string, number> = {}
-      for (const d of districtsRes.data || []) dm[d.name_en] = d.id
-      setDistrictMap(dm)
+    fetch('/api/lookups').then((r) => r.json()).then((data) => {
+      setCropMap(data.cropMap)
+      setPestMap(data.pestMap)
+      setDistrictMap(data.districtMap)
       setLookupsReady(true)
     })
   }, [])
