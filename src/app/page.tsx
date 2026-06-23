@@ -18,7 +18,7 @@ export default function RootPage() {
         <>
           <div className="flex items-baseline">
             <SplitText
-              text="kisan"
+              text="Kisan"
               className="text-[clamp(3rem,12vw,10rem)] font-bold tracking-[-0.04em] text-charcoal"
               delay={80}
               duration={0.8}
