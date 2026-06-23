@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useState } from 'react'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
@@ -6,13 +6,6 @@ import MapShell from '@/components/map/MapShell'
 import { MarkerData } from '@/components/map/MapInner'
 import SeverityBadge from '@/components/ui/SeverityBadge'
 import { DistrictSearch } from '@/components/ui/DistrictSearch'
-
-const PALETTE_SEV: Record<string, string> = {
-  critical: '#DC2626',
-  high: '#EA580C',
-  medium: '#65A30D',
-  low: '#059669',
-}
 
 export default function MapPage() {
   const { dict } = useLocale()
@@ -74,9 +67,9 @@ export default function MapPage() {
             <MapShell markers={markers} />
           </div>
         </div>
-          <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-2">{dict.map.selectDistrict}</span>
+        <div className="space-y-10">
+          <div>
+            <span className="eyebrow block mb-2">{dict.map.selectDistrict}</span>
             <DistrictSearch
               allowAll
               value={selectedDistrict ? parseInt(selectedDistrict) : null}
@@ -84,47 +77,45 @@ export default function MapPage() {
             />
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-3">{dict.map.legend}</span>
-            <div className="space-y-2.5">
-              <div className="flex items-center gap-2.5 text-xs text-gray-600">
-                <span className="w-3 h-3 rounded-full" style={{ background: '#DC2626' }} />
-                <span>Critical</span>
+          <hr className="rule-h" />
+
+          <div>
+            <span className="eyebrow block mb-2">{dict.map.legend}</span>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-xs text-charcoal-muted">
+                <span className="w-3 h-3" style={{ background: '#E07A5F' }} />
+                <span>{dict.map.highSeverity}</span>
               </div>
-              <div className="flex items-center gap-2.5 text-xs text-gray-600">
-                <span className="w-3 h-3 rounded-full" style={{ background: '#EA580C' }} />
-                <span>High</span>
+              <div className="flex items-center gap-2 text-xs text-charcoal-muted">
+                <span className="w-3 h-3" style={{ background: '#C9973B' }} />
+                <span>{dict.map.mediumSeverity}</span>
               </div>
-              <div className="flex items-center gap-2.5 text-xs text-gray-600">
-                <span className="w-3 h-3 rounded-full" style={{ background: '#65A30D' }} />
-                <span>Medium</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs text-gray-600">
-                <span className="w-3 h-3 rounded-full" style={{ background: '#059669' }} />
-                <span>Low</span>
+              <div className="flex items-center gap-2 text-xs text-charcoal-muted">
+                <span className="w-3 h-3" style={{ background: '#7A9450' }} />
+                <span>{dict.map.lowSeverity}</span>
               </div>
             </div>
           </div>
 
+          {selectedDistrict && markers.length > 0 && (
+            <div className="card-editorial p-4">
+              <p className="text-xs text-charcoal-muted mt-2">Active Reports: {markers.length}</p>
+            </div>
+          )}
+
           {markers.length > 0 && (
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">Recent Reports <span className="text-gray-400 font-normal">{markers.length}</span></h3>
+            <div className="card-editorial p-4">
+              <h3 className="text-sm font-bold text-charcoal mb-2">Recent Reports ({markers.length})</h3>
               <div className="space-y-2">
-                {markers.slice(0, 5).map((m) => {
-                  const dotColor = PALETTE_SEV[m.severity] || '#059669'
-                  return (
-                    <div key={m.id} className="flex items-start gap-2.5 py-1.5 border-b border-gray-100 last:border-0">
-                      <span className="mt-1 w-2 h-2 rounded-full shrink-0" style={{ background: dotColor }} />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex justify-between items-center gap-2">
-                          <span className="text-xs font-medium text-gray-900 truncate">{m.pestName}</span>
-                          <SeverityBadge severity={m.severity} />
-                        </div>
-                        <span className="text-[11px] text-gray-400">{m.cropName} &middot; {new Date(m.reportedAt).toLocaleDateString()}</span>
-                      </div>
+                {markers.slice(0, 5).map((m) => (
+                  <div key={m.id} className="text-xs border-b border-stone pb-1 last:border-0">
+                    <div className="flex justify-between">
+                      <span className="font-medium text-charcoal">{m.pestName}</span>
+                      <SeverityBadge severity={m.severity} />
                     </div>
-                  )
-                })}
+                    <span className="text-charcoal-muted">{m.cropName} &middot; {new Date(m.reportedAt).toLocaleDateString()}</span>
+                  </div>
+                ))}
               </div>
             </div>
           )}
