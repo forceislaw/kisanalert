@@ -4,7 +4,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import DistrictHeatLayer, { DistrictHeatData } from './DistrictHeatLayer';
 import PulseMarker from './PulseMarker';
 
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
@@ -42,14 +41,12 @@ export interface MarkerData {
 }
 
 interface MapInnerProps {
-  heatData: DistrictHeatData[];
   markers: MarkerData[];
   center?: [number, number];
   zoom?: number;
 }
 
 export default function MapInner({ 
-  heatData, 
   markers, 
   center = [17.5, 76.5],
   zoom = 7 
@@ -71,7 +68,6 @@ export default function MapInner({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         maxZoom={20}
       />
-      {ready && <DistrictHeatLayer data={heatData} />}
       {ready && markers.map(marker => (
         <PulseMarker key={marker.id} {...marker} />
       ))}

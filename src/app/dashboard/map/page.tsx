@@ -3,14 +3,12 @@
 import React, { useState } from 'react'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
 import MapShell from '@/components/map/MapShell'
-import { DistrictHeatData } from '@/components/map/DistrictHeatLayer'
 import { MarkerData } from '@/components/map/MapInner'
 import SeverityBadge from '@/components/ui/SeverityBadge'
 import { DistrictSearch } from '@/components/ui/DistrictSearch'
 
 export default function MapPage() {
   const { dict } = useLocale()
-  const [heatData, setHeatData] = useState<DistrictHeatData[]>([])
   const [markers, setMarkers] = useState<MarkerData[]>([])
   const [selectedDistrict, setSelectedDistrict] = useState<string>('')
   const [districtGeo, setDistrictGeo] = useState<Record<number, { latitude: number; longitude: number }>>({})
@@ -27,14 +25,8 @@ export default function MapPage() {
     if (!geoReady) return
     const fetchData = async () => {
       try {
-        const [heatRes, reportsRes] = await Promise.all([
-          fetch('/api/heatmap?days=30'),
-          fetch(`/api/reports?${new URLSearchParams(selectedDistrict ? { district: selectedDistrict, days: '30' } : { days: '30' })}`),
-        ])
-        const heatJson = await heatRes.json()
-        if (heatJson.data) setHeatData(heatJson.data)
-
-        const reportsJson = await reportsRes.json()
+        const res = await fetch(`/api/reports?${new URLSearchParams(selectedDistrict ? { district: selectedDistrict, days: '30' } : { days: '30' })}`)
+        const reportsJson = await res.json()
         if (reportsJson.data) {
           const markersList: MarkerData[] = reportsJson.data.map((r: { id: string; district_id: number; severity_level?: string; confidence_score?: number; reported_at: string; latitude?: number | null; longitude?: number | null; crop_name?: string | null; pest_name?: string | null }) => {
             const geo = (r.latitude && r.longitude)
@@ -72,7 +64,7 @@ export default function MapPage() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
         <div className="lg:col-span-3">
           <div className="map-frame">
-            <MapShell heatData={heatData} markers={markers} />
+            <MapShell markers={markers} />
           </div>
         </div>
         <div className="space-y-10">

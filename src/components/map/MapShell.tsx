@@ -2,7 +2,6 @@
 
 import dynamic from 'next/dynamic';
 import React from 'react';
-import { DistrictHeatData } from './DistrictHeatLayer';
 import { MarkerData } from './MapInner';
 
 const MapInner = dynamic(() => import('./MapInner'), {
@@ -15,17 +14,15 @@ const MapInner = dynamic(() => import('./MapInner'), {
 });
 
 interface MapShellProps {
-  heatData?: DistrictHeatData[];
   markers?: MarkerData[];
   center?: [number, number];
   zoom?: number;
 }
 
-export default function MapShell({ heatData = [], markers = [], center, zoom }: MapShellProps) {
+export default function MapShell({ markers = [], center, zoom }: MapShellProps) {
   return (
     <div className="w-full h-[500px] lg:h-[600px] relative">
       <MapInner 
-        heatData={heatData} 
         markers={markers} 
         center={center} 
         zoom={zoom} 
