@@ -91,6 +91,8 @@ Return ONLY valid JSON with crop_guess exactly from this list: ${KNOWN_CROPS.joi
       return NextResponse.json({ error: 'Image analysis blocked due to safety filters.' }, { status: 400 });
     }
 
-    return NextResponse.json({ error: 'Failed to analyze the image.' }, { status: 500 });
+    const msg = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Vision API Error (full):', msg)
+    return NextResponse.json({ error: `Analysis failed: ${msg}` }, { status: 500 });
   }
 }
