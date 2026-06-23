@@ -8,8 +8,7 @@ import VisionResultCard from '@/components/upload/VisionResultCard'
 import { DistrictSearch } from '@/components/ui/DistrictSearch'
 import { VisionAnalysisResult } from '@/app/api/vision-analyze/route'
 import { RAIN_SHADOW_DISTRICTS } from '@/lib/seed/districts'
-import { CROPS } from '@/lib/seed/crops'
-import { PESTS } from '@/lib/seed/pests'
+import { createClient } from '@/lib/supabase/client'
 
 export default function UploadPage() {
   const { dict } = useLocale()
@@ -20,11 +19,37 @@ export default function UploadPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
-  const [selectedDistrict, setSelectedDistrict] = useState(1)
+  const [selectedDistrict, setSelectedDistrict] = useState<number | null>(null)
   const [observationDate, setObservationDate] = useState(new Date().toISOString().split('T')[0])
   const [userLat, setUserLat] = useState<number | null>(null)
   const [userLng, setUserLng] = useState<number | null>(null)
   const [submitted, setSubmitted] = useState(false)
+  const [cropMap, setCropMap] = useState<Record<string, number>>({})
+  const [pestMap, setPestMap] = useState<Record<string, number>>({})
+  const [districtMap, setDistrictMap] = useState<Record<string, number>>({})
+  const [lookupsReady, setLookupsReady] = useState(false)
+
+  useEffect(() => {
+    const supabase = createClient()
+    Promise.all([
+      supabase.from('crops').select('id, key_name').returns<{ id: number; key_name: string }[]>(),
+      supabase.from('pests').select('id, key_name').returns<{ id: number; key_name: string }[]>(),
+      supabase.from('districts').select('id, name_en').returns<{ id: number; name_en: string }[]>(),
+    ]).then(([cropsRes, pestsRes, districtsRes]) => {
+      const cm: Record<string, number> = {}
+      for (const c of cropsRes.data || []) cm[c.key_name] = c.id
+      setCropMap(cm)
+
+      const pm: Record<string, number> = {}
+      for (const p of pestsRes.data || []) pm[p.key_name] = p.id
+      setPestMap(pm)
+
+      const dm: Record<string, number> = {}
+      for (const d of districtsRes.data || []) dm[d.name_en] = d.id
+      setDistrictMap(dm)
+      setLookupsReady(true)
+    })
+  }, [])
 
   const resetForm = () => {
     setAnalysisResult(null)
@@ -34,25 +59,29 @@ export default function UploadPage() {
   }
 
   useEffect(() => {
+    if (!lookupsReady) return
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const { latitude, longitude } = pos.coords
           setUserLat(latitude)
           setUserLng(longitude)
-          let closest = 0
+          let closestName = ''
           let minDist = Infinity
-          RAIN_SHADOW_DISTRICTS.forEach((d, i) => {
+          RAIN_SHADOW_DISTRICTS.forEach((d) => {
             const dist = Math.hypot(d.latitude - latitude, d.longitude - longitude)
-            if (dist < minDist) { minDist = dist; closest = i + 1 }
+            if (dist < minDist) { minDist = dist; closestName = d.name_en }
           })
-          if (minDist < 2) setSelectedDistrict(closest)
+          if (minDist < 2 && closestName) {
+            const id = districtMap[closestName]
+            if (id) setSelectedDistrict(id)
+          }
         },
         () => {},
         { enableHighAccuracy: false, timeout: 5000 }
       )
     }
-  }, [])
+  }, [lookupsReady, districtMap])
 
   const handleAnalysisComplete = (result: VisionAnalysisResult, url: string) => {
     setAnalysisResult(result)
@@ -60,20 +89,38 @@ export default function UploadPage() {
     setSubmitError(null)
   }
 
-  const findCropIndex = (guess: string): number => {
+  const findCropId = (guess: string): number | null => {
     const lower = guess.toLowerCase()
-    const crop = CROPS.find(c => c.key_name.includes(lower) || lower.includes(c.key_name))
-    return crop ? CROPS.indexOf(crop) + 1 : 1
+    for (const [name, id] of Object.entries(cropMap)) {
+      if (name.includes(lower) || lower.includes(name)) return id
+    }
+    return null
   }
 
-  const findPestIndex = (name: string): number => {
+  const findPestId = (name: string): number | null => {
     const lower = name.toLowerCase()
-    const pest = PESTS.find(p => p.key_name.includes(lower) || lower.includes(p.key_name) || p.scientific_name.toLowerCase().includes(lower))
-    return pest ? PESTS.indexOf(pest) + 1 : 1
+    for (const [pestName, id] of Object.entries(pestMap)) {
+      if (pestName.includes(lower) || lower.includes(pestName)) return id
+    }
+    return null
   }
 
   const handleConfirm = async () => {
     if (!analysisResult || !imageUrl) return
+
+    const cropId = findCropId(analysisResult.crop_guess)
+    const pestId = analysisResult.pest_name ? findPestId(analysisResult.pest_name) : null
+
+    if (!cropId) {
+      setSubmitError(`Unknown crop: "${analysisResult.crop_guess}"`)
+      setIsSubmitting(false)
+      return
+    }
+    if (!selectedDistrict) {
+      setSubmitError('Please select a district')
+      setIsSubmitting(false)
+      return
+    }
 
     setIsSubmitting(true)
     setSubmitError(null)
@@ -81,8 +128,8 @@ export default function UploadPage() {
     try {
       const body = {
         district_id: selectedDistrict,
-        crop_id: findCropIndex(analysisResult.crop_guess),
-        detected_pest_id: findPestIndex(analysisResult.pest_name),
+        crop_id: cropId,
+        detected_pest_id: pestId,
         severity_level: analysisResult.severity_estimate === 'medium' ? 'moderate' as const : analysisResult.severity_estimate,
         image_storage_path: '',
         confidence_score: analysisResult.confidence,
@@ -153,7 +200,7 @@ export default function UploadPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="eyebrow block mb-1.5">Location (District)</label>
-              <DistrictSearch value={selectedDistrict} onChange={(id) => id && setSelectedDistrict(id)} />
+              <DistrictSearch value={selectedDistrict} onChange={(id) => setSelectedDistrict(id)} nameToIdMap={districtMap} />
             </div>
             <div>
               <label className="eyebrow block mb-1.5">Date of Observation</label>

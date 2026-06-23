@@ -9,7 +9,7 @@ type DistrictRow = Database['public']['Tables']['districts']['Row']
 const CreateReportSchema = z.object({
   district_id: z.number(),
   crop_id: z.number(),
-  detected_pest_id: z.number(),
+  detected_pest_id: z.number().nullable(),
   severity_level: z.enum(['low', 'moderate', 'high', 'critical']),
   image_storage_path: z.string(),
   confidence_score: z.number().optional().nullable(),

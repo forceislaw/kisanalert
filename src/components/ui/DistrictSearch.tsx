@@ -10,12 +10,14 @@ interface DistrictSearchProps {
   className?: string
   allowAll?: boolean
   placeholder?: string
+  nameToIdMap?: Record<string, number>
 }
 
-export function DistrictSearch({ value, onChange, className, allowAll, placeholder }: DistrictSearchProps) {
+export function DistrictSearch({ value, onChange, className, allowAll, placeholder, nameToIdMap }: DistrictSearchProps) {
   const [query, setQuery] = useState(() => {
-    if (!value) return ''
-    return RAIN_SHADOW_DISTRICTS[value - 1]?.name_en || ''
+    if (!value || !nameToIdMap) return ''
+    const name = Object.entries(nameToIdMap).find(([, id]) => id === value)?.[0]
+    return name || ''
   })
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -58,13 +60,13 @@ export function DistrictSearch({ value, onChange, className, allowAll, placehold
             <div className="px-2.5 py-2 text-sm text-muted-foreground">No districts found</div>
           )}
           {filtered.map((d) => {
-            const idx = RAIN_SHADOW_DISTRICTS.indexOf(d)
+            const dbId = nameToIdMap?.[d.name_en] || 0
             return (
               <button
-                key={idx}
+                key={dbId}
                 type="button"
-                className={`w-full text-left px-2.5 py-1.5 text-sm hover:bg-accent cursor-pointer flex justify-between gap-2 ${idx + 1 === value ? 'bg-accent font-medium' : ''}`}
-                onClick={() => { onChange(idx + 1); setOpen(false); setQuery(d.name_en) }}
+                className={`w-full text-left px-2.5 py-1.5 text-sm hover:bg-accent cursor-pointer flex justify-between gap-2 ${dbId === value ? 'bg-accent font-medium' : ''}`}
+                onClick={() => { onChange(dbId || null); setOpen(false); setQuery(d.name_en) }}
               >
                 <span>{d.name_en}</span>
                 <span className="text-xs text-muted-foreground">{d.state_en}</span>
