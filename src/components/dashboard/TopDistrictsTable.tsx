@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 interface DistrictRisk {
   name: string
@@ -11,7 +10,6 @@ interface DistrictRisk {
 }
 
 export default function TopDistrictsTable({ days }: { days?: number }) {
-  const { dict } = useLocale()
   const [districts, setDistricts] = useState<DistrictRisk[]>([])
 
   useEffect(() => {

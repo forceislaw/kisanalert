@@ -10,6 +10,18 @@ export default function LoginPage() {
   const router = useRouter()
   const { signIn, signInWithGoogle, user } = useAuth()
 
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get('error') === 'email_exists') return 'An account with this email already exists. Sign in below or use Google.'
+      if (params.get('error') === 'auth_failed') return 'Google sign-in failed. Please try again.'
+    }
+    return null
+  })
+  const [loading, setLoading] = useState(false)
+
   React.useEffect(() => {
     if (!user) return
     // Don't auto-redirect if there's an error param (e.g. from OAuth account exists)
@@ -36,20 +48,6 @@ export default function LoginPage() {
     }
     checkExisting()
   }, [user, router])
-
-  React.useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    if (params.get('error') === 'email_exists') {
-      setError('An account with this email already exists. Sign in below or use Google.')
-    } else if (params.get('error') === 'auth_failed') {
-      setError('Google sign-in failed. Please try again.')
-    }
-  }, [])
-
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

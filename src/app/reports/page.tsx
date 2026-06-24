@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import SeverityBadge from '@/components/ui/SeverityBadge'
@@ -62,7 +63,7 @@ export default function ReportsPage() {
       }
     }
     fetchReports()
-  }, [filterSeverity, filterDistrict, filterStatus, searchQuery, showMine, page])
+  }, [filterSeverity, filterDistrict, filterStatus, searchQuery, showMine, user?.id, page])
 
   const totalPages = Math.ceil(total / limit)
 
@@ -154,10 +155,13 @@ export default function ReportsPage() {
 
             {selectedReport.image_storage_path && selectedReport.image_storage_path.startsWith('data:') && (
               <div className="mb-5 border border-stone bg-parchment">
-                <img
+                <Image
                   src={selectedReport.image_storage_path}
                   alt="Crop image"
+                  width={400}
+                  height={192}
                   className="w-full h-48 object-contain"
+                  unoptimized
                 />
               </div>
             )}

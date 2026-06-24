@@ -11,7 +11,14 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get('error') === 'email_exists') return 'An account with this email already exists. Try signing in instead.'
+      if (params.get('error') === 'auth_failed') return 'Google sign-in failed. Please try again.'
+    }
+    return null
+  })
   const [message, setMessage] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const registeredRef = useRef(false)
@@ -23,15 +30,6 @@ export default function RegisterPage() {
       router.push('/onboarding')
     }
   }, [user, router])
-
-  React.useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    if (params.get('error') === 'email_exists') {
-      setError('An account with this email already exists. Try signing in instead.')
-    } else if (params.get('error') === 'auth_failed') {
-      setError('Google sign-in failed. Please try again.')
-    }
-  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

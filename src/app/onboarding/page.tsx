@@ -86,7 +86,7 @@ export default function OnboardingPage() {
             The reports page lists every pest report with filters for severity, status, district, and date. Expand any row to see the full diagnosis including AI analysis, uploaded image, and actions taken.
           </StepBody>
           <StepTip>
-            Tip: Toggle "My Reports" to see only reports you have submitted.
+            Tip: Toggle &quot;My Reports&quot; to see only reports you have submitted.
           </StepTip>
         </Step>
 

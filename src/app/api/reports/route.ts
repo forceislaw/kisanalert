@@ -100,9 +100,8 @@ export async function GET(req: NextRequest) {
     const rawAiName = translations?.en || null
     const aiPestName = rawAiName ? toDisplayName(rawAiName.replace(/\s+/g, '_')) : null
     const dbPestName = pest?.key_name ? toDisplayName(pest.key_name) : null
-    const { crops: _c, districts: _d, pests: _p, ...rest } = r
     return {
-      ...rest,
+      ...r,
       reported_at: r.created_at,
       crop_name: toDisplayName(crop?.key_name || null),
       district_name: district?.name_en || null,

@@ -32,6 +32,7 @@ export default function PillNav() {
   const activeHref = pathname
 
   useEffect(() => {
+    const tlRefsCopy = tlRefs.current
     const pills = navRef.current?.querySelectorAll('.pill')
     if (!pills) return
 
@@ -96,7 +97,8 @@ export default function PillNav() {
 
     return () => {
       window.removeEventListener('resize', onResize)
-      tlRefs.current.forEach((tl) => tl?.kill())
+      const refs = tlRefsCopy
+      refs.forEach((tl) => tl?.kill())
     }
   }, [])
 
