@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase/server'
+import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { z } from 'zod'
 import { sendNotification } from '@/lib/notifications'
 import type { Database } from '@/lib/supabase/types'
@@ -22,7 +22,10 @@ const BASE_FIELDS = `
   id, user_id, crop_id, district_id, detected_pest_id,
   image_storage_path, severity_level, status, confidence_score,
   latitude, longitude, diagnosis_translations,
-  countermeasure_translations, prevention_translations, created_at
+  countermeasure_translations, prevention_translations, created_at,
+  crops!inner(key_name),
+  districts!inner(name_en, state_en),
+  pests!left(key_name)
 `
 
 function toDisplayName(key: string | null | undefined): string | null {
@@ -31,70 +34,79 @@ function toDisplayName(key: string | null | undefined): string | null {
 }
 
 export async function GET(req: NextRequest) {
-  const supabase = createServiceClient()
+  const supabase = await createServerSupabaseClient()
   const { searchParams } = new URL(req.url)
 
-  // Fetch lookup maps once
-  const [{ data: crops }, { data: districts }, { data: pests }] = await Promise.all([
-    supabase.from('crops').select('id, key_name').returns<{ id: number; key_name: string }[]>(),
-    supabase.from('districts').select('id, name_en').returns<{ id: number; name_en: string }[]>(),
-    supabase.from('pests').select('id, key_name').returns<{ id: number; key_name: string }[]>(),
-  ])
-
-  const cropMap = new Map((crops || []).map(c => [c.id, c.key_name]))
-  const districtMap = new Map((districts || []).map(d => [d.id, d.name_en]))
-  const pestMap = new Map((pests || []).map(p => [p.id, p.key_name]))
-
-  const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
+  const page = Math.max(1, Math.min(100, parseInt(searchParams.get('page') || '1')))
   const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20')))
 
-  let countQuery = supabase.from('pest_reports').select('*', { count: 'exact', head: true })
-  let dataQuery = supabase.from('pest_reports').select(BASE_FIELDS)
+  let query = supabase.from('pest_reports').select(BASE_FIELDS, { count: 'exact' })
 
   const district = searchParams.get('district')
-  if (district) { countQuery = countQuery.eq('district_id', parseInt(district)); dataQuery = dataQuery.eq('district_id', parseInt(district)) }
+  if (district) query = query.eq('district_id', parseInt(district))
 
   const severity = searchParams.get('severity')
-  if (severity) { countQuery = countQuery.eq('severity_level', severity); dataQuery = dataQuery.eq('severity_level', severity) }
+  if (severity) query = query.eq('severity_level', severity)
 
   const status = searchParams.get('status')
-  if (status) { countQuery = countQuery.eq('status', status); dataQuery = dataQuery.eq('status', status) }
+  if (status) query = query.eq('status', status)
 
-  const mine = searchParams.get('mine')
-  if (mine === 'true') {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user) { countQuery = countQuery.eq('user_id', user.id); dataQuery = dataQuery.eq('user_id', user.id) }
+  const mineUserId = searchParams.get('user_id')
+  if (mineUserId) query = query.eq('user_id', mineUserId)
+
+  const search = searchParams.get('search')
+  if (search) {
+    const term = `%${search}%`
+    const [distResult, cropResult, pestResult] = await Promise.all([
+      supabase.from('districts').select('id').ilike('name_en', term),
+      supabase.from('crops').select('id').ilike('key_name', term),
+      supabase.from('pests').select('id').ilike('key_name', term),
+    ])
+    const districtIds = (distResult.data || []).map((d: { id: number }) => d.id)
+    const cropIds = (cropResult.data || []).map((c: { id: number }) => c.id)
+    const pestIds = (pestResult.data || []).map((p: { id: number }) => p.id)
+    const filters: string[] = []
+    if (districtIds.length) filters.push(`district_id.in.(${districtIds.join(',')})`)
+    if (cropIds.length) filters.push(`crop_id.in.(${cropIds.join(',')})`)
+    if (pestIds.length) filters.push(`detected_pest_id.in.(${pestIds.join(',')})`)
+    if (filters.length) {
+      query = query.or(filters.join(','))
+    } else {
+      query = query.eq('id', '-1')
+    }
   }
 
   const days = searchParams.get('days')
   if (days) {
     const since = new Date()
     since.setDate(since.getDate() - parseInt(days))
-    const iso = since.toISOString()
-    countQuery = countQuery.gte('created_at', iso)
-    dataQuery = dataQuery.gte('created_at', iso)
+    query = query.gte('created_at', since.toISOString())
   }
-
-  const { count, error: countError } = await countQuery
-  if (countError) throw new Error(countError.message)
 
   const from = (page - 1) * limit
   const to = from + limit - 1
 
-  const { data, error } = await dataQuery.order('created_at', { ascending: false }).range(from, to)
+  const { data, count, error } = await query
+    .order('created_at', { ascending: false })
+    .range(from, to)
 
   if (error) throw new Error(error.message)
 
   const mapped = (data || []).map((r: Record<string, unknown>) => {
+    const crop = r.crops as Record<string, string> | undefined
+    const district = r.districts as Record<string, string> | undefined
+    const pest = r.pests as Record<string, string> | null | undefined
     const translations = r.diagnosis_translations as Record<string, string> | null
     const rawAiName = translations?.en || null
     const aiPestName = rawAiName ? toDisplayName(rawAiName.replace(/\s+/g, '_')) : null
-    const dbPestName = r.detected_pest_id ? (toDisplayName(pestMap.get(r.detected_pest_id as number)) || null) : null
+    const dbPestName = pest?.key_name ? toDisplayName(pest.key_name) : null
+    const { crops: _c, districts: _d, pests: _p, ...rest } = r
     return {
-      ...r,
+      ...rest,
       reported_at: r.created_at,
-      crop_name: toDisplayName(cropMap.get(r.crop_id as number)),
-      district_name: districtMap.get(r.district_id as number) || null,
+      crop_name: toDisplayName(crop?.key_name || null),
+      district_name: district?.name_en || null,
+      district_state: district?.state_en || null,
       pest_name: dbPestName || aiPestName || 'No Pest',
     }
   })

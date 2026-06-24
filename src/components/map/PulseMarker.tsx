@@ -17,35 +17,33 @@ interface PulseMarkerProps {
 }
 
 const COLORS: Record<string, string> = {
-  critical: '#CC3333',
-  high: '#CC6600',
-  medium: '#5A7744',
-  low: '#4A7A55',
+  critical: '#E07A5F',
+  high: '#C9973B',
+  medium: '#4A5D23',
+  low: '#7A9450',
 }
 
 export default function PulseMarker({ lat, lng, severity, cropName, pestName, reportedAt }: PulseMarkerProps) {
   const { dict, locale } = useLocale();
 
   const icon = React.useMemo(() => {
-    const color = COLORS[severity] || '#4A7A55'
-    const size = 34
+    const color = COLORS[severity] || COLORS.low
 
     const html = `
-      <div class="brutal-pin" style="width:${size}px;height:${size}px;">
-        <div class="brutal-pin-shadow" style="position:absolute;inset:2px 0 0 2px;border-radius:50%;background:#1a1a1a;"></div>
-        <div class="brutal-pin-body" style="position:absolute;inset:0;border-radius:50%;background:${color};border:3px solid #1a1a1a;display:flex;align-items:center;justify-content:center;transition:transform 0.15s;">
-          <div style="width:10px;height:10px;border-radius:50%;background:#1a1a1a;"></div>
-        </div>
-        <div class="brutal-pin-ring" style="position:absolute;inset:-5px;border-radius:50%;border:2px solid ${color};opacity:0.5;"></div>
+      <div class="brutal-marker">
+        <div class="brutal-marker-shadow"></div>
+        <div class="brutal-marker-circle" style="background:${color};"></div>
+        <div class="brutal-marker-dot"></div>
+        <div class="brutal-marker-ring" style="border-color:${color};"></div>
       </div>
     `
 
     return L.divIcon({
       className: '',
       html,
-      iconSize: [size + 10, size + 10],
-      iconAnchor: [(size + 10) / 2, (size + 10) / 2],
-      popupAnchor: [0, -(size + 10) / 2],
+      iconSize: [44, 44],
+      iconAnchor: [22, 22],
+      popupAnchor: [0, -22],
     });
   }, [severity]);
 

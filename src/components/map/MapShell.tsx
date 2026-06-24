@@ -21,7 +21,7 @@ interface MapShellProps {
 
 export default function MapShell({ markers = [], center, zoom }: MapShellProps) {
   return (
-    <div className="w-full h-[500px] lg:h-[600px] relative">
+    <div className="w-full h-[50vh] min-h-[350px] lg:h-[600px] relative">
       <MapInner 
         markers={markers} 
         center={center} 

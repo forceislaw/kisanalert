@@ -13,10 +13,12 @@ export default function SettingsPage() {
   const [emailAlerts, setEmailAlerts] = useState(true)
   const [criticalOnly, setCriticalOnly] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [prefsLoading, setPrefsLoading] = useState(false)
 
   useEffect(() => {
     const fetchPrefs = async () => {
+      setPrefsLoading(true)
       try {
         const res = await fetch('/api/notifications')
         const json = await res.json()
@@ -27,13 +29,15 @@ export default function SettingsPage() {
         }
       } catch {
         // use defaults
+      } finally {
+        setPrefsLoading(false)
       }
     }
     if (user) fetchPrefs()
   }, [user])
 
   const handleSave = async () => {
-    setLoading(true)
+    setSaving(true)
     try {
       const res = await fetch('/api/notifications', {
         method: 'PUT',
@@ -47,7 +51,7 @@ export default function SettingsPage() {
     } catch {
       // ignore
     } finally {
-      setLoading(false)
+      setSaving(false)
     }
   }
 
@@ -90,53 +94,69 @@ export default function SettingsPage() {
       <div className="card-editorial p-5 space-y-6">
         <div>
           <h3 className="text-sm font-bold text-charcoal mb-3">Notification Preferences</h3>
-          <div className="space-y-3">
-            <label className="flex items-center justify-between py-2 border-b border-stone/50">
-              <div>
-                <span className="text-sm text-charcoal font-medium">SMS Alerts</span>
-                <p className="text-xs text-charcoal-muted">Receive pest outbreak alerts via SMS</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={smsAlerts}
-                onChange={e => setSmsAlerts(e.target.checked)}
-                className="w-4 h-4 accent-sage"
-              />
-            </label>
+          {prefsLoading ? (
+            <div className="space-y-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between py-2 border-b border-stone/50 last:border-0">
+                  <div className="space-y-1.5">
+                    <div className="h-3 w-20 bg-stone-tint animate-pulse" />
+                    <div className="h-2.5 w-36 bg-stone-tint animate-pulse" />
+                  </div>
+                  <div className="w-8 h-[1.125rem] bg-stone-tint animate-pulse" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="space-y-3">
+                <label className="flex items-center justify-between py-2 border-b border-stone/50">
+                  <div>
+                    <span className="text-sm text-charcoal font-medium">SMS Alerts</span>
+                    <p className="text-xs text-charcoal-muted">Receive pest outbreak alerts via SMS</p>
+                  </div>
+                  <label className="toggle-switch">
+                    <input type="checkbox" checked={smsAlerts} onChange={e => setSmsAlerts(e.target.checked)} />
+                    <span className="toggle-track">
+                      <span className="toggle-thumb" />
+                    </span>
+                  </label>
+                </label>
 
-            <label className="flex items-center justify-between py-2 border-b border-stone/50">
-              <div>
-                <span className="text-sm text-charcoal font-medium">Email Alerts</span>
-                <p className="text-xs text-charcoal-muted">Receive pest outbreak alerts via email</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={emailAlerts}
-                onChange={e => setEmailAlerts(e.target.checked)}
-                className="w-4 h-4 accent-sage"
-              />
-            </label>
+                <label className="flex items-center justify-between py-2 border-b border-stone/50">
+                  <div>
+                    <span className="text-sm text-charcoal font-medium">Email Alerts</span>
+                    <p className="text-xs text-charcoal-muted">Receive pest outbreak alerts via email</p>
+                  </div>
+                  <label className="toggle-switch">
+                    <input type="checkbox" checked={emailAlerts} onChange={e => setEmailAlerts(e.target.checked)} />
+                    <span className="toggle-track">
+                      <span className="toggle-thumb" />
+                    </span>
+                  </label>
+                </label>
 
-            <label className="flex items-center justify-between py-2">
-              <div>
-                <span className="text-sm text-charcoal font-medium">Critical Only</span>
-                <p className="text-xs text-charcoal-muted">Only receive alerts for critical severity outbreaks</p>
+                <label className="flex items-center justify-between py-2">
+                  <div>
+                    <span className="text-sm text-charcoal font-medium">Critical Only</span>
+                    <p className="text-xs text-charcoal-muted">Only receive alerts for critical severity outbreaks</p>
+                  </div>
+                  <label className="toggle-switch">
+                    <input type="checkbox" checked={criticalOnly} onChange={e => setCriticalOnly(e.target.checked)} />
+                    <span className="toggle-track">
+                      <span className="toggle-thumb" />
+                    </span>
+                  </label>
+                </label>
               </div>
-              <input
-                type="checkbox"
-                checked={criticalOnly}
-                onChange={e => setCriticalOnly(e.target.checked)}
-                className="w-4 h-4 accent-sage"
-              />
-            </label>
-          </div>
 
-          <div className="mt-4 flex items-center gap-3">
-            <button onClick={handleSave} disabled={loading} className="btn-primary text-sm px-4 py-1.5 disabled:opacity-50">
-              {loading ? 'Saving...' : 'Save Preferences'}
-            </button>
-            {saved && <span className="text-xs text-sage font-medium">Saved!</span>}
-          </div>
+              <div className="mt-4 flex items-center gap-3">
+                <button onClick={handleSave} disabled={saving} className="btn-primary text-sm px-4 py-1.5 disabled:opacity-50">
+                  {saving ? 'Saving...' : 'Save Preferences'}
+                </button>
+                {saved && <span className="text-xs text-sage font-medium">Saved!</span>}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

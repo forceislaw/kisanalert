@@ -1,5 +1,5 @@
 -- Districts moved to all_districts.sql (765 districts)
--- Crops (8 master entries)
+-- Crops (28 master entries)
 INSERT INTO crops (key_name) VALUES
 ('cotton'),
 ('soybean'),
@@ -14,7 +14,23 @@ INSERT INTO crops (key_name) VALUES
 ('maize'),
 ('sunflower'),
 ('wheat'),
-('rice');
+('rice'),
+('banana'),
+('mango'),
+('coconut'),
+('onion'),
+('potato'),
+('tomato'),
+('tea'),
+('coffee'),
+('mustard'),
+('sesame'),
+('gram'),
+('barley'),
+('moong'),
+('urad'),
+('masoor'),
+('tapioca');
 
 -- Pests (5 core profiles)
 INSERT INTO pests (key_name, scientific_name, danger_level) VALUES

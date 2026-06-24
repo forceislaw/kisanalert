@@ -8,7 +8,9 @@ const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 const KNOWN_CROPS = [
   'cotton', 'soybean', 'groundnut', 'jowar', 'bajra', 'tur',
   'chili', 'sugarcane', 'grapes', 'pomegranate', 'maize', 'sunflower',
-  'wheat', 'rice',
+  'wheat', 'rice', 'banana', 'mango', 'coconut', 'onion', 'potato',
+  'tomato', 'tea', 'coffee', 'mustard', 'sesame', 'gram', 'barley',
+  'moong', 'urad', 'masoor', 'tapioca',
 ] as const;
 
 export const VisionAnalysisSchema = z.object({
@@ -21,6 +23,56 @@ export const VisionAnalysisSchema = z.object({
 });
 
 export type VisionAnalysisResult = z.infer<typeof VisionAnalysisSchema>;
+
+const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash']
+const MAX_RETRIES = 2
+
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+async function tryGenerate(
+  genAI: GoogleGenerativeAI,
+  file: File,
+  base64Image: string,
+  prompt: string,
+): Promise<VisionAnalysisResult> {
+  for (const modelName of MODELS) {
+    const model = genAI.getGenerativeModel({ model: modelName })
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const result = await model.generateContent([
+          { inlineData: { mimeType: file.type, data: base64Image } },
+          { text: prompt }
+        ])
+        const responseText = result.response.text()
+        const cleanJsonString = responseText.replace(/```json/g, '').replace(/```/g, '').trim()
+        const parsedJson = JSON.parse(cleanJsonString)
+        const validationResult = VisionAnalysisSchema.safeParse(parsedJson)
+        if (!validationResult.success) {
+          throw new Error(`Zod validation failed: ${validationResult.error.message}`)
+        }
+        return validationResult.data
+      } catch (e: unknown) {
+        const isOverload = e instanceof Error && (
+          e.message?.includes('503') ||
+          e.message?.includes('429') ||
+          e.message?.includes('500') ||
+          e.message?.includes('RESOURCE_EXHAUSTED')
+        )
+        if (isOverload && attempt < MAX_RETRIES) {
+          console.warn(`${modelName} attempt ${attempt} overloaded, retrying in ${attempt * 2}s...`)
+          await sleep(attempt * 2000)
+          continue
+        }
+        if (modelName === MODELS[MODELS.length - 1] && attempt === MAX_RETRIES) throw e
+        if (isOverload) break
+        throw e
+      }
+    }
+  }
+  throw new Error('All models exhausted')
+}
 
 export async function POST(req: NextRequest) {
   if (!genAI) {
@@ -42,12 +94,7 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
     const base64Image = buffer.toString('base64');
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
-    const result = await model.generateContent([
-      { inlineData: { mimeType: file.type, data: base64Image } },
-      {
-        text: `Analyze this agricultural image. Identify the crop and any pest/disease present.
+    const prompt = `Analyze this agricultural image. Identify the crop and any pest/disease present.
 Return ONLY valid JSON with crop_guess exactly from this list: ${KNOWN_CROPS.join(', ')}.
 {
   "pest_name": "name of pest or disease (or 'none' if healthy)",
@@ -57,33 +104,12 @@ Return ONLY valid JSON with crop_guess exactly from this list: ${KNOWN_CROPS.joi
   "recommended_action": "short actionable advice",
   "is_pest_detected": true/false
 }`
-      }
-    ]);
 
-    const responseText = result.response.text();
-    // Clean potential markdown blocks like ```json ... ```
-    const cleanJsonString = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-
-    let parsedJson;
-    try {
-      parsedJson = JSON.parse(cleanJsonString);
-    } catch {
-      console.error('Failed to parse Gemini response as JSON:', responseText);
-      return NextResponse.json({ error: 'Model returned invalid JSON format.' }, { status: 502 });
-    }
-
-    // Validate against strict zod schema
-    const validationResult = VisionAnalysisSchema.safeParse(parsedJson);
-    if (!validationResult.success) {
-      console.error('Zod validation failed:', validationResult.error);
-      return NextResponse.json({ error: 'Model returned data that failed strict schema validation.' }, { status: 502 });
-    }
-
-    return NextResponse.json({ data: validationResult.data });
+    const data = await tryGenerate(genAI, file, base64Image, prompt)
+    return NextResponse.json({ data })
   } catch (error: unknown) {
     console.error('Vision API Error:', error);
     
-    // Handle specific Gemini API errors gracefully
     if (error instanceof Error && error.message?.includes('429')) {
       return NextResponse.json({ error: 'Rate limit exceeded. Please try again later.' }, { status: 429 });
     }

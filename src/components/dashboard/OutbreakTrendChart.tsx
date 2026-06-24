@@ -19,13 +19,14 @@ const defaultData: DataPoint[] = [
   { date: '--', reports: 0, critical: 0 },
 ]
 
-export default function OutbreakTrendChart() {
+export default function OutbreakTrendChart({ days }: { days?: number }) {
   const [data, setData] = useState<DataPoint[]>(defaultData)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('/api/dashboard')
+        const params = days && days > 0 ? `?days=${days}` : ''
+        const res = await fetch(`/api/dashboard${params}`)
         const json = await res.json()
         if (json.data?.trendData) setData(json.data.trendData)
       } catch {
@@ -33,7 +34,24 @@ export default function OutbreakTrendChart() {
       }
     }
     fetchData()
-  }, [])
+  }, [days])
+
+  if (data === defaultData) {
+    return (
+      <div className="card-editorial p-5">
+        <div className="h-64 flex items-center justify-center">
+          <div className="space-y-3 w-full max-w-xs">
+            <div className="h-3 w-full bg-stone-tint animate-pulse" />
+            <div className="h-3 w-5/6 bg-stone-tint animate-pulse" />
+            <div className="h-3 w-4/6 bg-stone-tint animate-pulse" />
+            <div className="h-3 w-5/6 bg-stone-tint animate-pulse" />
+            <div className="h-3 w-full bg-stone-tint animate-pulse" />
+            <div className="h-3 w-3/6 bg-stone-tint animate-pulse" />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="card-editorial p-5">

@@ -10,14 +10,15 @@ interface DistrictRisk {
   activeReports: number
 }
 
-export default function TopDistrictsTable() {
+export default function TopDistrictsTable({ days }: { days?: number }) {
   const { dict } = useLocale()
   const [districts, setDistricts] = useState<DistrictRisk[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('/api/dashboard')
+        const params = days && days > 0 ? `?days=${days}` : ''
+        const res = await fetch(`/api/dashboard${params}`)
         const json = await res.json()
         if (json.data?.topDistricts) setDistricts(json.data.topDistricts)
       } catch {
@@ -25,12 +26,21 @@ export default function TopDistrictsTable() {
       }
     }
     fetchData()
-  }, [])
+  }, [days])
 
   if (districts.length === 0) {
     return (
-      <div className="card-editorial p-4">
-        <p className="text-sm text-charcoal-muted text-center py-4">{dict.reports.noReports}</p>
+      <div className="card-editorial p-4 space-y-3">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="space-y-1.5">
+            {i > 0 && <hr className="rule-h my-2" />}
+            <div className="flex justify-between">
+              <div className="h-3 w-28 bg-stone-tint animate-pulse" />
+              <div className="h-3 w-8 bg-stone-tint animate-pulse" />
+            </div>
+            <div className="h-2 w-full bg-stone-tint animate-pulse" />
+          </div>
+        ))}
       </div>
     )
   }

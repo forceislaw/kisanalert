@@ -21,11 +21,17 @@ function MapReadyListener({ onReady }: { onReady: () => void }) {
   return null
 }
 
-function MapController({ center, zoom }: { center: [number, number]; zoom: number }) {
+function FitBounds({ markers, center, zoom, ready }: { markers: MarkerData[]; center: [number, number]; zoom: number; ready: boolean }) {
   const map = useMap();
   useEffect(() => {
-    map.setView(center, zoom);
-  }, [center, zoom, map]);
+    if (!ready) return
+    if (markers.length > 0) {
+      const bounds = L.latLngBounds(markers.map(m => [m.lat, m.lng]))
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 8 })
+    } else {
+      map.setView(center, zoom);
+    }
+  }, [markers, center, zoom, map, ready]);
   return null;
 }
 
@@ -62,7 +68,7 @@ export default function MapInner({
       zoomControl={false}
     >
       <MapReadyListener onReady={handleReady} />
-      <MapController center={center} zoom={zoom} />
+      <FitBounds markers={markers} center={center} zoom={zoom} ready={ready} />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

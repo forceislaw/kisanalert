@@ -96,7 +96,10 @@ export default function UploadDropzone({ onAnalysisComplete }: UploadDropzonePro
         />
         
         {isLoading ? (
-          <p className="text-sm text-charcoal-muted font-sans">Analyzing...</p>
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-10 h-10 border-2 border-stone border-t-sage animate-spin" style={{ borderRadius: '0' }} />
+            <p className="text-sm text-charcoal-muted font-sans">Analyzing with AI...</p>
+          </div>
         ) : (
           <div className="flex flex-col items-center gap-4 text-charcoal-muted">
             <svg className="w-10 h-10 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">

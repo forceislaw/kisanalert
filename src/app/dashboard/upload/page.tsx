@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
 import { useRouter } from 'next/navigation'
 import UploadDropzone from '@/components/upload/UploadDropzone'
@@ -91,6 +91,17 @@ export default function UploadPage() {
     return null
   }
 
+  const blobToBase64 = useCallback(async (url: string): Promise<string> => {
+    const res = await fetch(url)
+    const blob = await res.blob()
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onloadend = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(blob)
+    })
+  }, [])
+
   const handleConfirm = async () => {
     if (!analysisResult || !imageUrl) return
 
@@ -112,13 +123,15 @@ export default function UploadPage() {
     setSubmitError(null)
 
     try {
+      const imageData = imageUrl.startsWith('blob:') ? await blobToBase64(imageUrl) : imageUrl
+
       const body = {
         district_id: selectedDistrict,
         crop_id: cropId,
         detected_pest_id: pestId,
         ai_pest_name: analysisResult.pest_name && !pestId ? analysisResult.pest_name : null,
         severity_level: analysisResult.severity_estimate === 'medium' ? 'moderate' as const : analysisResult.severity_estimate,
-        image_storage_path: '',
+        image_storage_path: imageData,
         confidence_score: analysisResult.confidence,
         latitude: userLat,
         longitude: userLng,
@@ -186,7 +199,7 @@ export default function UploadPage() {
           <div className="border-t border-stone pt-6 mt-10">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted mb-2">Detectable Crops</p>
             <div className="flex flex-wrap gap-1.5">
-              {['Cotton','Soybean','Groundnut','Jowar','Bajra','Tur','Chili','Sugarcane','Grapes','Pomegranate','Maize','Sunflower','Wheat','Rice'].map(c => (
+              {['Cotton','Soybean','Groundnut','Jowar','Bajra','Tur','Chili','Sugarcane','Grapes','Pomegranate','Maize','Sunflower','Wheat','Rice','Banana','Mango','Coconut','Onion','Potato','Tomato','Tea','Coffee','Mustard','Sesame','Gram','Barley','Moong','Urad','Masoor','Tapioca'].map(c => (
                 <span key={c} className="text-[11px] px-2 py-0.5 bg-parchment-dark text-charcoal-muted rounded-sm">{c}</span>
               ))}
             </div>

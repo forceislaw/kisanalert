@@ -13,25 +13,32 @@ export default function MapPage() {
   const [selectedDistrict, setSelectedDistrict] = useState<string>('')
   const [districtGeo, setDistrictGeo] = useState<Record<number, { latitude: number; longitude: number }>>({})
   const [geoReady, setGeoReady] = useState(false)
+  const [loadingMarkers, setLoadingMarkers] = useState(false)
+  const [fetchError, setFetchError] = useState<string | null>(null)
 
   React.useEffect(() => {
     fetch('/api/lookups').then(r => r.json()).then((json) => {
       if (json.districtGeo) setDistrictGeo(json.districtGeo)
       setGeoReady(true)
-    })
+    }).catch(() => setGeoReady(true))
   }, [])
 
   React.useEffect(() => {
     if (!geoReady) return
     const fetchData = async () => {
+      setLoadingMarkers(true)
       try {
         const res = await fetch(`/api/reports?${new URLSearchParams(selectedDistrict ? { district: selectedDistrict, days: '30' } : { days: '30' })}`)
         const reportsJson = await res.json()
         if (reportsJson.data) {
           const markersList: MarkerData[] = reportsJson.data.map((r: { id: string; district_id: number; severity_level?: string; confidence_score?: number; reported_at: string; latitude?: number | null; longitude?: number | null; crop_name?: string | null; pest_name?: string | null }) => {
-            const geo = (r.latitude && r.longitude)
+            const districtLoc = districtGeo[r.district_id]
+            const useGps = r.latitude && r.longitude && districtLoc &&
+              Math.abs(r.latitude - districtLoc.latitude) < 1 &&
+              Math.abs(r.longitude - districtLoc.longitude) < 1
+            const geo = useGps
               ? { latitude: r.latitude, longitude: r.longitude }
-              : districtGeo[r.district_id] || { latitude: 20.5, longitude: 78.9 }
+              : districtLoc || { latitude: 20.5, longitude: 78.9 }
             return {
               id: r.id,
               lat: geo.latitude,
@@ -46,7 +53,9 @@ export default function MapPage() {
           setMarkers(markersList)
         }
       } catch (err) {
-        console.error('Failed to fetch map data', err)
+        setFetchError(err instanceof Error ? err.message : 'Failed to load map data')
+      } finally {
+        setLoadingMarkers(false)
       }
     }
     fetchData()
@@ -61,7 +70,13 @@ export default function MapPage() {
         <p className="eyebrow mt-1">{dict.map.subtitle}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
+      {fetchError && (
+        <div className="p-3 border border-terra bg-terra/10 text-terra-dark text-sm">{fetchError}</div>
+      )}
+
+      
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-10">
         <div className="lg:col-span-3">
           <div className="map-frame">
             <MapShell markers={markers} />
@@ -79,23 +94,37 @@ export default function MapPage() {
 
           <hr className="rule-h" />
 
-          <div>
-            <span className="eyebrow block mb-2">{dict.map.legend}</span>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs text-charcoal-muted">
-                <span className="w-3 h-3" style={{ background: '#E07A5F' }} />
-                <span>{dict.map.highSeverity}</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-charcoal-muted">
-                <span className="w-3 h-3" style={{ background: '#C9973B' }} />
-                <span>{dict.map.mediumSeverity}</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-charcoal-muted">
-                <span className="w-3 h-3" style={{ background: '#7A9450' }} />
-                <span>{dict.map.lowSeverity}</span>
+          {loadingMarkers ? (
+            <div className="card-editorial p-4 space-y-3">
+              <div className="h-3 w-16 bg-stone-tint animate-pulse" />
+              <div className="h-4 w-24 bg-stone-tint animate-pulse" />
+              <div className="h-4 w-20 bg-stone-tint animate-pulse" />
+              <div className="h-4 w-22 bg-stone-tint animate-pulse" />
+              <div className="h-4 w-18 bg-stone-tint animate-pulse" />
+            </div>
+          ) : (
+            <div className="card-editorial p-4">
+              <span className="block text-[11px] font-bold uppercase tracking-wider text-charcoal mb-3">{dict.map.legend}</span>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-4 h-4 border border-charcoal shadow-[1px_1px_0px_0px_#1C1917]" style={{ background: '#E07A5F' }} />
+                  <span className="text-xs font-bold text-charcoal">Critical</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <span className="w-4 h-4 border border-charcoal shadow-[1px_1px_0px_0px_#1C1917]" style={{ background: '#C9973B' }} />
+                  <span className="text-xs font-bold text-charcoal">{dict.map.highSeverity}</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <span className="w-4 h-4 border border-charcoal shadow-[1px_1px_0px_0px_#1C1917]" style={{ background: '#4A5D23' }} />
+                  <span className="text-xs font-bold text-charcoal">{dict.map.mediumSeverity}</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <span className="w-4 h-4 border border-charcoal shadow-[1px_1px_0px_0px_#1C1917]" style={{ background: '#7A9450' }} />
+                  <span className="text-xs font-bold text-charcoal">{dict.map.lowSeverity}</span>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {selectedDistrict && markers.length > 0 && (
             <div className="card-editorial p-4">
@@ -103,9 +132,25 @@ export default function MapPage() {
             </div>
           )}
 
-          {markers.length > 0 && (
-            <div className="card-editorial p-4">
-              <h3 className="text-sm font-bold text-charcoal mb-2">Recent Reports ({markers.length})</h3>
+          <div className="card-editorial p-4">
+            <h3 className="text-sm font-bold text-charcoal mb-2">
+              Recent Reports {markers.length > 0 && `(${markers.length})`}
+            </h3>
+            {loadingMarkers ? (
+              <div className="space-y-3">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="space-y-1.5">
+                    <div className="flex justify-between">
+                      <div className="h-3 w-24 bg-stone-tint animate-pulse" />
+                      <div className="h-3 w-10 bg-stone-tint animate-pulse" />
+                    </div>
+                    <div className="h-2.5 w-32 bg-stone-tint animate-pulse" />
+                  </div>
+                ))}
+              </div>
+            ) : markers.length === 0 ? (
+              <p className="text-xs text-charcoal-muted py-4 text-center">No recent reports</p>
+            ) : (
               <div className="space-y-2">
                 {markers.slice(0, 5).map((m) => (
                   <div key={m.id} className="text-xs border-b border-stone pb-1 last:border-0">
@@ -117,8 +162,8 @@ export default function MapPage() {
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 type ReportRow = {
   id: string
@@ -16,13 +16,23 @@ type DistrictRow = {
   state_en: string
 }
 
-export async function GET() {
-  const supabase = createServiceClient()
+export async function GET(req: NextRequest) {
+  const supabase = await createServerSupabaseClient()
+  const { searchParams } = new URL(req.url)
 
-  const { data: reports, error: reportsError } = await supabase
+  const days = searchParams.get('days')
+
+  let query = supabase
     .from('pest_reports')
     .select('id, severity_level, district_id, crop_id, detected_pest_id, created_at')
-    .returns<ReportRow[]>()
+
+  if (days) {
+    const since = new Date()
+    since.setDate(since.getDate() - parseInt(days))
+    query = query.gte('created_at', since.toISOString())
+  }
+
+  const { data: reports, error: reportsError } = await query.returns<ReportRow[]>()
 
   if (reportsError) throw new Error(reportsError.message)
 

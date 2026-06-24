@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { VisionAnalysisResult } from '@/app/api/vision-analyze/route';
 import SeverityBadge from '../ui/SeverityBadge';
+import ConfirmDialog from '../ui/ConfirmDialog';
 
 interface VisionResultCardProps {
   result: VisionAnalysisResult;
@@ -15,6 +16,7 @@ interface VisionResultCardProps {
 
 export default function VisionResultCard({ result, imageUrl, onConfirm, onDiscard, isSubmitting = false }: VisionResultCardProps) {
   const { dict } = useLocale();
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
 
   return (
     <div className="w-full max-w-2xl mx-auto card-editorial overflow-hidden">
@@ -67,12 +69,21 @@ export default function VisionResultCard({ result, imageUrl, onConfirm, onDiscar
           <div className="flex gap-3 mt-4">
             <button
               type="button"
-              onClick={onDiscard}
+              onClick={() => setShowDiscardConfirm(true)}
               disabled={isSubmitting}
               className="btn-secondary flex-1 disabled:opacity-50"
             >
               Discard
             </button>
+            <ConfirmDialog
+              open={showDiscardConfirm}
+              title="Discard analysis?"
+              message="This will remove the current analysis result and preview image."
+              confirmLabel="Discard"
+              destructive
+              onConfirm={() => { setShowDiscardConfirm(false); onDiscard() }}
+              onCancel={() => setShowDiscardConfirm(false)}
+            />
             <button
               type="button"
               onClick={onConfirm}
@@ -80,7 +91,10 @@ export default function VisionResultCard({ result, imageUrl, onConfirm, onDiscar
               className="btn-primary flex-1 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
-                <span>{dict.common.loading}</span>
+                <span className="flex items-center gap-2">
+                  <span className="inline-block w-3 h-3 border border-white/30 border-t-white animate-spin" style={{ borderRadius: '0' }} />
+                  Submitting...
+                </span>
               ) : (
                 dict.upload.submit
               )}
