@@ -18,6 +18,7 @@ interface StepperProps {
   nextButtonProps?: React.ComponentProps<'button'>
   backButtonText?: string
   nextButtonText?: string
+  doneButtonText?: string
   disableStepIndicators?: boolean
   renderStepIndicator?: (props: {
     step: number
@@ -39,6 +40,7 @@ export default function Stepper({
   nextButtonProps = {},
   backButtonText = 'Back',
   nextButtonText = 'Continue',
+  doneButtonText = 'Done',
   disableStepIndicators = false,
   renderStepIndicator,
   ...rest
@@ -139,7 +141,7 @@ export default function Stepper({
                 className="stepper-btn-next"
                 {...nextButtonProps}
               >
-                {isLastStep ? 'Done' : nextButtonText}
+                {isLastStep ? doneButtonText : nextButtonText}
               </button>
             </div>
           </div>

@@ -80,6 +80,121 @@ export interface Dictionary {
     pending: string
     increase: string
     decrease: string
+    reports: string
+  }
+  landing: {
+    pestIntelligence: string
+    heroDesc: string
+    scroll: string
+    whyTitle: string
+    whyDesc: string
+    featureAiTitle: string
+    featureAiDesc: string
+    featureMapTitle: string
+    featureMapDesc: string
+    featureLangTitle: string
+    featureLangDesc: string
+    featureAlertTitle: string
+    featureAlertDesc: string
+    howTitle: string
+    step1Title: string
+    step1Desc: string
+    step2Title: string
+    step2Desc: string
+    step3Title: string
+    step3Desc: string
+    step4Title: string
+    step4Desc: string
+    ctaTitle: string
+    ctaDesc: string
+    ctaButton: string
+    footerTagline: string
+    dashboard: string
+    getStarted: string
+    signIn: string
+  }
+  auth: {
+    signInTitle: string
+    signInSubtitle: string
+    email: string
+    password: string
+    signingIn: string
+    signIn: string
+    forgotPassword: string
+    register: string
+    or: string
+    signInWithGoogle: string
+    signUpWithGoogle: string
+    createAccount: string
+    registering: string
+    registerTitle: string
+    registerSubtitle: string
+    confirmPassword: string
+    repeatPassword: string
+    atLeast6Chars: string
+    alreadyHaveAccount: string
+    resetPasswordTitle: string
+    resetPasswordDesc: string
+    sendResetLink: string
+    sending: string
+    backToSignIn: string
+    checkEmail: string
+    setNewPassword: string
+    setNewPasswordDesc: string
+    newPassword: string
+    updatePassword: string
+    updating: string
+    verifyingResetLink: string
+    passwordUpdated: string
+    strengthWeak: string
+    strengthFair: string
+    strengthGood: string
+    strengthStrong: string
+    strengthVeryStrong: string
+  }
+  onboarding: {
+    next: string
+    done: string
+    welcomeTitle: string
+    welcomeBody: string
+    stepLabel: string
+    step1Title: string
+    step1Body: string
+    step1Tip: string
+    step2Title: string
+    step2Body: string
+    step2Tip: string
+    step3Title: string
+    step3Body: string
+    step3Tip: string
+    step4Title: string
+    step4Body: string
+    step4Tip: string
+    step5Title: string
+    step5Body: string
+    step5Tip: string
+    finalTitle: string
+    finalBody: string
+  }
+  errors: {
+    notFoundTitle: string
+    notFoundBody: string
+    goToDashboard: string
+    somethingWentWrong: string
+    unexpectedError: string
+    tryAgain: string
+  }
+  ui: {
+    searchDistrict: string
+    allDistricts: string
+    noDistrictsFound: string
+    unsupportedFile: string
+    loadingMap: string
+    back: string
+    continue: string
+    done: string
+    confirm: string
+    cancel: string
   }
 }
 
@@ -166,6 +281,121 @@ export const dictionary: Record<string, Dictionary> = {
       pending: 'Pending',
       increase: 'increase',
       decrease: 'decrease',
+      reports: 'reports',
+    },
+    landing: {
+      pestIntelligence: 'Pest Intelligence System',
+      heroDesc: 'AI-powered early warning for crop pests and diseases. Protect your harvest with real-time detection, live outbreak maps, and instant alerts.',
+      scroll: 'Scroll',
+      whyTitle: 'Why KisanAlert?',
+      whyDesc: 'Built for Indian agriculture. From AI-powered diagnostics to community-driven outbreak tracking.',
+      featureAiTitle: 'AI Crop Detection',
+      featureAiDesc: 'Snap a photo of an affected crop. Our AI identifies pests and diseases instantly with Gemini-powered analysis.',
+      featureMapTitle: 'Live Outbreak Map',
+      featureMapDesc: 'Track pest outbreaks in real time across India. Colour-coded markers show severity at a glance.',
+      featureLangTitle: 'Multi-Language',
+      featureLangDesc: 'Available in English, Hindi, Marathi, Telugu, and Kannada. Built for Indian farmers.',
+      featureAlertTitle: 'Early Alerts',
+      featureAlertDesc: 'Get notified when pests threaten your region. Email and SMS alerts when outbreaks are detected near you.',
+      howTitle: 'How It Works',
+      step1Title: 'Upload a Photo',
+      step1Desc: 'Take a picture of the affected crop using your phone.',
+      step2Title: 'AI Analysis',
+      step2Desc: 'Gemini AI identifies the pest, disease, and severity instantly.',
+      step3Title: 'View on Map',
+      step3Desc: 'The report appears on the live map so others in your area stay informed.',
+      step4Title: 'Get Alerts',
+      step4Desc: 'Receive notifications when outbreaks are detected near your district.',
+      ctaTitle: 'Ready to protect your crops?',
+      ctaDesc: 'Join farmers and agricultural officers using KisanAlert to detect and respond to pest outbreaks.',
+      ctaButton: 'Get Started Free',
+      footerTagline: 'Pest Intelligence System',
+      dashboard: 'Dashboard',
+      getStarted: 'Get Started',
+      signIn: 'Sign In',
+    },
+    auth: {
+      signInTitle: 'Sign In',
+      signInSubtitle: 'Access your KisanAlert dashboard',
+      email: 'Email',
+      password: 'Password',
+      signingIn: 'Signing in...',
+      signIn: 'Sign In',
+      forgotPassword: 'Forgot password?',
+      register: 'Register',
+      or: 'or',
+      signInWithGoogle: 'Sign in with Google',
+      signUpWithGoogle: 'Sign up with Google',
+      createAccount: 'Create Account',
+      registering: 'Registering...',
+      registerTitle: 'Register',
+      registerSubtitle: 'Create your KisanAlert account',
+      confirmPassword: 'Confirm Password',
+      repeatPassword: 'Repeat password',
+      atLeast6Chars: 'At least 6 characters',
+      alreadyHaveAccount: 'Already have an account?',
+      resetPasswordTitle: 'Reset Password',
+      resetPasswordDesc: 'Enter your email to receive a reset link',
+      sendResetLink: 'Send Reset Link',
+      sending: 'Sending...',
+      backToSignIn: 'Back to Sign In',
+      checkEmail: 'Check your email for a password reset link.',
+      setNewPassword: 'Set New Password',
+      setNewPasswordDesc: 'Choose a new password for your account',
+      newPassword: 'New Password',
+      updatePassword: 'Update Password',
+      updating: 'Updating...',
+      verifyingResetLink: 'Verifying reset link...',
+      passwordUpdated: 'Password updated successfully!',
+      strengthWeak: 'Weak',
+      strengthFair: 'Fair',
+      strengthGood: 'Good',
+      strengthStrong: 'Strong',
+      strengthVeryStrong: 'Very Strong',
+    },
+    onboarding: {
+      next: 'Next',
+      done: 'Done',
+      welcomeTitle: 'Welcome to KisanAlert',
+      welcomeBody: 'Your AI-powered pest intelligence system. This short guide will walk you through the key features so you can start protecting your crops right away.',
+      stepLabel: 'Step',
+      step1Title: 'Your Dashboard',
+      step1Body: 'The dashboard gives you a snapshot of current pest activity. You will see key metrics — active alerts, regions under watch, and overall risk — plus a live map and top affected districts.',
+      step1Tip: 'Tip: The risk score updates automatically as new reports come in.',
+      step2Title: 'Upload & Detect',
+      step2Body: 'Snap a photo of an affected crop and upload it. KisanAlert uses Gemini AI to identify the pest or disease, estimate severity, and suggest the affected crop — all in seconds.',
+      step2Tip: 'Tip: Good lighting and a clear close-up of the affected area gives the best results.',
+      step3Title: 'Explore the Map',
+      step3Body: 'The outbreak map shows all reported pest incidents across India. Each marker is colour-coded by severity.',
+      step3Tip: 'Tip: Use the district filter to zoom in on your area.',
+      step4Title: 'Browse Reports',
+      step4Body: 'The reports page lists every pest report with filters for severity, status, district, and date. Expand any row to see the full diagnosis.',
+      step4Tip: 'Tip: Toggle "My Reports" to see only reports you have submitted.',
+      step5Title: 'Alerts & Settings',
+      step5Body: 'Configure SMS and email alerts so you never miss an outbreak in your region. You can also switch between 5 supported languages.',
+      step5Tip: 'Tip: Enable Critical Only mode to receive alerts only for high-severity outbreaks.',
+      finalTitle: 'You are all set',
+      finalBody: 'You are ready to start using KisanAlert. Begin by exploring your dashboard or upload your first crop photo for AI analysis.',
+    },
+    errors: {
+      notFoundTitle: 'Page not found',
+      notFoundBody: "The page you're looking for doesn't exist.",
+      goToDashboard: 'Go to Dashboard',
+      somethingWentWrong: 'Something went wrong',
+      unexpectedError: 'An unexpected error occurred. Please try again.',
+      tryAgain: 'Try again',
+    },
+    ui: {
+      searchDistrict: 'Search district...',
+      allDistricts: 'All Districts',
+      noDistrictsFound: 'No districts found',
+      unsupportedFile: 'Only image files are supported',
+      loadingMap: 'Loading map...',
+      back: 'Back',
+      continue: 'Continue',
+      done: 'Done',
+      confirm: 'Confirm',
+      cancel: 'Cancel',
     },
   },
   hi: {
@@ -250,6 +480,121 @@ export const dictionary: Record<string, Dictionary> = {
       pending: 'लंबित',
       increase: 'वृद्धि',
       decrease: 'कमी',
+      reports: 'रिपोर्ट',
+    },
+    landing: {
+      pestIntelligence: 'Pest Intelligence System',
+      heroDesc: 'AI-powered early warning for crop pests and diseases. Protect your harvest with real-time detection, live outbreak maps, and instant alerts.',
+      scroll: 'Scroll',
+      whyTitle: 'Why KisanAlert?',
+      whyDesc: 'Built for Indian agriculture. From AI-powered diagnostics to community-driven outbreak tracking.',
+      featureAiTitle: 'AI Crop Detection',
+      featureAiDesc: 'Snap a photo of an affected crop. Our AI identifies pests and diseases instantly with Gemini-powered analysis.',
+      featureMapTitle: 'Live Outbreak Map',
+      featureMapDesc: 'Track pest outbreaks in real time across India. Colour-coded markers show severity at a glance.',
+      featureLangTitle: 'Multi-Language',
+      featureLangDesc: 'Available in English, Hindi, Marathi, Telugu, and Kannada. Built for Indian farmers.',
+      featureAlertTitle: 'Early Alerts',
+      featureAlertDesc: 'Get notified when pests threaten your region. Email and SMS alerts when outbreaks are detected near you.',
+      howTitle: 'How It Works',
+      step1Title: 'Upload a Photo',
+      step1Desc: 'Take a picture of the affected crop using your phone.',
+      step2Title: 'AI Analysis',
+      step2Desc: 'Gemini AI identifies the pest, disease, and severity instantly.',
+      step3Title: 'View on Map',
+      step3Desc: 'The report appears on the live map so others in your area stay informed.',
+      step4Title: 'Get Alerts',
+      step4Desc: 'Receive notifications when outbreaks are detected near your district.',
+      ctaTitle: 'Ready to protect your crops?',
+      ctaDesc: 'Join farmers and agricultural officers using KisanAlert to detect and respond to pest outbreaks.',
+      ctaButton: 'Get Started Free',
+      footerTagline: 'Pest Intelligence System',
+      dashboard: 'Dashboard',
+      getStarted: 'Get Started',
+      signIn: 'Sign In',
+    },
+    auth: {
+      signInTitle: 'Sign In',
+      signInSubtitle: 'Access your KisanAlert dashboard',
+      email: 'Email',
+      password: 'Password',
+      signingIn: 'Signing in...',
+      signIn: 'Sign In',
+      forgotPassword: 'Forgot password?',
+      register: 'Register',
+      or: 'or',
+      signInWithGoogle: 'Sign in with Google',
+      signUpWithGoogle: 'Sign up with Google',
+      createAccount: 'Create Account',
+      registering: 'Registering...',
+      registerTitle: 'Register',
+      registerSubtitle: 'Create your KisanAlert account',
+      confirmPassword: 'Confirm Password',
+      repeatPassword: 'Repeat password',
+      atLeast6Chars: 'At least 6 characters',
+      alreadyHaveAccount: 'Already have an account?',
+      resetPasswordTitle: 'Reset Password',
+      resetPasswordDesc: 'Enter your email to receive a reset link',
+      sendResetLink: 'Send Reset Link',
+      sending: 'Sending...',
+      backToSignIn: 'Back to Sign In',
+      checkEmail: 'Check your email for a password reset link.',
+      setNewPassword: 'Set New Password',
+      setNewPasswordDesc: 'Choose a new password for your account',
+      newPassword: 'New Password',
+      updatePassword: 'Update Password',
+      updating: 'Updating...',
+      verifyingResetLink: 'Verifying reset link...',
+      passwordUpdated: 'Password updated successfully!',
+      strengthWeak: 'Weak',
+      strengthFair: 'Fair',
+      strengthGood: 'Good',
+      strengthStrong: 'Strong',
+      strengthVeryStrong: 'Very Strong',
+    },
+    onboarding: {
+      next: 'Next',
+      done: 'Done',
+      welcomeTitle: 'Welcome to KisanAlert',
+      welcomeBody: 'Your AI-powered pest intelligence system. This short guide will walk you through the key features so you can start protecting your crops right away.',
+      stepLabel: 'Step',
+      step1Title: 'Your Dashboard',
+      step1Body: 'The dashboard gives you a snapshot of current pest activity. You will see key metrics — active alerts, regions under watch, and overall risk — plus a live map and top affected districts.',
+      step1Tip: 'Tip: The risk score updates automatically as new reports come in.',
+      step2Title: 'Upload & Detect',
+      step2Body: 'Snap a photo of an affected crop and upload it. KisanAlert uses Gemini AI to identify the pest or disease, estimate severity, and suggest the affected crop — all in seconds.',
+      step2Tip: 'Tip: Good lighting and a clear close-up of the affected area gives the best results.',
+      step3Title: 'Explore the Map',
+      step3Body: 'The outbreak map shows all reported pest incidents across India. Each marker is colour-coded by severity.',
+      step3Tip: 'Tip: Use the district filter to zoom in on your area.',
+      step4Title: 'Browse Reports',
+      step4Body: 'The reports page lists every pest report with filters for severity, status, district, and date. Expand any row to see the full diagnosis.',
+      step4Tip: 'Tip: Toggle "My Reports" to see only reports you have submitted.',
+      step5Title: 'Alerts & Settings',
+      step5Body: 'Configure SMS and email alerts so you never miss an outbreak in your region. You can also switch between 5 supported languages.',
+      step5Tip: 'Tip: Enable Critical Only mode to receive alerts only for high-severity outbreaks.',
+      finalTitle: 'You are all set',
+      finalBody: 'You are ready to start using KisanAlert. Begin by exploring your dashboard or upload your first crop photo for AI analysis.',
+    },
+    errors: {
+      notFoundTitle: 'Page not found',
+      notFoundBody: "The page you're looking for doesn't exist.",
+      goToDashboard: 'Go to Dashboard',
+      somethingWentWrong: 'Something went wrong',
+      unexpectedError: 'An unexpected error occurred. Please try again.',
+      tryAgain: 'Try again',
+    },
+    ui: {
+      searchDistrict: 'Search district...',
+      allDistricts: 'All Districts',
+      noDistrictsFound: 'No districts found',
+      unsupportedFile: 'Only image files are supported',
+      loadingMap: 'Loading map...',
+      back: 'Back',
+      continue: 'Continue',
+      done: 'Done',
+      confirm: 'Confirm',
+      cancel: 'Cancel',
     },
   },
   mr: {
@@ -334,6 +679,121 @@ export const dictionary: Record<string, Dictionary> = {
       pending: 'प्रलंबित',
       increase: 'वाढ',
       decrease: 'घट',
+      reports: 'अहवाल',
+    },
+    landing: {
+      pestIntelligence: 'Pest Intelligence System',
+      heroDesc: 'AI-powered early warning for crop pests and diseases. Protect your harvest with real-time detection, live outbreak maps, and instant alerts.',
+      scroll: 'Scroll',
+      whyTitle: 'Why KisanAlert?',
+      whyDesc: 'Built for Indian agriculture. From AI-powered diagnostics to community-driven outbreak tracking.',
+      featureAiTitle: 'AI Crop Detection',
+      featureAiDesc: 'Snap a photo of an affected crop. Our AI identifies pests and diseases instantly with Gemini-powered analysis.',
+      featureMapTitle: 'Live Outbreak Map',
+      featureMapDesc: 'Track pest outbreaks in real time across India. Colour-coded markers show severity at a glance.',
+      featureLangTitle: 'Multi-Language',
+      featureLangDesc: 'Available in English, Hindi, Marathi, Telugu, and Kannada. Built for Indian farmers.',
+      featureAlertTitle: 'Early Alerts',
+      featureAlertDesc: 'Get notified when pests threaten your region. Email and SMS alerts when outbreaks are detected near you.',
+      howTitle: 'How It Works',
+      step1Title: 'Upload a Photo',
+      step1Desc: 'Take a picture of the affected crop using your phone.',
+      step2Title: 'AI Analysis',
+      step2Desc: 'Gemini AI identifies the pest, disease, and severity instantly.',
+      step3Title: 'View on Map',
+      step3Desc: 'The report appears on the live map so others in your area stay informed.',
+      step4Title: 'Get Alerts',
+      step4Desc: 'Receive notifications when outbreaks are detected near your district.',
+      ctaTitle: 'Ready to protect your crops?',
+      ctaDesc: 'Join farmers and agricultural officers using KisanAlert to detect and respond to pest outbreaks.',
+      ctaButton: 'Get Started Free',
+      footerTagline: 'Pest Intelligence System',
+      dashboard: 'Dashboard',
+      getStarted: 'Get Started',
+      signIn: 'Sign In',
+    },
+    auth: {
+      signInTitle: 'Sign In',
+      signInSubtitle: 'Access your KisanAlert dashboard',
+      email: 'Email',
+      password: 'Password',
+      signingIn: 'Signing in...',
+      signIn: 'Sign In',
+      forgotPassword: 'Forgot password?',
+      register: 'Register',
+      or: 'or',
+      signInWithGoogle: 'Sign in with Google',
+      signUpWithGoogle: 'Sign up with Google',
+      createAccount: 'Create Account',
+      registering: 'Registering...',
+      registerTitle: 'Register',
+      registerSubtitle: 'Create your KisanAlert account',
+      confirmPassword: 'Confirm Password',
+      repeatPassword: 'Repeat password',
+      atLeast6Chars: 'At least 6 characters',
+      alreadyHaveAccount: 'Already have an account?',
+      resetPasswordTitle: 'Reset Password',
+      resetPasswordDesc: 'Enter your email to receive a reset link',
+      sendResetLink: 'Send Reset Link',
+      sending: 'Sending...',
+      backToSignIn: 'Back to Sign In',
+      checkEmail: 'Check your email for a password reset link.',
+      setNewPassword: 'Set New Password',
+      setNewPasswordDesc: 'Choose a new password for your account',
+      newPassword: 'New Password',
+      updatePassword: 'Update Password',
+      updating: 'Updating...',
+      verifyingResetLink: 'Verifying reset link...',
+      passwordUpdated: 'Password updated successfully!',
+      strengthWeak: 'Weak',
+      strengthFair: 'Fair',
+      strengthGood: 'Good',
+      strengthStrong: 'Strong',
+      strengthVeryStrong: 'Very Strong',
+    },
+    onboarding: {
+      next: 'Next',
+      done: 'Done',
+      welcomeTitle: 'Welcome to KisanAlert',
+      welcomeBody: 'Your AI-powered pest intelligence system. This short guide will walk you through the key features so you can start protecting your crops right away.',
+      stepLabel: 'Step',
+      step1Title: 'Your Dashboard',
+      step1Body: 'The dashboard gives you a snapshot of current pest activity. You will see key metrics — active alerts, regions under watch, and overall risk — plus a live map and top affected districts.',
+      step1Tip: 'Tip: The risk score updates automatically as new reports come in.',
+      step2Title: 'Upload & Detect',
+      step2Body: 'Snap a photo of an affected crop and upload it. KisanAlert uses Gemini AI to identify the pest or disease, estimate severity, and suggest the affected crop — all in seconds.',
+      step2Tip: 'Tip: Good lighting and a clear close-up of the affected area gives the best results.',
+      step3Title: 'Explore the Map',
+      step3Body: 'The outbreak map shows all reported pest incidents across India. Each marker is colour-coded by severity.',
+      step3Tip: 'Tip: Use the district filter to zoom in on your area.',
+      step4Title: 'Browse Reports',
+      step4Body: 'The reports page lists every pest report with filters for severity, status, district, and date. Expand any row to see the full diagnosis.',
+      step4Tip: 'Tip: Toggle "My Reports" to see only reports you have submitted.',
+      step5Title: 'Alerts & Settings',
+      step5Body: 'Configure SMS and email alerts so you never miss an outbreak in your region. You can also switch between 5 supported languages.',
+      step5Tip: 'Tip: Enable Critical Only mode to receive alerts only for high-severity outbreaks.',
+      finalTitle: 'You are all set',
+      finalBody: 'You are ready to start using KisanAlert. Begin by exploring your dashboard or upload your first crop photo for AI analysis.',
+    },
+    errors: {
+      notFoundTitle: 'Page not found',
+      notFoundBody: "The page you're looking for doesn't exist.",
+      goToDashboard: 'Go to Dashboard',
+      somethingWentWrong: 'Something went wrong',
+      unexpectedError: 'An unexpected error occurred. Please try again.',
+      tryAgain: 'Try again',
+    },
+    ui: {
+      searchDistrict: 'Search district...',
+      allDistricts: 'All Districts',
+      noDistrictsFound: 'No districts found',
+      unsupportedFile: 'Only image files are supported',
+      loadingMap: 'Loading map...',
+      back: 'Back',
+      continue: 'Continue',
+      done: 'Done',
+      confirm: 'Confirm',
+      cancel: 'Cancel',
     },
   },
   te: {
@@ -418,6 +878,121 @@ export const dictionary: Record<string, Dictionary> = {
       pending: 'పెండింగ్',
       increase: 'పెరుగుదల',
       decrease: 'తగ్గుదల',
+      reports: 'నివేదికలు',
+    },
+    landing: {
+      pestIntelligence: 'Pest Intelligence System',
+      heroDesc: 'AI-powered early warning for crop pests and diseases. Protect your harvest with real-time detection, live outbreak maps, and instant alerts.',
+      scroll: 'Scroll',
+      whyTitle: 'Why KisanAlert?',
+      whyDesc: 'Built for Indian agriculture. From AI-powered diagnostics to community-driven outbreak tracking.',
+      featureAiTitle: 'AI Crop Detection',
+      featureAiDesc: 'Snap a photo of an affected crop. Our AI identifies pests and diseases instantly with Gemini-powered analysis.',
+      featureMapTitle: 'Live Outbreak Map',
+      featureMapDesc: 'Track pest outbreaks in real time across India. Colour-coded markers show severity at a glance.',
+      featureLangTitle: 'Multi-Language',
+      featureLangDesc: 'Available in English, Hindi, Marathi, Telugu, and Kannada. Built for Indian farmers.',
+      featureAlertTitle: 'Early Alerts',
+      featureAlertDesc: 'Get notified when pests threaten your region. Email and SMS alerts when outbreaks are detected near you.',
+      howTitle: 'How It Works',
+      step1Title: 'Upload a Photo',
+      step1Desc: 'Take a picture of the affected crop using your phone.',
+      step2Title: 'AI Analysis',
+      step2Desc: 'Gemini AI identifies the pest, disease, and severity instantly.',
+      step3Title: 'View on Map',
+      step3Desc: 'The report appears on the live map so others in your area stay informed.',
+      step4Title: 'Get Alerts',
+      step4Desc: 'Receive notifications when outbreaks are detected near your district.',
+      ctaTitle: 'Ready to protect your crops?',
+      ctaDesc: 'Join farmers and agricultural officers using KisanAlert to detect and respond to pest outbreaks.',
+      ctaButton: 'Get Started Free',
+      footerTagline: 'Pest Intelligence System',
+      dashboard: 'Dashboard',
+      getStarted: 'Get Started',
+      signIn: 'Sign In',
+    },
+    auth: {
+      signInTitle: 'Sign In',
+      signInSubtitle: 'Access your KisanAlert dashboard',
+      email: 'Email',
+      password: 'Password',
+      signingIn: 'Signing in...',
+      signIn: 'Sign In',
+      forgotPassword: 'Forgot password?',
+      register: 'Register',
+      or: 'or',
+      signInWithGoogle: 'Sign in with Google',
+      signUpWithGoogle: 'Sign up with Google',
+      createAccount: 'Create Account',
+      registering: 'Registering...',
+      registerTitle: 'Register',
+      registerSubtitle: 'Create your KisanAlert account',
+      confirmPassword: 'Confirm Password',
+      repeatPassword: 'Repeat password',
+      atLeast6Chars: 'At least 6 characters',
+      alreadyHaveAccount: 'Already have an account?',
+      resetPasswordTitle: 'Reset Password',
+      resetPasswordDesc: 'Enter your email to receive a reset link',
+      sendResetLink: 'Send Reset Link',
+      sending: 'Sending...',
+      backToSignIn: 'Back to Sign In',
+      checkEmail: 'Check your email for a password reset link.',
+      setNewPassword: 'Set New Password',
+      setNewPasswordDesc: 'Choose a new password for your account',
+      newPassword: 'New Password',
+      updatePassword: 'Update Password',
+      updating: 'Updating...',
+      verifyingResetLink: 'Verifying reset link...',
+      passwordUpdated: 'Password updated successfully!',
+      strengthWeak: 'Weak',
+      strengthFair: 'Fair',
+      strengthGood: 'Good',
+      strengthStrong: 'Strong',
+      strengthVeryStrong: 'Very Strong',
+    },
+    onboarding: {
+      next: 'Next',
+      done: 'Done',
+      welcomeTitle: 'Welcome to KisanAlert',
+      welcomeBody: 'Your AI-powered pest intelligence system. This short guide will walk you through the key features so you can start protecting your crops right away.',
+      stepLabel: 'Step',
+      step1Title: 'Your Dashboard',
+      step1Body: 'The dashboard gives you a snapshot of current pest activity. You will see key metrics — active alerts, regions under watch, and overall risk — plus a live map and top affected districts.',
+      step1Tip: 'Tip: The risk score updates automatically as new reports come in.',
+      step2Title: 'Upload & Detect',
+      step2Body: 'Snap a photo of an affected crop and upload it. KisanAlert uses Gemini AI to identify the pest or disease, estimate severity, and suggest the affected crop — all in seconds.',
+      step2Tip: 'Tip: Good lighting and a clear close-up of the affected area gives the best results.',
+      step3Title: 'Explore the Map',
+      step3Body: 'The outbreak map shows all reported pest incidents across India. Each marker is colour-coded by severity.',
+      step3Tip: 'Tip: Use the district filter to zoom in on your area.',
+      step4Title: 'Browse Reports',
+      step4Body: 'The reports page lists every pest report with filters for severity, status, district, and date. Expand any row to see the full diagnosis.',
+      step4Tip: 'Tip: Toggle "My Reports" to see only reports you have submitted.',
+      step5Title: 'Alerts & Settings',
+      step5Body: 'Configure SMS and email alerts so you never miss an outbreak in your region. You can also switch between 5 supported languages.',
+      step5Tip: 'Tip: Enable Critical Only mode to receive alerts only for high-severity outbreaks.',
+      finalTitle: 'You are all set',
+      finalBody: 'You are ready to start using KisanAlert. Begin by exploring your dashboard or upload your first crop photo for AI analysis.',
+    },
+    errors: {
+      notFoundTitle: 'Page not found',
+      notFoundBody: "The page you're looking for doesn't exist.",
+      goToDashboard: 'Go to Dashboard',
+      somethingWentWrong: 'Something went wrong',
+      unexpectedError: 'An unexpected error occurred. Please try again.',
+      tryAgain: 'Try again',
+    },
+    ui: {
+      searchDistrict: 'Search district...',
+      allDistricts: 'All Districts',
+      noDistrictsFound: 'No districts found',
+      unsupportedFile: 'Only image files are supported',
+      loadingMap: 'Loading map...',
+      back: 'Back',
+      continue: 'Continue',
+      done: 'Done',
+      confirm: 'Confirm',
+      cancel: 'Cancel',
     },
   },
   kn: {
@@ -502,6 +1077,121 @@ export const dictionary: Record<string, Dictionary> = {
       pending: 'ಬಾಕಿ ಇದೆ',
       increase: 'ಹೆಚ್ಚಳ',
       decrease: 'ಇಳಿಕೆ',
+      reports: 'ವರದಿಗಳು',
+    },
+    landing: {
+      pestIntelligence: 'Pest Intelligence System',
+      heroDesc: 'AI-powered early warning for crop pests and diseases. Protect your harvest with real-time detection, live outbreak maps, and instant alerts.',
+      scroll: 'Scroll',
+      whyTitle: 'Why KisanAlert?',
+      whyDesc: 'Built for Indian agriculture. From AI-powered diagnostics to community-driven outbreak tracking.',
+      featureAiTitle: 'AI Crop Detection',
+      featureAiDesc: 'Snap a photo of an affected crop. Our AI identifies pests and diseases instantly with Gemini-powered analysis.',
+      featureMapTitle: 'Live Outbreak Map',
+      featureMapDesc: 'Track pest outbreaks in real time across India. Colour-coded markers show severity at a glance.',
+      featureLangTitle: 'Multi-Language',
+      featureLangDesc: 'Available in English, Hindi, Marathi, Telugu, and Kannada. Built for Indian farmers.',
+      featureAlertTitle: 'Early Alerts',
+      featureAlertDesc: 'Get notified when pests threaten your region. Email and SMS alerts when outbreaks are detected near you.',
+      howTitle: 'How It Works',
+      step1Title: 'Upload a Photo',
+      step1Desc: 'Take a picture of the affected crop using your phone.',
+      step2Title: 'AI Analysis',
+      step2Desc: 'Gemini AI identifies the pest, disease, and severity instantly.',
+      step3Title: 'View on Map',
+      step3Desc: 'The report appears on the live map so others in your area stay informed.',
+      step4Title: 'Get Alerts',
+      step4Desc: 'Receive notifications when outbreaks are detected near your district.',
+      ctaTitle: 'Ready to protect your crops?',
+      ctaDesc: 'Join farmers and agricultural officers using KisanAlert to detect and respond to pest outbreaks.',
+      ctaButton: 'Get Started Free',
+      footerTagline: 'Pest Intelligence System',
+      dashboard: 'Dashboard',
+      getStarted: 'Get Started',
+      signIn: 'Sign In',
+    },
+    auth: {
+      signInTitle: 'Sign In',
+      signInSubtitle: 'Access your KisanAlert dashboard',
+      email: 'Email',
+      password: 'Password',
+      signingIn: 'Signing in...',
+      signIn: 'Sign In',
+      forgotPassword: 'Forgot password?',
+      register: 'Register',
+      or: 'or',
+      signInWithGoogle: 'Sign in with Google',
+      signUpWithGoogle: 'Sign up with Google',
+      createAccount: 'Create Account',
+      registering: 'Registering...',
+      registerTitle: 'Register',
+      registerSubtitle: 'Create your KisanAlert account',
+      confirmPassword: 'Confirm Password',
+      repeatPassword: 'Repeat password',
+      atLeast6Chars: 'At least 6 characters',
+      alreadyHaveAccount: 'Already have an account?',
+      resetPasswordTitle: 'Reset Password',
+      resetPasswordDesc: 'Enter your email to receive a reset link',
+      sendResetLink: 'Send Reset Link',
+      sending: 'Sending...',
+      backToSignIn: 'Back to Sign In',
+      checkEmail: 'Check your email for a password reset link.',
+      setNewPassword: 'Set New Password',
+      setNewPasswordDesc: 'Choose a new password for your account',
+      newPassword: 'New Password',
+      updatePassword: 'Update Password',
+      updating: 'Updating...',
+      verifyingResetLink: 'Verifying reset link...',
+      passwordUpdated: 'Password updated successfully!',
+      strengthWeak: 'Weak',
+      strengthFair: 'Fair',
+      strengthGood: 'Good',
+      strengthStrong: 'Strong',
+      strengthVeryStrong: 'Very Strong',
+    },
+    onboarding: {
+      next: 'Next',
+      done: 'Done',
+      welcomeTitle: 'Welcome to KisanAlert',
+      welcomeBody: 'Your AI-powered pest intelligence system. This short guide will walk you through the key features so you can start protecting your crops right away.',
+      stepLabel: 'Step',
+      step1Title: 'Your Dashboard',
+      step1Body: 'The dashboard gives you a snapshot of current pest activity. You will see key metrics — active alerts, regions under watch, and overall risk — plus a live map and top affected districts.',
+      step1Tip: 'Tip: The risk score updates automatically as new reports come in.',
+      step2Title: 'Upload & Detect',
+      step2Body: 'Snap a photo of an affected crop and upload it. KisanAlert uses Gemini AI to identify the pest or disease, estimate severity, and suggest the affected crop — all in seconds.',
+      step2Tip: 'Tip: Good lighting and a clear close-up of the affected area gives the best results.',
+      step3Title: 'Explore the Map',
+      step3Body: 'The outbreak map shows all reported pest incidents across India. Each marker is colour-coded by severity.',
+      step3Tip: 'Tip: Use the district filter to zoom in on your area.',
+      step4Title: 'Browse Reports',
+      step4Body: 'The reports page lists every pest report with filters for severity, status, district, and date. Expand any row to see the full diagnosis.',
+      step4Tip: 'Tip: Toggle "My Reports" to see only reports you have submitted.',
+      step5Title: 'Alerts & Settings',
+      step5Body: 'Configure SMS and email alerts so you never miss an outbreak in your region. You can also switch between 5 supported languages.',
+      step5Tip: 'Tip: Enable Critical Only mode to receive alerts only for high-severity outbreaks.',
+      finalTitle: 'You are all set',
+      finalBody: 'You are ready to start using KisanAlert. Begin by exploring your dashboard or upload your first crop photo for AI analysis.',
+    },
+    errors: {
+      notFoundTitle: 'Page not found',
+      notFoundBody: "The page you're looking for doesn't exist.",
+      goToDashboard: 'Go to Dashboard',
+      somethingWentWrong: 'Something went wrong',
+      unexpectedError: 'An unexpected error occurred. Please try again.',
+      tryAgain: 'Try again',
+    },
+    ui: {
+      searchDistrict: 'Search district...',
+      allDistricts: 'All Districts',
+      noDistrictsFound: 'No districts found',
+      unsupportedFile: 'Only image files are supported',
+      loadingMap: 'Loading map...',
+      back: 'Back',
+      continue: 'Continue',
+      done: 'Done',
+      confirm: 'Confirm',
+      cancel: 'Cancel',
     },
   },
 }

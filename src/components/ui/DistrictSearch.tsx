@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { RAIN_SHADOW_DISTRICTS } from '@/lib/seed/districts'
-import { Input } from './input'
+import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 interface DistrictSearchProps {
   value: number | null
@@ -14,6 +14,7 @@ interface DistrictSearchProps {
 }
 
 export function DistrictSearch({ value, onChange, className, allowAll, placeholder, nameToIdMap }: DistrictSearchProps) {
+  const { dict } = useLocale();
   const [query, setQuery] = useState(() => {
     if (!value || !nameToIdMap) return ''
     const name = Object.entries(nameToIdMap).find(([, id]) => id === value)?.[0]
@@ -39,11 +40,12 @@ export function DistrictSearch({ value, onChange, className, allowAll, placehold
 
   return (
     <div ref={ref} className={`relative ${className || ''}`}>
-      <Input
-        placeholder={placeholder || "Search district..."}
+      <input
+        placeholder={placeholder || dict.ui.searchDistrict}
         value={query}
-        onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setQuery(e.target.value); setOpen(true) }}
         onFocus={() => setOpen(true)}
+        className="select-editorial w-full"
       />
       {open && (
         <div className="absolute z-50 mt-1 w-full max-h-60 overflow-y-auto rounded-lg border border-input bg-popover shadow-md">
@@ -53,11 +55,11 @@ export function DistrictSearch({ value, onChange, className, allowAll, placehold
               className={`w-full text-left px-2.5 py-1.5 text-sm hover:bg-accent cursor-pointer ${!value ? 'bg-accent font-medium' : ''}`}
               onClick={() => { onChange(null); setOpen(false); setQuery('') }}
             >
-              All Districts
+              {dict.ui.allDistricts}
             </button>
           )}
           {filtered.length === 0 && (
-            <div className="px-2.5 py-2 text-sm text-muted-foreground">No districts found</div>
+            <div className="px-2.5 py-2 text-sm text-muted-foreground">{dict.ui.noDistrictsFound}</div>
           )}
           {filtered.map((d) => {
             const dbId = nameToIdMap?.[d.name_en] || 0

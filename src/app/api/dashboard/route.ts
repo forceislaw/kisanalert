@@ -38,7 +38,10 @@ export async function GET(req: NextRequest) {
     .limit(10000)
     .returns<ReportRow[]>()
 
-  if (reportsError) throw new Error(reportsError.message)
+  if (reportsError) {
+    console.error('Dashboard GET Error:', reportsError.message)
+    return NextResponse.json({ error: 'Failed to load dashboard.' }, { status: 500 })
+  }
 
   const { count: totalCrops } = await supabase.from('crops').select('*', { count: 'exact', head: true })
   const { count: totalRegions } = await supabase.from('districts').select('*', { count: 'exact', head: true })

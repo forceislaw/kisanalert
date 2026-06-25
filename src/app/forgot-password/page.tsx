@@ -3,9 +3,11 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth/AuthProvider'
+import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 export default function ForgotPasswordPage() {
   const { resetPassword } = useAuth()
+  const { dict } = useLocale()
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -21,7 +23,7 @@ export default function ForgotPasswordPage() {
     if (err) {
       setError(err)
     } else {
-      setMessage('Check your email for a password reset link.')
+      setMessage(dict.auth.checkEmail)
     }
   }
 
@@ -34,9 +36,9 @@ export default function ForgotPasswordPage() {
             <path d="M20 28 C11 24 13 12 20 8 C27 12 29 24 20 28Z" fill="#F7F5F0"/>
           </svg>
           <h1 className="text-3xl font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
-            Reset Password
+            {dict.auth.resetPasswordTitle}
           </h1>
-          <p className="eyebrow mt-1">Enter your email to receive a reset link</p>
+          <p className="eyebrow mt-1">{dict.auth.resetPasswordDesc}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -48,7 +50,7 @@ export default function ForgotPasswordPage() {
           )}
 
           <div>
-            <label className="eyebrow block mb-1.5">Email</label>
+            <label className="eyebrow block mb-1.5">{dict.auth.email}</label>
             <input
               type="email"
               value={email}
@@ -60,11 +62,11 @@ export default function ForgotPasswordPage() {
           </div>
 
           <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50">
-            {loading ? 'Sending...' : 'Send Reset Link'}
+            {loading ? dict.auth.sending : dict.auth.sendResetLink}
           </button>
 
           <p className="text-sm text-charcoal-muted text-center">
-            <Link href="/login" className="text-sage font-medium hover:underline">Back to Sign In</Link>
+            <Link href="/login" className="text-sage font-medium hover:underline">{dict.auth.backToSignIn}</Link>
           </p>
         </form>
       </div>

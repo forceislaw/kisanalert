@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
 const rateMap = new Map<string, { timestamps: number[]; path: string }[]>()
 const WINDOW_MS = 60_000
@@ -22,6 +23,46 @@ const ALLOWED_ORIGINS = [
 ].filter(Boolean) as string[]
 
 const MAX_BODY_MB = 6
+
+let blocklistCache: Set<string> | null = null
+let blocklistFetchedAt = 0
+const BLOCKLIST_TTL = 60_000
+
+async function getBlocklist(): Promise<Set<string>> {
+  const now = Date.now()
+  if (blocklistCache && now - blocklistFetchedAt < BLOCKLIST_TTL) return blocklistCache
+  try {
+    const svc = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    )
+    const { data } = await svc.from('blocked_ips').select('ip_address')
+    const ips = new Set((data || []).map((r: { ip_address: string }) => r.ip_address))
+    blocklistCache = ips
+    blocklistFetchedAt = now
+    return ips
+  } catch {
+    return new Set<string>()
+  }
+}
+
+async function logSecurityEvent(ip: string, type: string, path: string, ua: string, reason: string) {
+  try {
+    const svc = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    )
+    await svc.from('security_log').insert([{
+      ip_address: ip,
+      event_type: type,
+      path,
+      user_agent: ua.slice(0, 500),
+      reason,
+    }] as never[])
+  } catch {
+    // fail silently
+  }
+}
 
 const SQLI_PATTERNS = [
   /(\bOR\b|\bAND\b)\s+[\d\"']+\s*[=<>]/i,
@@ -146,14 +187,30 @@ function wafCheck(req: NextRequest): NextResponse | null {
   return null
 }
 
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const now = Date.now()
   const url = new URL(req.url)
   const isApi = url.pathname.startsWith('/api')
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    || req.headers.get('x-real-ip')
+    || 'unknown'
+  const ua = req.headers.get('user-agent') || ''
 
   if (isApi) {
-    const blocked = wafCheck(req)
-    if (blocked) return blocked
+    const blockedIps = await getBlocklist()
+    if (blockedIps.has(ip)) {
+      logSecurityEvent(ip, 'blocklist_hit', url.pathname, ua, 'IP is blocked')
+      return new NextResponse(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    const wafResult = wafCheck(req)
+    if (wafResult) {
+      logSecurityEvent(ip, 'waf_block', url.pathname, ua, wafResult.status.toString())
+      return wafResult
+    }
 
     const origin = req.headers.get('origin')
     const referer = req.headers.get('referer')
@@ -166,6 +223,7 @@ export function proxy(req: NextRequest) {
           try { return new URL(o).hostname === new URL(sourceOrigin).hostname } catch { return false }
         })
         if (!allowed) {
+          logSecurityEvent(ip, 'csrf_block', url.pathname, ua, `origin=${sourceOrigin}`)
           return new NextResponse(JSON.stringify({ error: 'Forbidden' }), {
             status: 403,
             headers: { 'Content-Type': 'application/json' },
@@ -174,16 +232,13 @@ export function proxy(req: NextRequest) {
       }
     }
 
-    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-      || req.headers.get('x-real-ip')
-      || 'unknown'
-
     const limit = Object.entries(LIMITS).find(([path]) => url.pathname.startsWith(path))?.[1] || LIMITS['default']
 
     const entries = (rateMap.get(ip) || []).filter(e => now - e.timestamps[e.timestamps.length - 1] < WINDOW_MS)
     const ipTotal = entries.reduce((sum, e) => sum + e.timestamps.length, 0)
 
     if (ipTotal >= LIMITS['default']) {
+      logSecurityEvent(ip, 'rate_limit_global', url.pathname, ua, `total=${ipTotal}`)
       return new NextResponse(JSON.stringify({ error: 'Too many requests' }), {
         status: 429,
         headers: { 'Content-Type': 'application/json', 'Retry-After': '60' },
@@ -193,6 +248,7 @@ export function proxy(req: NextRequest) {
     const pathEntry = entries.find(e => e.path === url.pathname)
     const pathCount = pathEntry?.timestamps.length || 0
     if (pathCount >= limit) {
+      logSecurityEvent(ip, 'rate_limit_path', url.pathname, ua, `path=${url.pathname} count=${pathCount}`)
       return new NextResponse(JSON.stringify({ error: `Too many requests to ${url.pathname}` }), {
         status: 429,
         headers: { 'Content-Type': 'application/json', 'Retry-After': '60' },

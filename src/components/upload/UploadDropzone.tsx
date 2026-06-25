@@ -2,12 +2,14 @@
 
 import React, { useState, useRef } from 'react';
 import { VisionAnalysisResult } from '@/app/api/vision-analyze/route';
+import { useLocale } from '@/lib/i18n/LocaleProvider';
 
 interface UploadDropzoneProps {
   onAnalysisComplete: (result: VisionAnalysisResult, imageUrl: string) => void;
 }
 
 export default function UploadDropzone({ onAnalysisComplete }: UploadDropzoneProps) {
+  const { dict } = useLocale();
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +40,7 @@ export default function UploadDropzone({ onAnalysisComplete }: UploadDropzonePro
 
   const processFile = async (file: File) => {
     if (!file.type.startsWith('image/')) {
-      setError('Only image files are supported');
+      setError(dict.ui.unsupportedFile);
       return;
     }
 
@@ -98,14 +100,14 @@ export default function UploadDropzone({ onAnalysisComplete }: UploadDropzonePro
         {isLoading ? (
           <div className="flex flex-col items-center gap-3">
             <div className="w-10 h-10 border-2 border-stone border-t-sage animate-spin" style={{ borderRadius: '0' }} />
-            <p className="text-sm text-charcoal-muted font-sans">Analyzing with AI...</p>
+            <p className="text-sm text-charcoal-muted font-sans">{dict.upload.analyzing}</p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-4 text-charcoal-muted">
             <svg className="w-10 h-10 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
             </svg>
-            <p className="text-sm font-medium">Drop your crop photo here</p>
+            <p className="text-sm font-medium">{dict.upload.dragDrop}</p>
           </div>
         )}
       </div>

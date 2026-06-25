@@ -1,16 +1,31 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth/AuthProvider'
+import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 export default function RegisterPage() {
   const router = useRouter()
   const { signUp, signInWithGoogle, user } = useAuth()
+  const { dict } = useLocale()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+
+  const passwordStrength = useMemo(() => {
+    let score = 0
+    if (password.length >= 6) score++
+    if (password.length >= 10) score++
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++
+    if (/\d/.test(password)) score++
+    if (/[^a-zA-Z0-9]/.test(password)) score++
+    return score
+  }, [password])
+
+  const strengthLabel = ['', dict.auth.strengthWeak, dict.auth.strengthFair, dict.auth.strengthGood, dict.auth.strengthStrong, dict.auth.strengthVeryStrong][passwordStrength]
+  const strengthColors = ['', 'bg-terra', 'bg-ochre', 'bg-ochre-tint', 'bg-sage', 'bg-sage-dark']
   const [error, setError] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search)
@@ -73,9 +88,9 @@ export default function RegisterPage() {
             <path d="M20 28 C11 24 13 12 20 8 C27 12 29 24 20 28Z" fill="#F7F5F0"/>
           </svg>
           <h1 className="text-3xl font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
-            Register
+            {dict.auth.registerTitle}
           </h1>
-          <p className="eyebrow mt-1">Create your KisanAlert account</p>
+          <p className="eyebrow mt-1">{dict.auth.registerSubtitle}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -93,7 +108,7 @@ export default function RegisterPage() {
           )}
 
           <div>
-            <label className="eyebrow block mb-1.5">Email</label>
+            <label className="eyebrow block mb-1.5">{dict.auth.email}</label>
             <input
               type="email"
               value={email}
@@ -105,36 +120,53 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="eyebrow block mb-1.5">Password</label>
+            <label className="eyebrow block mb-1.5">{dict.auth.password}</label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               className="select-editorial w-full"
-              placeholder="At least 6 characters"
+              placeholder={dict.auth.atLeast6Chars}
               required
             />
+            {password.length > 0 && (
+              <div className="mt-2">
+                <div className="flex gap-1 h-1.5">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <div
+                      key={i}
+                      className={`flex-1 h-full transition-colors ${
+                        i <= passwordStrength ? strengthColors[passwordStrength] : 'bg-stone'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p className={`text-xs mt-1 ${passwordStrength <= 1 ? 'text-terra-dark' : 'text-charcoal-muted'}`}>
+                  {strengthLabel}
+                </p>
+              </div>
+            )}
           </div>
 
           <div>
-            <label className="eyebrow block mb-1.5">Confirm Password</label>
+            <label className="eyebrow block mb-1.5">{dict.auth.confirmPassword}</label>
             <input
               type="password"
               value={confirmPassword}
               onChange={e => setConfirmPassword(e.target.value)}
               className="select-editorial w-full"
-              placeholder="Repeat password"
+              placeholder={dict.auth.repeatPassword}
               required
             />
           </div>
 
           <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50">
-            {loading ? 'Registering...' : 'Create Account'}
+            {loading ? dict.auth.registering : dict.auth.createAccount}
           </button>
 
           <div className="relative flex items-center py-1">
             <hr className="rule-h flex-1" />
-            <span className="px-3 text-xs text-charcoal-muted font-mono">or</span>
+            <span className="px-3 text-xs text-charcoal-muted font-mono">{dict.auth.or}</span>
             <hr className="rule-h flex-1" />
           </div>
 
@@ -149,12 +181,12 @@ export default function RegisterPage() {
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
-            Sign up with Google
+            {dict.auth.signUpWithGoogle}
           </button>
 
           <p className="text-sm text-charcoal-muted text-center">
-            Already have an account?{' '}
-            <Link href="/login" className="text-sage font-medium hover:underline">Sign In</Link>
+            {dict.auth.alreadyHaveAccount}{' '}
+            <Link href="/login" className="text-sage font-medium hover:underline">{dict.auth.signIn}</Link>
           </p>
         </form>
       </div>

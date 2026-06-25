@@ -21,7 +21,10 @@ export async function GET() {
     .eq('user_id', user.id)
     .maybeSingle()
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('Notifications GET Error:', error.message)
+    return NextResponse.json({ error: 'Failed to load preferences.' }, { status: 500 })
+  }
 
   return NextResponse.json({
     data: data || { sms_alerts: true, email_alerts: true, critical_only: false }
@@ -53,7 +56,10 @@ export async function PUT(req: NextRequest) {
     .select()
     .single()
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('Notifications PUT Error:', error.message)
+    return NextResponse.json({ error: 'Failed to save preferences.' }, { status: 500 })
+  }
 
   return NextResponse.json({ data })
 }

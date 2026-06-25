@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 export default function RootError({
   error,
@@ -9,6 +10,7 @@ export default function RootError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  const { dict } = useLocale()
   useEffect(() => {
     console.error(error)
   }, [error])
@@ -20,13 +22,13 @@ export default function RootError({
           <circle cx="20" cy="20" r="20" fill="#E07A5F"/>
           <path d="M20 28 C11 24 13 12 20 8 C27 12 29 24 20 28Z" fill="#F7F5F0"/>
         </svg>
-        <h2 className="text-lg font-bold text-charcoal">Something went wrong</h2>
-        <p className="text-sm text-charcoal-muted">An unexpected error occurred. Please try again.</p>
+        <h2 className="text-lg font-bold text-charcoal">{dict.errors.somethingWentWrong}</h2>
+        <p className="text-sm text-charcoal-muted">{dict.errors.unexpectedError}</p>
         <button
           onClick={() => reset()}
           className="btn-primary text-sm px-4 py-1.5"
         >
-          Try again
+          {dict.errors.tryAgain}
         </button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 interface DistrictRisk {
   name: string
@@ -10,6 +11,7 @@ interface DistrictRisk {
 }
 
 export default function TopDistrictsTable({ days }: { days?: number }) {
+  const { dict } = useLocale()
   const [districts, setDistricts] = useState<DistrictRisk[]>([])
 
   useEffect(() => {
@@ -64,7 +66,7 @@ export default function TopDistrictsTable({ days }: { days?: number }) {
                   <div className={`h-full ${barColor}`} style={{ width: `${d.riskScore}%` }} />
                 </div>
                 <div className="flex items-center gap-1 ml-2">
-                  <span className="text-xs text-charcoal-muted">{d.activeReports} reports</span>
+                  <span className="text-xs text-charcoal-muted">{d.activeReports} {dict.common.reports}</span>
                 </div>
               </div>
             </div>

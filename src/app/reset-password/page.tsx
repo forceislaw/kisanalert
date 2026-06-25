@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/auth/AuthProvider'
+import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 export default function ResetPasswordPage() {
   const router = useRouter()
   const { updatePassword } = useAuth()
+  const { dict } = useLocale()
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -47,7 +49,7 @@ export default function ResetPasswordPage() {
     if (err) {
       setError(err)
     } else {
-      setMessage('Password updated successfully!')
+      setMessage(dict.auth.passwordUpdated)
       setTimeout(() => router.push('/login'), 2000)
     }
   }
@@ -61,13 +63,13 @@ export default function ResetPasswordPage() {
             <path d="M20 28 C11 24 13 12 20 8 C27 12 29 24 20 28Z" fill="#F7F5F0"/>
           </svg>
           <h1 className="text-3xl font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
-            Set New Password
+            {dict.auth.setNewPassword}
           </h1>
-          <p className="eyebrow mt-1">Choose a new password for your account</p>
+          <p className="eyebrow mt-1">{dict.auth.setNewPasswordDesc}</p>
         </div>
 
         {!ready ? (
-          <p className="text-sm text-charcoal-muted text-center py-4">Verifying reset link...</p>
+          <p className="text-sm text-charcoal-muted text-center py-4">{dict.auth.verifyingResetLink}</p>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
@@ -78,35 +80,35 @@ export default function ResetPasswordPage() {
             )}
 
             <div>
-              <label className="eyebrow block mb-1.5">New Password</label>
+              <label className="eyebrow block mb-1.5">{dict.auth.newPassword}</label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className="select-editorial w-full"
-                placeholder="At least 6 characters"
+                placeholder={dict.auth.atLeast6Chars}
                 required
               />
             </div>
 
             <div>
-              <label className="eyebrow block mb-1.5">Confirm Password</label>
+              <label className="eyebrow block mb-1.5">{dict.auth.confirmPassword}</label>
               <input
                 type="password"
                 value={confirm}
                 onChange={e => setConfirm(e.target.value)}
                 className="select-editorial w-full"
-                placeholder="Repeat password"
+                placeholder={dict.auth.repeatPassword}
                 required
               />
             </div>
 
             <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50">
-              {loading ? 'Updating...' : 'Update Password'}
+              {loading ? dict.auth.updating : dict.auth.updatePassword}
             </button>
 
             <p className="text-sm text-charcoal-muted text-center">
-              <Link href="/login" className="text-sage font-medium hover:underline">Back to Sign In</Link>
+              <Link href="/login" className="text-sage font-medium hover:underline">{dict.auth.backToSignIn}</Link>
             </p>
           </form>
         )}

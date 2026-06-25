@@ -12,7 +12,7 @@ const CreateReportSchema = z.object({
   detected_pest_id: z.number().nullable(),
   ai_pest_name: z.string().max(200).optional().nullable(),
   severity_level: z.enum(['low', 'moderate', 'high', 'critical']),
-  image_storage_path: z.string().max(500000),
+  image_storage_path: z.string().max(500),
   confidence_score: z.number().optional().nullable(),
   latitude: z.number().min(-90).max(90).optional().nullable(),
   longitude: z.number().min(-180).max(180).optional().nullable(),
@@ -28,6 +28,7 @@ const BASE_FIELDS = `
   pests!left(key_name)
 `
 
+
 function toDisplayName(key: string | null | undefined): string | null {
   if (!key) return null
   return key.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
@@ -42,19 +43,25 @@ export async function GET(req: NextRequest) {
 
   let query = supabase.from('pest_reports').select(BASE_FIELDS, { count: 'exact' })
 
-  const district = searchParams.get('district')
-  if (district) query = query.eq('district_id', parseInt(district))
+  const districtRaw = searchParams.get('district')
+  const districtId = districtRaw ? parseInt(districtRaw) : null
+  if (districtId && !isNaN(districtId) && districtId > 0 && districtId <= 999) {
+    query = query.eq('district_id', districtId)
+  }
 
+  const VALID_SEVERITIES = ['low', 'moderate', 'high', 'critical']
   const severity = searchParams.get('severity')
-  if (severity) query = query.eq('severity_level', severity)
+  if (severity && VALID_SEVERITIES.includes(severity)) query = query.eq('severity_level', severity)
 
+  const VALID_STATUSES = ['pending', 'verified']
   const status = searchParams.get('status')
-  if (status) query = query.eq('status', status)
+  if (status && VALID_STATUSES.includes(status)) query = query.eq('status', status)
 
   const mineUserId = searchParams.get('user_id')
   if (mineUserId) query = query.eq('user_id', mineUserId)
 
-  const search = searchParams.get('search')
+  const searchRaw = searchParams.get('search')
+  const search = searchRaw ? searchRaw.slice(0, 100) : null
   if (search) {
     const term = `%${search}%`
     const [distResult, cropResult, pestResult] = await Promise.all([
@@ -90,7 +97,10 @@ export async function GET(req: NextRequest) {
     .order('created_at', { ascending: false })
     .range(from, to)
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('Reports GET Error:', error.message)
+    return NextResponse.json({ error: 'Failed to fetch reports.' }, { status: 500 })
+  }
 
   const mapped = (data || []).map((r: Record<string, unknown>) => {
     const crop = r.crops as Record<string, string> | undefined
@@ -154,11 +164,13 @@ export async function POST(req: NextRequest) {
             const { data: { publicUrl } } = serviceClient.storage.from(bucketName).getPublicUrl(fileName)
             imagePath = publicUrl
           } else {
-            console.warn('Storage upload failed, storing as base64:', uploadError.message)
+            console.error('Storage upload failed:', uploadError.message)
+            return NextResponse.json({ error: 'Failed to upload image.' }, { status: 500 })
           }
         }
       } catch (storageErr) {
-        console.warn('Storage upload error, keeping base64:', storageErr)
+        console.error('Storage upload error:', storageErr)
+        return NextResponse.json({ error: 'Failed to upload image.' }, { status: 500 })
       }
     }
 
@@ -174,7 +186,7 @@ export async function POST(req: NextRequest) {
         crop_id: validation.data.crop_id,
         detected_pest_id: validation.data.detected_pest_id,
         severity_level: validation.data.severity_level,
-        image_storage_path: validation.data.image_storage_path,
+        image_storage_path: imagePath,
         confidence_score: validation.data.confidence_score ?? null,
         latitude: validation.data.latitude ?? null,
         longitude: validation.data.longitude ?? null,
@@ -221,5 +233,75 @@ export async function POST(req: NextRequest) {
   } catch (error: unknown) {
     console.error('Reports Create API Error:', error)
     return NextResponse.json({ error: 'Failed to create report.' }, { status: 500 })
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const supabase = await createServerSupabaseClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(req.url)
+    const id = searchParams.get('id')
+    if (!id) {
+      return NextResponse.json({ error: 'Report ID is required.' }, { status: 400 })
+    }
+
+    const idResult = z.string().uuid().safeParse(id)
+    if (!idResult.success) {
+      return NextResponse.json({ error: 'Invalid report ID.' }, { status: 400 })
+    }
+
+    const { data: report, error: fetchError } = await supabase
+      .from('pest_reports')
+      .select('user_id, image_storage_path')
+      .eq('id', id)
+      .maybeSingle()
+      .returns<{ user_id: string | null; image_storage_path: string | null }>()
+
+    if (fetchError) {
+      console.error('Reports DELETE fetch error:', fetchError.message)
+      return NextResponse.json({ error: 'Failed to find report.' }, { status: 500 })
+    }
+    if (!report) {
+      return NextResponse.json({ error: 'Report not found.' }, { status: 404 })
+    }
+    if (report.user_id !== user.id) {
+      return NextResponse.json({ error: 'You can only delete your own reports.' }, { status: 403 })
+    }
+
+    const { error: deleteError } = await supabase
+      .from('pest_reports')
+      .delete()
+      .eq('id', id)
+
+    if (deleteError) {
+      console.error('Reports DELETE error:', deleteError.message)
+      return NextResponse.json({ error: 'Failed to delete report.' }, { status: 500 })
+    }
+
+    // Clean up storage image if it's a Supabase URL
+    if (report.image_storage_path && report.image_storage_path.includes('supabase.co')) {
+      try {
+        const serviceClient = createServiceClient()
+        const bucketName = 'report-images'
+        const url = new URL(report.image_storage_path)
+        const pathParts = url.pathname.split('/')
+        const storagePath = decodeURIComponent(pathParts.slice(pathParts.indexOf(bucketName) + 1).join('/'))
+        if (storagePath) {
+          await serviceClient.storage.from(bucketName).remove([storagePath])
+        }
+      } catch (storageErr) {
+        console.warn('Storage cleanup failed (non-fatal):', storageErr)
+      }
+    }
+
+    return NextResponse.json({ success: true })
+  } catch (error: unknown) {
+    console.error('Reports DELETE API Error:', error)
+    return NextResponse.json({ error: 'Failed to delete report.' }, { status: 500 })
   }
 }

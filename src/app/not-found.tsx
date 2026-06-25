@@ -1,6 +1,10 @@
+'use client'
+
 import Link from 'next/link'
+import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 export default function NotFound() {
+  const { dict } = useLocale()
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh]">
       <div className="card-alert p-8 max-w-md text-center space-y-4">
@@ -8,10 +12,10 @@ export default function NotFound() {
           <circle cx="20" cy="20" r="20" fill="#E07A5F"/>
           <path d="M20 28 C11 24 13 12 20 8 C27 12 29 24 20 28Z" fill="#F7F5F0"/>
         </svg>
-        <h2 className="text-lg font-bold text-charcoal">Page not found</h2>
-        <p className="text-sm text-charcoal-muted">The page you&apos;re looking for doesn&apos;t exist.</p>
+        <h2 className="text-lg font-bold text-charcoal">{dict.errors.notFoundTitle}</h2>
+        <p className="text-sm text-charcoal-muted">{dict.errors.notFoundBody}</p>
         <Link href="/dashboard" className="btn-primary text-sm px-4 py-1.5 inline-block">
-          Go to Dashboard
+          {dict.errors.goToDashboard}
         </Link>
       </div>
     </div>

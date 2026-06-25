@@ -50,10 +50,6 @@
     70% { box-shadow: 0 0 0 8px rgba(224, 122, 95, 0); }
     100% { box-shadow: 0 0 0 0 rgba(224, 122, 95, 0); }
   }
-  @keyframes brutal-pulse {
-    0% { transform: scale(1); opacity: 0.6; }
-    100% { transform: scale(1.8); opacity: 0; }
-  }
 }
 
 :root {
@@ -175,12 +171,6 @@
     transform: translate(-1px, -1px);
   }
 
-  .card-sage {
-    background: var(--card);
-    box-shadow: 3px 3px 0px 0px #4A5D23;
-    border: 1px solid #4A5D23;
-  }
-
   .map-frame {
     border: 2px solid #1C1917;
     box-shadow: 3px 3px 0px 0px #4A5D23;
@@ -216,45 +206,9 @@
     margin: 0;
   }
 
-  .rule-v {
-    width: 1px;
-    background: #D1CCC3;
-    border: none;
-    margin: 0;
-    align-self: stretch;
-  }
-
-  .nav-link-editorial {
-    font-family: var(--font-sans), system-ui, sans-serif;
-    font-weight: 500;
-    color: #6B6560;
-    text-decoration: none;
-    transition: color 0.15s ease;
-    white-space: nowrap;
-    position: relative;
-  }
-  .nav-link-editorial:hover {
-    color: #1C1917;
-  }
-  .nav-link-editorial.active {
-    color: #E07A5F;
-  }
-  .nav-link-editorial.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: #E07A5F;
-  }
 }
 
 @layer components {
-  .editorial-header {
-    border-bottom: 1px solid #1C1917;
-  }
-
   .btn-primary {
     font-family: var(--font-sans), system-ui, sans-serif;
     font-size: 0.8125rem;
@@ -379,9 +333,6 @@
     transform: translateX(calc(2rem - 1.125rem));
   }
 
-  .pulse-ring {
-    animation: risk-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
 }
 
 /* Leaflet Editorial Overrides */

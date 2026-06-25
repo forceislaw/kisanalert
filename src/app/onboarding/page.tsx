@@ -3,9 +3,11 @@
 import { useRouter } from 'next/navigation'
 import Stepper, { Step } from '@/components/ui/Stepper'
 import { createClient } from '@/lib/supabase/client'
+import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 export default function OnboardingPage() {
   const router = useRouter()
+  const { dict } = useLocale()
 
   const handleComplete = async () => {
     const supabase = createClient()
@@ -18,15 +20,16 @@ export default function OnboardingPage() {
       <Stepper
         initialStep={1}
         onFinalStepCompleted={handleComplete}
-        nextButtonText="Next"
+        nextButtonText={dict.onboarding.next}
+        doneButtonText={dict.onboarding.done}
         disableStepIndicators
       >
         <Step>
           <StepTitle>
-            Welcome to <span className="text-terra">KisanAlert</span>
+            {dict.onboarding.welcomeTitle.split('KisanAlert')[0]}<span className="text-terra">KisanAlert</span>
           </StepTitle>
           <StepBody>
-            Your AI-powered pest intelligence system. This short guide will walk you through the key features so you can start protecting your crops right away.
+            {dict.onboarding.welcomeBody}
           </StepBody>
           <StepIcon>
             <svg viewBox="0 0 64 64" fill="none" className="w-16 h-16 mx-auto mt-6">
@@ -40,73 +43,73 @@ export default function OnboardingPage() {
 
         <Step>
           <StepTitle>
-            <span className="text-charcoal-muted text-xs font-mono tracking-[0.2em] uppercase block mb-2 font-sans">Step 1</span>
-            Your Dashboard
+            <span className="text-charcoal-muted text-xs font-mono tracking-[0.2em] uppercase block mb-2 font-sans">{dict.onboarding.stepLabel} 1</span>
+            {dict.onboarding.step1Title}
           </StepTitle>
           <StepBody>
-            The dashboard gives you a snapshot of current pest activity. You will see key metrics — active alerts, regions under watch, and overall risk — plus a live map and top affected districts.
+            {dict.onboarding.step1Body}
           </StepBody>
           <StepTip>
-            Tip: The risk score updates automatically as new reports come in.
+            {dict.onboarding.step1Tip}
           </StepTip>
         </Step>
 
         <Step>
           <StepTitle>
-            <span className="text-charcoal-muted text-xs font-mono tracking-[0.2em] uppercase block mb-2 font-sans">Step 2</span>
-            Upload &amp; Detect
+            <span className="text-charcoal-muted text-xs font-mono tracking-[0.2em] uppercase block mb-2 font-sans">{dict.onboarding.stepLabel} 2</span>
+            {dict.onboarding.step2Title}
           </StepTitle>
           <StepBody>
-            Snap a photo of an affected crop and upload it. KisanAlert uses Gemini AI to identify the pest or disease, estimate severity, and suggest the affected crop — all in seconds.
+            {dict.onboarding.step2Body}
           </StepBody>
           <StepTip>
-            Tip: Good lighting and a clear close-up of the affected area gives the best results.
+            {dict.onboarding.step2Tip}
           </StepTip>
         </Step>
 
         <Step>
           <StepTitle>
-            <span className="text-charcoal-muted text-xs font-mono tracking-[0.2em] uppercase block mb-2 font-sans">Step 3</span>
-            Explore the Map
+            <span className="text-charcoal-muted text-xs font-mono tracking-[0.2em] uppercase block mb-2 font-sans">{dict.onboarding.stepLabel} 3</span>
+            {dict.onboarding.step3Title}
           </StepTitle>
           <StepBody>
-            The outbreak map shows all reported pest incidents across India. Each marker is colour-coded by severity — critical (red), high (amber), moderate (green), low (light green). Click any marker for details.
+            {dict.onboarding.step3Body}
           </StepBody>
           <StepTip>
-            Tip: Use the district filter to zoom in on your area.
+            {dict.onboarding.step3Tip}
           </StepTip>
         </Step>
 
         <Step>
           <StepTitle>
-            <span className="text-charcoal-muted text-xs font-mono tracking-[0.2em] uppercase block mb-2 font-sans">Step 4</span>
-            Browse Reports
+            <span className="text-charcoal-muted text-xs font-mono tracking-[0.2em] uppercase block mb-2 font-sans">{dict.onboarding.stepLabel} 4</span>
+            {dict.onboarding.step4Title}
           </StepTitle>
           <StepBody>
-            The reports page lists every pest report with filters for severity, status, district, and date. Expand any row to see the full diagnosis including AI analysis, uploaded image, and actions taken.
+            {dict.onboarding.step4Body}
           </StepBody>
           <StepTip>
-            Tip: Toggle &quot;My Reports&quot; to see only reports you have submitted.
+            {dict.onboarding.step4Tip}
           </StepTip>
         </Step>
 
         <Step>
           <StepTitle>
-            <span className="text-charcoal-muted text-xs font-mono tracking-[0.2em] uppercase block mb-2 font-sans">Step 5</span>
-            Alerts &amp; Settings
+            <span className="text-charcoal-muted text-xs font-mono tracking-[0.2em] uppercase block mb-2 font-sans">{dict.onboarding.stepLabel} 5</span>
+            {dict.onboarding.step5Title}
           </StepTitle>
           <StepBody>
-            Configure SMS and email alerts so you never miss an outbreak in your region. You can also switch between 5 supported languages: English, Hindi, Marathi, Telugu, and Kannada.
+            {dict.onboarding.step5Body}
           </StepBody>
           <StepTip>
-            Tip: Enable Critical Only mode to receive alerts only for high-severity outbreaks.
+            {dict.onboarding.step5Tip}
           </StepTip>
         </Step>
 
         <Step>
-          <StepTitle>You are all set</StepTitle>
+          <StepTitle>{dict.onboarding.finalTitle}</StepTitle>
           <StepBody>
-            You are ready to start using KisanAlert. Begin by exploring your dashboard or upload your first crop photo for AI analysis.
+            {dict.onboarding.finalBody}
           </StepBody>
           <StepIcon>
             <svg viewBox="0 0 64 64" fill="none" className="w-16 h-16 mx-auto mt-6">
