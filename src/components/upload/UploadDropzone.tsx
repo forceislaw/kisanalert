@@ -6,7 +6,7 @@ import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { Ripple } from '@/components/loading-ui/ripple';
 
 interface UploadDropzoneProps {
-  onAnalysisComplete: (result: VisionAnalysisResult, imageUrl: string) => void;
+  onAnalysisComplete: (result: VisionAnalysisResult, imageUrl: string, file: File) => void;
 }
 
 export default function UploadDropzone({ onAnalysisComplete }: UploadDropzoneProps) {
@@ -70,7 +70,7 @@ export default function UploadDropzone({ onAnalysisComplete }: UploadDropzonePro
         throw new Error(json.error || 'Analysis failed');
       }
 
-      onAnalysisComplete(json.data as VisionAnalysisResult, previewUrl);
+      onAnalysisComplete(json.data as VisionAnalysisResult, previewUrl, file);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Analysis failed');
     } finally {

@@ -14,6 +14,7 @@ export default function UploadPage() {
 
   const [analysisResult, setAnalysisResult] = useState<VisionAnalysisResult | null>(null)
   const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
@@ -69,15 +70,17 @@ export default function UploadPage() {
     }
   }, [lookupsReady, districtMap])
 
-  const handleAnalysisComplete = (result: VisionAnalysisResult, url: string) => {
+  const handleAnalysisComplete = (result: VisionAnalysisResult, url: string, file: File) => {
     if (result.crop_guess === 'unknown') {
       setSubmitError('No crop detected in this image. Please upload a clear photo of a crop or plant showing leaves, fruit, or stems.')
       setAnalysisResult(null)
       setImageUrl(null)
+      setImageFile(null)
       return
     }
     setAnalysisResult(result)
     setImageUrl(url)
+    setImageFile(file)
     setSubmitError(null)
   }
 
@@ -118,11 +121,8 @@ export default function UploadPage() {
     setSubmitError(null)
 
     try {
-      const blobRes = await fetch(imageUrl)
-      const imageBlob = await blobRes.blob()
-
       const formData = new FormData()
-      formData.append('image', imageBlob, 'crop.jpg')
+      if (imageFile) formData.append('image', imageFile)
       formData.append('district_id', String(selectedDistrict))
       formData.append('crop_id', String(cropId))
       formData.append('detected_pest_id', pestId ? String(pestId) : '')
@@ -155,6 +155,7 @@ export default function UploadPage() {
   const handleDiscard = () => {
     setAnalysisResult(null)
     setImageUrl(null)
+    setImageFile(null)
     if (imageUrl) URL.revokeObjectURL(imageUrl)
   }
 
