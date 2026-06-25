@@ -153,7 +153,7 @@ export default function ReportsPage() {
               Report Details
             </h3>
 
-            {selectedReport.image_storage_path && selectedReport.image_storage_path.startsWith('data:') && (
+            {selectedReport.image_storage_path && (
               <div className="mb-5 border border-stone bg-parchment">
                 <Image
                   src={selectedReport.image_storage_path}

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase/server'
 import { z } from 'zod'
 import { sendNotification } from '@/lib/notifications'
 import type { Database } from '@/lib/supabase/types'
@@ -128,6 +128,39 @@ export async function POST(req: NextRequest) {
 
     const confidence = validation.data.confidence_score ?? 0
     const status = confidence >= 0.8 ? 'verified' : 'pending'
+
+    // Upload image to Supabase Storage if it's a data URI
+    let imagePath = validation.data.image_storage_path
+    if (imagePath.startsWith('data:')) {
+      try {
+        const serviceClient = createServiceClient()
+        const bucketName = 'report-images'
+        const matches = imagePath.match(/^data:image\/(\w+);base64,(.+)$/)
+        if (matches) {
+          const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1]
+          const buffer = Buffer.from(matches[2], 'base64')
+          const fileName = `${userId || 'anon'}/${crypto.randomUUID()}.${ext}`
+
+          const { error: bucketError } = await serviceClient.storage.createBucket(bucketName, { public: true })
+          if (bucketError && !bucketError.message.includes('already exists')) {
+            console.warn('Bucket creation failed:', bucketError.message)
+          }
+
+          const { error: uploadError } = await serviceClient.storage
+            .from(bucketName)
+            .upload(fileName, buffer, { contentType: `image/${ext}`, upsert: false })
+
+          if (!uploadError) {
+            const { data: { publicUrl } } = serviceClient.storage.from(bucketName).getPublicUrl(fileName)
+            imagePath = publicUrl
+          } else {
+            console.warn('Storage upload failed, storing as base64:', uploadError.message)
+          }
+        }
+      } catch (storageErr) {
+        console.warn('Storage upload error, keeping base64:', storageErr)
+      }
+    }
 
     const diagnosis_translations: Record<string, string> = {}
     if (validation.data.ai_pest_name) {

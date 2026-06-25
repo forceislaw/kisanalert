@@ -28,6 +28,15 @@ export async function GET(req: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
       const { data: { user } } = await supabase.auth.getUser()
+
+      // Create profile if it doesn't exist
+      if (user?.id) {
+        await (supabase.from('profiles') as any).upsert({
+          id: user.id,
+          full_name: user.user_metadata?.full_name || null,
+          phone_number: user.user_metadata?.phone || null,
+        }, { onConflict: 'id' })
+      }
       const from = searchParams.get('from')
 
       if (!user?.id) {

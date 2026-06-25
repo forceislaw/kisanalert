@@ -91,6 +91,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid file type. Only images are allowed.' }, { status: 400 });
     }
 
+    if (file.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Image too large. Maximum size is 5MB.' }, { status: 400 });
+    }
+
     const buffer = Buffer.from(await file.arrayBuffer());
     const base64Image = buffer.toString('base64');
 
