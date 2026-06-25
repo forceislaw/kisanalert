@@ -19,9 +19,9 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-12">
-      <div className="border-b border-stone pb-5 flex items-end justify-between">
+      <div className="border-b border-stone pb-5 flex flex-col md:flex-row md:items-end justify-between gap-3">
         <div>
-          <h1 className="text-4xl font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
+          <h1 className="text-3xl sm:text-4xl font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
             {dict.dashboard.title}
           </h1>
           <p className="eyebrow mt-1">{dict.dashboard.subtitle}</p>
