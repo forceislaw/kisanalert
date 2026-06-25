@@ -126,47 +126,66 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient()
-    const body = await req.json()
+    const formData = await req.formData()
 
-    const validation = CreateReportSchema.safeParse(body)
-    if (!validation.success) {
-      return NextResponse.json({ error: 'Invalid report data.', details: validation.error.issues }, { status: 400 })
+    const getNum = (key: string): number | null => {
+      const v = formData.get(key)
+      if (!v || v === '') return null
+      const n = Number(v)
+      return isNaN(n) ? null : n
+    }
+
+    const district_id = getNum('district_id')
+    const crop_id = getNum('crop_id')
+    const detected_pest_id = getNum('detected_pest_id')
+    const confidence_score = getNum('confidence_score')
+    const latitude = getNum('latitude')
+    const longitude = getNum('longitude')
+
+    if (!district_id) {
+      return NextResponse.json({ error: 'Invalid report data.' }, { status: 400 })
+    }
+
+    const severity_level = formData.get('severity_level') as string
+    const ai_pest_name = formData.get('ai_pest_name') as string | null
+    const imageFile = formData.get('image') as File | null
+    const validSeverities = ['low', 'moderate', 'high', 'critical']
+
+    if (!severity_level || !validSeverities.includes(severity_level)) {
+      return NextResponse.json({ error: 'Invalid report data.' }, { status: 400 })
     }
 
     const { data: { user } } = await supabase.auth.getUser()
     const userId = user?.id || null
 
-    const confidence = validation.data.confidence_score ?? 0
+    const confidence = confidence_score ?? 0
     const status = confidence >= 0.8 ? 'verified' : 'pending'
 
-    // Upload image to Supabase Storage if it's a data URI
-    let imagePath = validation.data.image_storage_path
-    if (imagePath.startsWith('data:')) {
+    // Upload image to Supabase Storage
+    let imagePath = ''
+    if (imageFile) {
       try {
         const serviceClient = createServiceClient()
         const bucketName = 'report-images'
-        const matches = imagePath.match(/^data:image\/(\w+);base64,(.+)$/)
-        if (matches) {
-          const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1]
-          const buffer = Buffer.from(matches[2], 'base64')
-          const fileName = `${userId || 'anon'}/${crypto.randomUUID()}.${ext}`
+        const ext = imageFile.name.split('.').pop() || 'jpg'
+        const buffer = Buffer.from(await imageFile.arrayBuffer())
+        const fileName = `${userId || 'anon'}/${crypto.randomUUID()}.${ext}`
 
-          const { error: bucketError } = await serviceClient.storage.createBucket(bucketName, { public: true })
-          if (bucketError && !bucketError.message.includes('already exists')) {
-            console.warn('Bucket creation failed:', bucketError.message)
-          }
+        const { error: bucketError } = await serviceClient.storage.createBucket(bucketName, { public: true })
+        if (bucketError && !bucketError.message.includes('already exists')) {
+          console.warn('Bucket creation failed:', bucketError.message)
+        }
 
-          const { error: uploadError } = await serviceClient.storage
-            .from(bucketName)
-            .upload(fileName, buffer, { contentType: `image/${ext}`, upsert: false })
+        const { error: uploadError } = await serviceClient.storage
+          .from(bucketName)
+          .upload(fileName, buffer, { contentType: imageFile.type, upsert: false })
 
-          if (!uploadError) {
-            const { data: { publicUrl } } = serviceClient.storage.from(bucketName).getPublicUrl(fileName)
-            imagePath = publicUrl
-          } else {
-            console.error('Storage upload failed:', uploadError.message)
-            return NextResponse.json({ error: 'Failed to upload image.' }, { status: 500 })
-          }
+        if (!uploadError) {
+          const { data: { publicUrl } } = serviceClient.storage.from(bucketName).getPublicUrl(fileName)
+          imagePath = publicUrl
+        } else {
+          console.error('Storage upload failed:', uploadError.message)
+          return NextResponse.json({ error: 'Failed to upload image.' }, { status: 500 })
         }
       } catch (storageErr) {
         console.error('Storage upload error:', storageErr)
@@ -175,21 +194,21 @@ export async function POST(req: NextRequest) {
     }
 
     const diagnosis_translations: Record<string, string> = {}
-    if (validation.data.ai_pest_name) {
-      diagnosis_translations.en = validation.data.ai_pest_name
+    if (ai_pest_name) {
+      diagnosis_translations.en = ai_pest_name
     }
 
     const { data, error } = await supabase
       .from('pest_reports')
       .insert([{
-        district_id: validation.data.district_id,
-        crop_id: validation.data.crop_id,
-        detected_pest_id: validation.data.detected_pest_id,
-        severity_level: validation.data.severity_level,
+        district_id,
+        crop_id,
+        detected_pest_id,
+        severity_level,
         image_storage_path: imagePath,
-        confidence_score: validation.data.confidence_score ?? null,
-        latitude: validation.data.latitude ?? null,
-        longitude: validation.data.longitude ?? null,
+        confidence_score: confidence_score ?? null,
+        latitude: latitude ?? null,
+        longitude: longitude ?? null,
         status,
         user_id: userId,
         diagnosis_translations: Object.keys(diagnosis_translations).length > 0 ? diagnosis_translations : null,
@@ -211,19 +230,18 @@ export async function POST(req: NextRequest) {
       const prefs = prefData as { email_alerts: boolean; sms_alerts: boolean; critical_only: boolean } | null
 
       if (prefs?.email_alerts && user?.email) {
-        const severity = validation.data.severity_level
-        const isCritical = severity === 'high' || severity === 'critical'
+        const isCritical = severity_level === 'high' || severity_level === 'critical'
         if (!prefs.critical_only || isCritical) {
           const { data: districtData } = await supabase
             .from('districts')
             .select('name_en')
-            .eq('id', validation.data.district_id)
+            .eq('id', district_id)
             .maybeSingle()
 
           sendNotification({
             to: user.email,
-            subject: `KisanAlert: ${severity} severity pest report in ${(districtData as DistrictRow | null)?.name_en || 'unknown'} district`,
-            text: `A new pest report has been recorded.\nSeverity: ${severity}\nStatus: ${status}\nConfidence: ${(confidence * 100).toFixed(0)}%`,
+            subject: `KisanAlert: ${severity_level} severity pest report in ${(districtData as DistrictRow | null)?.name_en || 'unknown'} district`,
+            text: `A new pest report has been recorded.\nSeverity: ${severity_level}\nStatus: ${status}\nConfidence: ${(confidence * 100).toFixed(0)}%`,
           })
         }
       }

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
 import { useRouter } from 'next/navigation'
 import UploadDropzone from '@/components/upload/UploadDropzone'
@@ -97,17 +97,6 @@ export default function UploadPage() {
     return null
   }
 
-  const blobToBase64 = useCallback(async (url: string): Promise<string> => {
-    const res = await fetch(url)
-    const blob = await res.blob()
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onloadend = () => resolve(reader.result as string)
-      reader.onerror = reject
-      reader.readAsDataURL(blob)
-    })
-  }, [])
-
   const handleConfirm = async () => {
     if (!analysisResult || !imageUrl) return
 
@@ -129,24 +118,23 @@ export default function UploadPage() {
     setSubmitError(null)
 
     try {
-      const imageData = imageUrl.startsWith('blob:') ? await blobToBase64(imageUrl) : imageUrl
+      const blobRes = await fetch(imageUrl)
+      const imageBlob = await blobRes.blob()
 
-      const body = {
-        district_id: selectedDistrict,
-        crop_id: cropId,
-        detected_pest_id: pestId,
-        ai_pest_name: analysisResult.pest_name && !pestId ? analysisResult.pest_name : null,
-        severity_level: analysisResult.severity_estimate === 'medium' ? 'moderate' as const : analysisResult.severity_estimate,
-        image_storage_path: imageData,
-        confidence_score: analysisResult.confidence,
-        latitude: userLat,
-        longitude: userLng,
-      }
+      const formData = new FormData()
+      formData.append('image', imageBlob, 'crop.jpg')
+      formData.append('district_id', String(selectedDistrict))
+      formData.append('crop_id', String(cropId))
+      formData.append('detected_pest_id', pestId ? String(pestId) : '')
+      formData.append('ai_pest_name', analysisResult.pest_name && !pestId ? analysisResult.pest_name : '')
+      formData.append('severity_level', analysisResult.severity_estimate === 'medium' ? 'moderate' : analysisResult.severity_estimate)
+      formData.append('confidence_score', String(analysisResult.confidence))
+      if (userLat !== null) formData.append('latitude', String(userLat))
+      if (userLng !== null) formData.append('longitude', String(userLng))
 
       const res = await fetch('/api/reports', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: formData,
       })
 
       if (!res.ok) {
