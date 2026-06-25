@@ -152,7 +152,7 @@ export default function PillNav() {
               <circle cx="20" cy="20" r="20" fill="#E07A5F"/>
               <path d="M20 28 C11 24 13 12 20 8 C27 12 29 24 20 28Z" fill="#F7F5F0"/>
             </svg>
-            <span className="ml-2 text-lg font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>KisanAlert</span>
+            <span style={{ fontFamily: 'var(--font-sans), DM Sans, sans-serif', fontSize: '0.8125rem', fontWeight: 500, letterSpacing: '-0.01em', color: '#6B6560' }}>KisanAlert</span>
           </Link>
 
           <div className="pill-nav-items desktop-only" ref={navRef}>
