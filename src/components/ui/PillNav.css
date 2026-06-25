@@ -11,14 +11,10 @@
 .pill-logo {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 9999px;
+  gap: 0.5rem;
   text-decoration: none;
   transition: opacity 0.2s;
   flex-shrink: 0;
-  overflow: hidden;
 }
 
 .pill-logo:hover {
