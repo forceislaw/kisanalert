@@ -5,6 +5,7 @@ import { useLocale } from '@/lib/i18n/LocaleProvider';
 import { VisionAnalysisResult } from '@/app/api/vision-analyze/route';
 import SeverityBadge from '../ui/SeverityBadge';
 import ConfirmDialog from '../ui/ConfirmDialog';
+import { Ripple } from '@/components/loading-ui/ripple';
 
 interface VisionResultCardProps {
   result: VisionAnalysisResult;
@@ -92,7 +93,7 @@ export default function VisionResultCard({ result, imageUrl, onConfirm, onDiscar
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
-                  <span className="inline-block w-3 h-3 border border-white/30 border-t-white animate-spin" style={{ borderRadius: '0' }} />
+                  <Ripple className="w-5 h-5 text-parchment" />
                   Submitting...
                 </span>
               ) : (

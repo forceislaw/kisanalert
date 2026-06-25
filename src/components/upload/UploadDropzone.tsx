@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { VisionAnalysisResult } from '@/app/api/vision-analyze/route';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
+import { Ripple } from '@/components/loading-ui/ripple';
 
 interface UploadDropzoneProps {
   onAnalysisComplete: (result: VisionAnalysisResult, imageUrl: string) => void;
@@ -99,7 +100,7 @@ export default function UploadDropzone({ onAnalysisComplete }: UploadDropzonePro
         
         {isLoading ? (
           <div className="flex flex-col items-center gap-3">
-            <div className="w-10 h-10 border-2 border-stone border-t-sage animate-spin" style={{ borderRadius: '0' }} />
+            <Ripple className="w-12 h-12 text-terra" />
             <p className="text-sm text-charcoal-muted font-sans">{dict.upload.analyzing}</p>
           </div>
         ) : (
