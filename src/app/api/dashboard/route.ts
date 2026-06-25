@@ -20,7 +20,8 @@ export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient()
   const { searchParams } = new URL(req.url)
 
-  const days = searchParams.get('days')
+  const daysRaw = searchParams.get('days')
+  const days = daysRaw ? Math.min(365, Math.max(1, parseInt(daysRaw))) : null
 
   let query = supabase
     .from('pest_reports')
@@ -28,11 +29,14 @@ export async function GET(req: NextRequest) {
 
   if (days) {
     const since = new Date()
-    since.setDate(since.getDate() - parseInt(days))
+    since.setDate(since.getDate() - days)
     query = query.gte('created_at', since.toISOString())
   }
 
-  const { data: reports, error: reportsError } = await query.returns<ReportRow[]>()
+  const { data: reports, error: reportsError } = await query
+    .order('created_at', { ascending: false })
+    .limit(10000)
+    .returns<ReportRow[]>()
 
   if (reportsError) throw new Error(reportsError.message)
 

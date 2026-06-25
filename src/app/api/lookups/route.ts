@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase/server'
+import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 export async function GET() {
-  const supabase = createServiceClient()
+  const supabase = await createServerSupabaseClient()
 
   const [cropsRes, pestsRes, districtsRes] = await Promise.all([
     supabase.from('crops').select('id, key_name'),

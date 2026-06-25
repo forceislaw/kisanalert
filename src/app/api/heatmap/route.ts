@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient()
   const { searchParams } = new URL(req.url)
   const daysParam = searchParams.get('days')
-  const days = daysParam ? parseInt(daysParam) : 7
+  const days = Math.min(365, Math.max(1, daysParam ? parseInt(daysParam) : 7))
 
   const since = new Date()
   since.setDate(since.getDate() - days)

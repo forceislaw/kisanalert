@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
-import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 import type { Database } from '@/lib/supabase/types'
 
@@ -31,11 +30,10 @@ export async function GET(req: NextRequest) {
 
       // Create profile if it doesn't exist
       if (user?.id) {
-        await (supabase.from('profiles') as any).upsert({
-          id: user.id,
-          full_name: user.user_metadata?.full_name || null,
-          phone_number: user.user_metadata?.phone || null,
-        }, { onConflict: 'id' })
+        await supabase.from('profiles').upsert(
+          { id: user.id, full_name: user.user_metadata?.full_name || null, phone_number: user.user_metadata?.phone || null } as never,
+          { onConflict: 'id' },
+        )
       }
       const from = searchParams.get('from')
 
@@ -51,15 +49,11 @@ export async function GET(req: NextRequest) {
         // Check if user has existing reports or a profile under any user_id with this email
         let hasExistingData = false
         try {
-          const serviceClient = createClient<Database>(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_ROLE_KEY!
-          )
-          const { count } = await serviceClient
+          const { count } = await supabase
             .from('pest_reports')
             .select('*', { count: 'exact', head: true })
             .eq('user_id', user.id)
-          const { data: profile } = await serviceClient
+          const { data: profile } = await supabase
             .from('profiles')
             .select('id')
             .eq('id', user.id)
@@ -79,16 +73,12 @@ export async function GET(req: NextRequest) {
       }
 
       // Check if user has existing reports or a profile
-      const serviceClient = createClient<Database>(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-      )
-      const { count } = await serviceClient
+      const { count } = await supabase
         .from('pest_reports')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', user.id)
 
-      const { data: profile } = await serviceClient
+      const { data: profile } = await supabase
         .from('profiles')
         .select('id')
         .eq('id', user.id)
