@@ -38,7 +38,7 @@ export default function VisionResultCard({ result, imageUrl, onConfirm, onDiscar
                   {result.is_pest_detected ? result.pest_name : 'Healthy Crop'}
                 </h3>
                 <p className="text-sm text-charcoal-muted mt-1">
-                  Crop: {result.crop_guess}
+                  Crop: {result.crop_guess === 'unknown' ? 'Unknown' : result.crop_guess}
                 </p>
               </div>
               {result.is_pest_detected && (

@@ -105,6 +105,11 @@ export default function UploadPage() {
   const handleConfirm = async () => {
     if (!analysisResult || !imageUrl) return
 
+    if (analysisResult.crop_guess === 'unknown') {
+      setSubmitError('No crop detected in this image. Please upload a clear photo of a crop or plant.')
+      return
+    }
+
     const cropId = findCropId(analysisResult.crop_guess)
     const pestId = analysisResult.pest_name ? findPestId(analysisResult.pest_name) : null
 

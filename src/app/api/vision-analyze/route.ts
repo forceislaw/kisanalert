@@ -16,7 +16,7 @@ const KNOWN_CROPS = [
 export const VisionAnalysisSchema = z.object({
   pest_name: z.string(),
   confidence: z.number().min(0).max(1),
-  crop_guess: z.enum(KNOWN_CROPS),
+  crop_guess: z.enum([...KNOWN_CROPS, 'unknown']),
   severity_estimate: z.enum(['low', 'medium', 'high', 'critical']),
   recommended_action: z.string(),
   is_pest_detected: z.boolean(),
@@ -99,13 +99,14 @@ export async function POST(req: NextRequest) {
     const base64Image = buffer.toString('base64');
 
     const prompt = `Analyze this agricultural image. Identify the crop and any pest/disease present.
-Return ONLY valid JSON with crop_guess exactly from this list: ${KNOWN_CROPS.join(', ')}.
+If the image does NOT contain a clearly visible crop or plant, set crop_guess to "unknown".
+Return ONLY valid JSON with crop_guess exactly from this list: ${KNOWN_CROPS.join(', ')} or "unknown".
 {
-  "pest_name": "name of pest or disease (or 'none' if healthy)",
+  "pest_name": "name of pest or disease (or 'none' if healthy, or 'unknown' if no crop)",
   "confidence": 0.95,
-  "crop_guess": "one of the listed crops",
+  "crop_guess": "one of the listed crops or 'unknown'",
   "severity_estimate": "low"|"medium"|"high"|"critical",
-  "recommended_action": "short actionable advice",
+  "recommended_action": "short actionable advice (or 'None' if no crop detected)",
   "is_pest_detected": true/false
 }`
 
