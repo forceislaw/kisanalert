@@ -21,16 +21,143 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3001',
 ].filter(Boolean) as string[]
 
+const MAX_BODY_MB = 6
+
+const SQLI_PATTERNS = [
+  /(\bOR\b|\bAND\b)\s+[\d\"']+\s*[=<>]/i,
+  /\bUNION\b\s+\bSELECT\b/i,
+  /\bDROP\s+TABLE\b/i,
+  /\bALTER\s+TABLE\b/i,
+  /\bCREATE\s+TABLE\b/i,
+  /\bSELECT\s+.*\bFROM\b.*\bWHERE\b/i,
+  /'\s*--/,
+  /;\s*DROP\s/i,
+  /\bxp_cmdshell\b/i,
+  /\bWAITFOR\s+DELAY\b/i,
+  /\/\*!\d+\s+SELECT/i,
+  /'\s*OR\s*'\d*'\s*=\s*'/i,
+  /'\s*OR\s*1\s*=\s*1/i,
+]
+
+const XSS_PATTERNS = [
+  /<script[^>]*>/i,
+  /javascript\s*:/i,
+  /onerror\s*=/i,
+  /onload\s*=/i,
+  /onclick\s*=/i,
+  /onfocus\s*=/i,
+  /onmouseover\s*=/i,
+  /<[^>]*>\s*alert\s*\(/i,
+  /document\.cookie/i,
+  /eval\s*\(/i,
+  /String\.fromCharCode/i,
+  /<svg[^>]*>/i,
+  /<iframe[^>]*>/i,
+]
+
+const TRAVERSAL_PATTERNS = [
+  /\.\.(\/|\\)/,
+  /%2e%2e/,
+  /%252e%252e/,
+  /\.\.%00/,
+  /\.\.(\\|%5c)/,
+  /etc\/passwd/i,
+  /etc\/shadow/i,
+  /boot\.ini/i,
+  /windows\\win\.ini/i,
+]
+
+const BOT_USER_AGENTS = [
+  /sqlmap/i,
+  /nikto/i,
+  /nmap/i,
+  /zgrab/i,
+  /masscan/i,
+  /dirbuster/i,
+  /gobuster/i,
+  /wpscan/i,
+  /acunetix/i,
+  /burpsuite/i,
+  /nessus/i,
+  /openvas/i,
+  /python-requests/i,
+  /go-http-client/i,
+  /curl/i,
+  /wget/i,
+]
+
+function scanValues(values: string[], patterns: RegExp[]): string | null {
+  for (const v of values) {
+    if (!v || v.length > 2000) continue
+    const decoded = decodeURIComponent(v)
+    for (const p of patterns) {
+      if (p.test(decoded)) return p.source
+    }
+  }
+  return null
+}
+
+function wafCheck(req: NextRequest): NextResponse | null {
+  const url = new URL(req.url)
+  const ua = req.headers.get('user-agent') || ''
+
+  for (const b of BOT_USER_AGENTS) {
+    if (b.test(ua)) {
+      return new NextResponse(null, { status: 403 })
+    }
+  }
+
+  const allParams: string[] = []
+  url.searchParams.forEach((v) => allParams.push(v))
+  allParams.push(url.pathname)
+
+  const sqli = scanValues(allParams, SQLI_PATTERNS)
+  if (sqli) {
+    return new NextResponse(JSON.stringify({ error: 'Bad request' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
+  const xss = scanValues(allParams, XSS_PATTERNS)
+  if (xss) {
+    return new NextResponse(JSON.stringify({ error: 'Bad request' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
+  const trav = scanValues(allParams, TRAVERSAL_PATTERNS)
+  if (trav) {
+    return new NextResponse(JSON.stringify({ error: 'Bad request' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
+  const cl = req.headers.get('content-length')
+  if (cl && parseInt(cl) > MAX_BODY_MB * 1024 * 1024) {
+    return new NextResponse(JSON.stringify({ error: 'Request too large' }), {
+      status: 413,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
+  return null
+}
+
 export function proxy(req: NextRequest) {
   const now = Date.now()
   const url = new URL(req.url)
   const isApi = url.pathname.startsWith('/api')
 
   if (isApi) {
+    const blocked = wafCheck(req)
+    if (blocked) return blocked
+
     const origin = req.headers.get('origin')
     const referer = req.headers.get('referer')
 
-    // CSRF check for state-changing methods
     if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
       const sourceOrigin = origin || (referer ? new URL(referer).origin : null)
       if (sourceOrigin) {
