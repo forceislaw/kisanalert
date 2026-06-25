@@ -173,7 +173,7 @@ export default function UploadPage() {
   return (
     <div className="space-y-12 max-w-3xl mx-auto">
       <div className="border-b border-stone pb-5">
-        <h1 className="text-4xl font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
+        <h1 className="text-3xl sm:text-4xl font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
           {dict.upload.title}
         </h1>
         <p className="eyebrow mt-1">{dict.upload.subtitle}</p>
