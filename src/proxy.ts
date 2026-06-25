@@ -13,13 +13,42 @@ const LIMITS: Record<string, number> = {
   'default': 120,
 }
 
+const ALLOWED_ORIGINS = [
+  'https://kisanalert-app.vercel.app',
+  'https://kisanalert.vercel.app',
+  process.env.NEXT_PUBLIC_SITE_URL,
+  'http://localhost:3000',
+  'http://localhost:3001',
+].filter(Boolean) as string[]
+
 export function proxy(req: NextRequest) {
   const now = Date.now()
+  const url = new URL(req.url)
+
+  const origin = req.headers.get('origin')
+  const referer = req.headers.get('referer')
+
+  // CSRF check for state-changing methods
+  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+    const sourceOrigin = origin || (referer ? new URL(referer).origin : null)
+    if (sourceOrigin) {
+      const allowed = ALLOWED_ORIGINS.some(o => {
+        if (o === sourceOrigin) return true
+        try { return new URL(o).hostname === new URL(sourceOrigin).hostname } catch { return false }
+      })
+      if (!allowed) {
+        return new NextResponse(JSON.stringify({ error: 'Forbidden' }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
+    }
+  }
+
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
     || req.headers.get('x-real-ip')
     || 'unknown'
 
-  const url = new URL(req.url)
   const limit = Object.entries(LIMITS).find(([path]) => url.pathname.startsWith(path))?.[1] || LIMITS['default']
 
   const entries = (rateMap.get(ip) || []).filter(e => now - e.timestamps[e.timestamps.length - 1] < WINDOW_MS)
@@ -55,6 +84,8 @@ export function proxy(req: NextRequest) {
   response.headers.set('X-XSS-Protection', '0')
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self)')
+  response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
+  response.headers.set('Content-Security-Policy', "default-src 'none'; base-uri 'none'; form-action 'none'")
 
   return response
 }
