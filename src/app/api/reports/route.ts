@@ -12,7 +12,7 @@ const CreateReportSchema = z.object({
   detected_pest_id: z.number().nullable(),
   ai_pest_name: z.string().max(200).optional().nullable(),
   severity_level: z.enum(['low', 'moderate', 'high', 'critical']),
-  image_storage_path: z.string().max(500),
+  image_storage_path: z.string(),
   confidence_score: z.number().optional().nullable(),
   latitude: z.number().min(-90).max(90).optional().nullable(),
   longitude: z.number().min(-180).max(180).optional().nullable(),

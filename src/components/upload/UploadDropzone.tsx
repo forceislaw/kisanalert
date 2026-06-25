@@ -45,6 +45,11 @@ export default function UploadDropzone({ onAnalysisComplete }: UploadDropzonePro
       return;
     }
 
+    if (file.size > 2 * 1024 * 1024) {
+      setError('Image too large. Maximum size is 2MB.');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
