@@ -17,7 +17,15 @@ export const VisionAnalysisSchema = z.object({
   pest_name: z.string(),
   confidence: z.number().min(0).max(1),
   crop_guess: z.enum([...KNOWN_CROPS, 'unknown']),
-  severity_estimate: z.enum(['low', 'medium', 'high', 'critical']),
+  severity_estimate: z.preprocess(
+    (val) => {
+      const v = String(val).toLowerCase().trim();
+      if (v === 'moderate') return 'medium';
+      if (v === 'none' || v === '') return 'low';
+      return v;
+    },
+    z.enum(['low', 'medium', 'high', 'critical'])
+  ),
   recommended_action: z.string(),
   is_pest_detected: z.boolean(),
 });
@@ -100,14 +108,14 @@ export async function POST(req: NextRequest) {
 
     const prompt = `Analyze this agricultural image. Identify the crop and any pest/disease present.
 If the image does NOT contain a clearly visible crop or plant, set crop_guess to "unknown".
-Return ONLY valid JSON with crop_guess exactly from this list: ${KNOWN_CROPS.join(', ')} or "unknown".
+Return ONLY valid JSON. Use EXACT values — no synonyms.
 {
   "pest_name": "name of pest or disease (or 'none' if healthy, or 'unknown' if no crop)",
   "confidence": 0.95,
-  "crop_guess": "one of the listed crops or 'unknown'",
-  "severity_estimate": "low"|"medium"|"high"|"critical",
+  "crop_guess": "one of these EXACT values: ${KNOWN_CROPS.join(', ')} or 'unknown'",
+  "severity_estimate": "low" or "medium" or "high" or "critical" (EXACTLY these strings, nothing else, never 'moderate' or 'none')",
   "recommended_action": "short actionable advice (or 'None' if no crop detected)",
-  "is_pest_detected": true/false
+  "is_pest_detected": true or false
 }`
 
     const data = await tryGenerate(genAI, file, base64Image, prompt)
