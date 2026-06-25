@@ -91,6 +91,18 @@ export function proxy(req: NextRequest) {
 
   if (isApi) {
     response.headers.set('Content-Security-Policy', "default-src 'none'; base-uri 'none'; form-action 'none'")
+  } else {
+    response.headers.set('Content-Security-Policy', [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.supabase.co",
+      "font-src 'self'",
+      "connect-src 'self' https://*.supabase.co",
+      "base-uri 'self'",
+      "frame-src 'none'",
+      "object-src 'none'",
+    ].join('; '))
   }
 
   return response
