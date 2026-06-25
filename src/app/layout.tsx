@@ -7,6 +7,7 @@ import { getDictionary, locales, Locale } from "@/lib/i18n/getDictionary";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 import Header from "@/components/layout/Header";
+import ClickSparkWrapper from "@/components/ui/ClickSparkWrapper";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -53,16 +54,18 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={cn("scroll-smooth", playfair.variable, dmSans.variable, dmMono.variable)}>
       <body className="font-sans antialiased min-h-screen flex flex-col">
-        <AuthProvider>
-          <LocaleProvider serverLocale={locale} serverDictionary={dictionary}>
-            <div className="min-h-screen bg-parchment">
-              <Header />
-              <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16 py-10">
-                {children}
+        <ClickSparkWrapper>
+          <AuthProvider>
+            <LocaleProvider serverLocale={locale} serverDictionary={dictionary}>
+              <div className="min-h-screen bg-parchment">
+                <Header />
+                <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16 py-10">
+                  {children}
+                </div>
               </div>
-            </div>
-          </LocaleProvider>
-        </AuthProvider>
+            </LocaleProvider>
+          </AuthProvider>
+        </ClickSparkWrapper>
       </body>
     </html>
   );
