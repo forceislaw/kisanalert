@@ -22,7 +22,7 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3001',
 ].filter(Boolean) as string[]
 
-const MAX_BODY_MB = 6
+const MAX_BODY_MB = 10
 
 let blocklistCache: Set<string> | null = null
 let blocklistFetchedAt = 0
