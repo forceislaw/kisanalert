@@ -110,8 +110,8 @@ export default function UploadDropzone({ onAnalysisComplete }: UploadDropzonePro
           </div>
         ) : (
           <div className="flex flex-col items-center gap-4 text-charcoal-muted">
-            <svg className="w-10 h-10 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            <svg className="w-12 h-12 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 21c3-3 5-10 9-17 4 7 6 14 9 17-3 1-6 1.5-9 1.5s-6-.5-9-1.5z" />
             </svg>
             <p className="text-sm font-medium">{dict.upload.dragDrop}</p>
           </div>
