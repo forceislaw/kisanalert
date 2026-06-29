@@ -10,12 +10,12 @@ import LanguageSwitcher from '@/components/nav/LanguageSwitcher'
 import type { Dictionary } from '@/lib/i18n/getDictionary'
 import './PillNav.css'
 
-const NAV_ITEMS: { href: string; labelKey: keyof Dictionary['nav'] }[] = [
-  { href: '/dashboard', labelKey: 'dashboard' },
-  { href: '/dashboard/map', labelKey: 'map' },
-  { href: '/reports', labelKey: 'reports' },
-  { href: '/dashboard/upload', labelKey: 'reportNew' },
-  { href: '/settings', labelKey: 'settings' },
+const NAV_ITEMS: { href: string; labelKey: keyof Dictionary['nav']; tooltip: string }[] = [
+  { href: '/dashboard', labelKey: 'dashboard', tooltip: 'Key metrics & outbreak overview' },
+  { href: '/dashboard/map', labelKey: 'map', tooltip: 'Geospatial outbreak view' },
+  { href: '/reports', labelKey: 'reports', tooltip: 'Browse & search pest reports' },
+  { href: '/dashboard/upload', labelKey: 'reportNew', tooltip: 'Upload & submit a pest report' },
+  { href: '/settings', labelKey: 'settings', tooltip: 'Account & notification preferences' },
 ]
 
 export default function PillNav() {
@@ -172,6 +172,7 @@ export default function PillNav() {
                       <span className="pill-label">{dict.nav[item.labelKey]}</span>
                       <span className="pill-label-hover" aria-hidden="true">{dict.nav[item.labelKey]}</span>
                     </span>
+                    <span className="pill-tooltip">{item.tooltip}</span>
                   </Link>
                 </li>
               ))}
