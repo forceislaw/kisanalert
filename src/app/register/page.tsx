@@ -184,6 +184,10 @@ export default function RegisterPage() {
             {dict.auth.signUpWithGoogle}
           </button>
 
+          <p className="text-xs text-charcoal-muted text-center -mt-4">
+            <Link href="/data" className="text-sage hover:underline">Learn more</Link> about how we handle your data
+          </p>
+
           <p className="text-sm text-charcoal-muted text-center">
             {dict.auth.alreadyHaveAccount}{' '}
             <Link href="/login" className="text-sage font-medium hover:underline">{dict.auth.signIn}</Link>
