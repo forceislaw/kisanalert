@@ -34,10 +34,6 @@
   flex-shrink: 0;
 }
 
-.pill-logo:hover {
-  opacity: 0.85;
-}
-
 .pill-nav-items {
   display: flex;
   align-items: center;
@@ -72,12 +68,6 @@
   border: 1px solid #D1CCC3;
   user-select: none;
   -webkit-user-select: none;
-}
-
-.pill-inner {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
   overflow: hidden;
 }
 
@@ -97,29 +87,6 @@
   background: transparent;
   transform: translateX(-50%);
   transition: background 0.2s;
-}
-
-.pill .pill-tooltip {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  background: #1C1917;
-  color: #F7F5F0;
-  font-family: var(--font-sans), 'DM Sans', sans-serif;
-  font-size: 0.6875rem;
-  font-weight: 400;
-  white-space: nowrap;
-  padding: 3px 8px;
-  border-radius: 4px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s, transform 0.15s;
-}
-
-.pill:hover .pill-tooltip {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
 }
 
 .pill.is-active {

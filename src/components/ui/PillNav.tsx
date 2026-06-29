@@ -10,12 +10,12 @@ import LanguageSwitcher from '@/components/nav/LanguageSwitcher'
 import type { Dictionary } from '@/lib/i18n/getDictionary'
 import './PillNav.css'
 
-const NAV_ITEMS: { href: string; labelKey: keyof Dictionary['nav']; tooltip: string }[] = [
-  { href: '/dashboard', labelKey: 'dashboard', tooltip: 'Key metrics & outbreak overview' },
-  { href: '/dashboard/map', labelKey: 'map', tooltip: 'Geospatial outbreak view' },
-  { href: '/reports', labelKey: 'reports', tooltip: 'Browse & search pest reports' },
-  { href: '/dashboard/upload', labelKey: 'reportNew', tooltip: 'Upload & submit a pest report' },
-  { href: '/settings', labelKey: 'settings', tooltip: 'Account & notification preferences' },
+const NAV_ITEMS: { href: string; labelKey: keyof Dictionary['nav'] }[] = [
+  { href: '/dashboard', labelKey: 'dashboard' },
+  { href: '/dashboard/map', labelKey: 'map' },
+  { href: '/reports', labelKey: 'reports' },
+  { href: '/dashboard/upload', labelKey: 'reportNew' },
+  { href: '/settings', labelKey: 'settings' },
 ]
 
 export default function PillNav() {
@@ -167,14 +167,11 @@ export default function PillNav() {
                     onMouseLeave={() => handleLeave(i)}
                     onClick={() => setMobileOpen(false)}
                   >
-                    <span className="pill-inner">
-                      <span className="hover-circle" aria-hidden="true" ref={(el) => { circleRefs.current[i] = el }} />
-                      <span className="label-stack">
-                        <span className="pill-label">{dict.nav[item.labelKey]}</span>
-                        <span className="pill-label-hover" aria-hidden="true">{dict.nav[item.labelKey]}</span>
-                      </span>
+                    <span className="hover-circle" aria-hidden="true" ref={(el) => { circleRefs.current[i] = el }} />
+                    <span className="label-stack">
+                      <span className="pill-label">{dict.nav[item.labelKey]}</span>
+                      <span className="pill-label-hover" aria-hidden="true">{dict.nav[item.labelKey]}</span>
                     </span>
-                    <span className="pill-tooltip" aria-hidden="true">{item.tooltip}</span>
                   </Link>
                 </li>
               ))}
