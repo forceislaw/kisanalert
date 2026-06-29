@@ -83,10 +83,7 @@ function WeatherMarkers({ weather }: { weather: WeatherData[] }) {
             min-width: 60px;
           ">
             <div style="font-weight: 600; font-size: 10px; opacity: 0.7;">${w.name}</div>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
-              <img src="${w.icon}" width="24" height="24" style="display:block;" />
-              <span style="font-size: 14px; font-weight: 700;">${w.temp}°</span>
-            </div>
+            <div style="font-size: 16px; font-weight: 700; line-height: 1;">${w.temp}°C</div>
             <div style="font-size: 9px; opacity: 0.7; text-transform: capitalize;">${w.description}</div>
           </div>
         `,
