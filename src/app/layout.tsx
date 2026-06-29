@@ -34,6 +34,10 @@ export const metadata: Metadata = {
   title: "KisanAlert - Pest Early Warning System",
   description: "Enterprise geospatial monitoring for agricultural pest outbreaks",
   manifest: "/manifest.json",
+  icons: {
+    icon: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
   other: {
     "theme-color": "#F7F5F0",
     "apple-mobile-web-app-capable": "yes",
