@@ -70,7 +70,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
     
     if (error) {
-      const msg = typeof error === 'object' && error !== null ? (error as { message?: string }).message || JSON.stringify(error) : String(error)
+      let msg: string
+      try {
+        msg = JSON.stringify(error, Object.getOwnPropertyNames(error))
+      } catch {
+        msg = String(error)
+      }
+      if (msg === '{}') msg = String(error)
       return { error: msg }
     }
 
