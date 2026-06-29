@@ -167,12 +167,14 @@ export default function PillNav() {
                     onMouseLeave={() => handleLeave(i)}
                     onClick={() => setMobileOpen(false)}
                   >
-                    <span className="hover-circle" aria-hidden="true" ref={(el) => { circleRefs.current[i] = el }} />
-                    <span className="label-stack">
-                      <span className="pill-label">{dict.nav[item.labelKey]}</span>
-                      <span className="pill-label-hover" aria-hidden="true">{dict.nav[item.labelKey]}</span>
+                    <span className="pill-inner">
+                      <span className="hover-circle" aria-hidden="true" ref={(el) => { circleRefs.current[i] = el }} />
+                      <span className="label-stack">
+                        <span className="pill-label">{dict.nav[item.labelKey]}</span>
+                        <span className="pill-label-hover" aria-hidden="true">{dict.nav[item.labelKey]}</span>
+                      </span>
                     </span>
-                    <span className="pill-tooltip">{item.tooltip}</span>
+                    <span className="pill-tooltip" aria-hidden="true">{item.tooltip}</span>
                   </Link>
                 </li>
               ))}

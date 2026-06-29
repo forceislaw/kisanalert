@@ -67,12 +67,18 @@
   text-decoration: none;
   letter-spacing: -0.01em;
   line-height: 1;
-  overflow: hidden;
   transition: color 0.2s;
   cursor: pointer;
   border: 1px solid #D1CCC3;
   user-select: none;
   -webkit-user-select: none;
+}
+
+.pill-inner {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
 }
 
 .pill:hover {
