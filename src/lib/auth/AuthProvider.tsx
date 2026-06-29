@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, password: string, fullName?: string, phone?: string) => {
     const supabase = createClient()
-    const { error } = await supabase.auth.signUp({ 
+    const { data, error } = await supabase.auth.signUp({ 
       email, 
       password,
       options: {
@@ -70,6 +70,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
     
     if (error) return { error: error.message }
+
+    if (!data.user || !data.user.identities || data.user.identities.length === 0) {
+      return { error: 'An account with this email already exists. Try signing in instead.' }
+    }
 
     return { error: null }
   }
