@@ -47,7 +47,6 @@ export interface MarkerData {
 }
 
 export interface WeatherData {
-  name: string;
   state: string;
   lat: number;
   lng: number;
@@ -65,23 +64,23 @@ function WeatherMarkers({ weather }: { weather: WeatherData[] }) {
         className: 'weather-marker',
         html: `
           <div style="
-            background: #FDFCFA;
-            color: #6B6560;
-            padding: 3px 8px;
-            border-radius: 8px;
+            background: #E07A5F;
+            color: #F7F5F0;
+            padding: 3px 10px;
+            border-radius: 12px;
             font-family: 'DM Sans', sans-serif;
             font-size: 10px;
             text-align: center;
             line-height: 1.2;
-            border: 1px solid #D1CCC3;
-            min-width: 50px;
+            min-width: 40px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
           ">
-            <div style="font-weight: 600; color: #1C1917;">${w.name}</div>
-            <div style="font-size: 13px; font-weight: 700; color: #1C1917;">${w.temp}°C</div>
+            <div style="font-weight: 600; font-size: 9px;">${w.state}</div>
+            <div style="font-size: 14px; font-weight: 700;">${w.temp}°</div>
           </div>
         `,
-        iconSize: [70, 44],
-        iconAnchor: [35, 22],
+        iconSize: [60, 40],
+        iconAnchor: [30, 20],
       });
 
       return L.marker([w.lat, w.lng], { icon }).addTo(map);
