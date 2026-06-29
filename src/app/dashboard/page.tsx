@@ -58,6 +58,20 @@ export default function DashboardPage() {
             <div className="map-frame">
               <MapShell weather={weather} />
             </div>
+            <div className="flex flex-wrap items-center gap-3 mt-2 text-[10px] text-charcoal-muted font-sans">
+              <span className="font-medium uppercase tracking-wider">Temp</span>
+              {[
+                { label: '≤ 27°', color: '#3D5A45' },
+                { label: '28–32°', color: '#D4A04A' },
+                { label: '33–37°', color: '#E07A5F' },
+                { label: '≥ 38°', color: '#C0392B' },
+              ].map(t => (
+                <span key={t.label} className="flex items-center gap-1">
+                  <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 2, background: t.color }} />
+                  {t.label}
+                </span>
+              ))}
+            </div>
           </div>
 
           <hr className="rule-h" />

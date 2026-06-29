@@ -59,7 +59,15 @@ function WeatherMarkers({ weather }: { weather: WeatherData[] }) {
   useEffect(() => {
     if (!weather.length) return;
 
+    function tempColor(t: number): string {
+      if (t >= 38) return '#C0392B'
+      if (t >= 33) return '#E07A5F'
+      if (t >= 28) return '#D4A04A'
+      return '#3D5A45'
+    }
+
     const markers = weather.map(w => {
+      const tColor = tempColor(w.temp)
       const icon = L.divIcon({
         className: 'weather-marker',
         html: `
@@ -71,15 +79,15 @@ function WeatherMarkers({ weather }: { weather: WeatherData[] }) {
             font-family: 'DM Sans', sans-serif;
             text-align: center;
             cursor: pointer;
-            border: 1px solid #D1CCC3;
+            border: 1px solid ${tColor};
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
             line-height: 1;
           "
-          onmouseenter="this.style.transform='translateY(-2px) scale(1.05)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.12)';this.style.borderColor='#3D5A45'"
-          onmouseleave="this.style.transform='translateY(0) scale(1)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)';this.style.borderColor='#D1CCC3'">
+          onmouseenter="this.style.transform='translateY(-2px) scale(1.05)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.12)';this.style.borderColor='${tColor}';this.style.borderWidth='2px'"
+          onmouseleave="this.style.transform='translateY(0) scale(1)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)';this.style.borderColor='${tColor}';this.style.borderWidth='1px'">
             <div style="font-size: 9px; font-weight: 600; letter-spacing: -0.01em; opacity: 0.75;">${w.state}</div>
-            <div style="font-size: 16px; font-weight: 700; color: #3D5A45; margin-top: 1px;">${w.temp}°C</div>
+            <div style="font-size: 16px; font-weight: 700; color: ${tColor}; margin-top: 1px;">${w.temp}°C</div>
           </div>
         `,
         iconSize: [100, 50],
