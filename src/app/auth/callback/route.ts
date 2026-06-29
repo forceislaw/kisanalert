@@ -11,9 +11,9 @@ export async function GET(req: NextRequest) {
 
   let errorMsg = searchParams.get('error')
 
-  if (tokenHash && type === 'signup') {
+  async function getSupabase() {
     const cookieStore = await cookies()
-    const supabase = createServerClient<Database>(
+    return createServerClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
@@ -25,31 +25,22 @@ export async function GET(req: NextRequest) {
         },
       }
     )
+  }
+
+  if (tokenHash && type === 'signup') {
+    const supabase = await getSupabase()
     const { error } = await supabase.auth.verifyOtp({ type: 'signup', token_hash: tokenHash })
     if (!error) return NextResponse.redirect(new URL('/email-verified', origin))
     return NextResponse.redirect(new URL('/login?error=auth_failed', origin))
   }
 
   if (code) {
-    const cookieStore = await cookies()
-    const supabase = createServerClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() { return cookieStore.getAll() },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
-          },
-        },
-      }
-    )
+    const supabase = await getSupabase()
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
+    // Try OAuth exchange first, fall back to email verification
+    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
+    if (!exchangeError) {
       const { data: { user } } = await supabase.auth.getUser()
-
-      // Create profile if it doesn't exist
       if (user?.id) {
         await supabase.from('profiles').upsert(
           { id: user.id, full_name: user.user_metadata?.full_name || null, phone_number: user.user_metadata?.phone || null } as never,
@@ -57,62 +48,36 @@ export async function GET(req: NextRequest) {
         )
       }
       const from = searchParams.get('from')
-
-      if (!user?.id) {
-        return NextResponse.redirect(new URL('/dashboard', origin))
-      }
-
-      // Came from register page — check if this is an existing user trying to re-register
       if (from === 'register') {
-        const hasMultipleIdentities = (user.identities?.length || 0) > 1
+        const hasMultipleIdentities = (user?.identities?.length || 0) > 1
         const alreadyOnboarded = user?.user_metadata?.onboarded === true
-
-        // Check if user has existing reports or a profile under any user_id with this email
         let hasExistingData = false
         try {
-          const { count } = await supabase
-            .from('pest_reports')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', user.id)
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('id', user.id)
-            .maybeSingle()
+          const { count } = await supabase.from('pest_reports').select('*', { count: 'exact', head: true }).eq('user_id', user!.id)
+          const { data: profile } = await supabase.from('profiles').select('id').eq('id', user!.id).maybeSingle()
           if ((count && count > 0) || profile) hasExistingData = true
         } catch { /* ignore */ }
-
         if (hasMultipleIdentities || alreadyOnboarded || hasExistingData) {
-          // Sign out to prevent auto-login on the login page
           await supabase.auth.signOut()
           return NextResponse.redirect(new URL('/login?error=email_exists', origin))
         }
       }
+      if (user?.user_metadata?.onboarded) return NextResponse.redirect(new URL('/dashboard', origin))
 
-      if (user?.user_metadata?.onboarded) {
-        return NextResponse.redirect(new URL('/dashboard', origin))
-      }
-
-      // Check if user has existing reports or a profile
-      const { count } = await supabase
-        .from('pest_reports')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', user.id)
-        .maybeSingle()
-
+      const { count } = await supabase.from('pest_reports').select('*', { count: 'exact', head: true }).eq('user_id', user!.id)
+      const { data: profile } = await supabase.from('profiles').select('id').eq('id', user!.id).maybeSingle()
       if ((count && count > 0) || profile) {
         await supabase.auth.updateUser({ data: { onboarded: true } })
         return NextResponse.redirect(new URL('/dashboard', origin))
       }
-
       return NextResponse.redirect(new URL('/onboarding', origin))
     }
-    errorMsg = error?.message
+
+    // OAuth failed — try email verification via code (acts as token_hash)
+    const { error: verifyError } = await supabase.auth.verifyOtp({ type: 'signup', token_hash: code })
+    if (!verifyError) return NextResponse.redirect(new URL('/email-verified', origin))
+
+    errorMsg = exchangeError?.message || verifyError?.message
   }
 
   const params = new URLSearchParams()
