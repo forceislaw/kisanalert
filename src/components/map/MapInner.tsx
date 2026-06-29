@@ -64,27 +64,28 @@ function WeatherMarkers({ weather }: { weather: WeatherData[] }) {
         className: 'weather-marker',
         html: `
           <div style="
-            background: #E07A5F;
-            color: #F7F5F0;
-            padding: 4px 12px;
+            background: #FDFCFA;
+            color: #1C1917;
+            padding: 5px 14px 5px 10px;
             border-radius: 999px;
             font-family: 'DM Sans', sans-serif;
-            font-size: 10px;
+            font-size: 11px;
             text-align: center;
             line-height: 1.2;
             white-space: nowrap;
-            cursor: default;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-            transition: transform 0.15s, box-shadow 0.15s;
+            cursor: pointer;
+            border: 1px solid #D1CCC3;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
           "
-          onmouseenter="this.style.transform='scale(1.1)';this.style.boxShadow='0 3px 10px rgba(0,0,0,0.25)'"
-          onmouseleave="this.style.transform='scale(1)';this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)'">
-            <span style="font-weight: 600; font-size: 9px; opacity: 0.9;">${w.state}</span>
-            <span style="font-size: 14px; font-weight: 700; margin-left: 4px;">${w.temp}°</span>
+          onmouseenter="this.style.transform='translateY(-2px) scale(1.05)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.12)';this.style.borderColor='#3D5A45'"
+          onmouseleave="this.style.transform='translateY(0) scale(1)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)';this.style.borderColor='#D1CCC3'">
+            <span style="font-weight: 600; letter-spacing: -0.01em;">${w.state}</span>
+            <span style="font-size: 15px; font-weight: 700; color: #3D5A45; margin-left: 5px;">${w.temp}°</span>
           </div>
         `,
-        iconSize: [160, 36],
-        iconAnchor: [80, 18],
+        iconSize: [180, 38],
+        iconAnchor: [90, 19],
       });
 
       return L.marker([w.lat, w.lng], { icon }).addTo(map);
