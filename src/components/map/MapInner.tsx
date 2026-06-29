@@ -46,14 +46,75 @@ export interface MarkerData {
   reportedAt: string;
 }
 
+export interface WeatherData {
+  name: string;
+  state: string;
+  lat: number;
+  lng: number;
+  temp: number;
+  feelsLike: number;
+  humidity: number;
+  condition: string;
+  description: string;
+  icon: string;
+}
+
+function WeatherMarkers({ weather }: { weather: WeatherData[] }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!weather.length) return;
+
+    const markers = weather.map(w => {
+      const icon = L.divIcon({
+        className: 'weather-marker',
+        html: `
+          <div style="
+            background: #1C1917CC;
+            color: #F7F5F0;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            text-align: center;
+            line-height: 1.3;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.15);
+            min-width: 60px;
+          ">
+            <div style="font-weight: 600; font-size: 10px; opacity: 0.7;">${w.name}</div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
+              <img src="${w.icon}" width="24" height="24" style="display:block;" />
+              <span style="font-size: 14px; font-weight: 700;">${w.temp}°</span>
+            </div>
+            <div style="font-size: 9px; opacity: 0.7; text-transform: capitalize;">${w.description}</div>
+          </div>
+        `,
+        iconSize: [80, 60],
+        iconAnchor: [40, 30],
+      });
+
+      return L.marker([w.lat, w.lng], { icon }).addTo(map);
+    });
+
+    return () => {
+      markers.forEach(m => m.remove());
+    };
+  }, [weather, map]);
+
+  return null;
+}
+
 interface MapInnerProps {
   markers: MarkerData[];
+  weather?: WeatherData[];
   center?: [number, number];
   zoom?: number;
 }
 
 export default function MapInner({ 
   markers, 
+  weather = [],
   center = [17.5, 76.5],
   zoom = 7 
 }: MapInnerProps) {
@@ -77,6 +138,9 @@ export default function MapInner({
       {ready && markers.map(marker => (
         <PulseMarker key={marker.id} {...marker} />
       ))}
+      {ready && weather.length > 0 && (
+        <WeatherMarkers weather={weather} />
+      )}
     </MapContainer>
   );
 }

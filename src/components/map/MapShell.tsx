@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import React from 'react';
-import { MarkerData } from './MapInner';
+import type { MarkerData, WeatherData } from './MapInner';
 import { useLocale } from '@/lib/i18n/LocaleProvider';
 
 function MapLoading() {
@@ -21,15 +21,17 @@ const MapInner = dynamic(() => import('./MapInner'), {
 
 interface MapShellProps {
   markers?: MarkerData[];
+  weather?: WeatherData[];
   center?: [number, number];
   zoom?: number;
 }
 
-export default function MapShell({ markers = [], center, zoom }: MapShellProps) {
+export default function MapShell({ markers = [], weather = [], center, zoom }: MapShellProps) {
   return (
     <div className="w-full h-[50vh] min-h-[350px] lg:h-[600px] relative">
       <MapInner 
         markers={markers} 
+        weather={weather}
         center={center} 
         zoom={zoom} 
       />

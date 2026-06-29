@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
 import KpiGrid from '@/components/dashboard/KpiGrid'
 import MapShell from '@/components/map/MapShell'
 import OutbreakTrendChart from '@/components/dashboard/OutbreakTrendChart'
 import TopDistrictsTable from '@/components/dashboard/TopDistrictsTable'
+import type { WeatherData } from '@/components/map/MapInner'
 
 const TIME_RANGES = [
   { label: '7 days', value: 7 },
@@ -16,6 +17,13 @@ const TIME_RANGES = [
 export default function DashboardPage() {
   const { dict } = useLocale()
   const [days, setDays] = useState(7)
+  const [weather, setWeather] = useState<WeatherData[]>([])
+
+  useEffect(() => {
+    fetch('/api/weather').then(r => r.json()).then(data => {
+      if (data.weather) setWeather(data.weather)
+    }).catch(() => {})
+  }, [])
 
   return (
     <div className="space-y-12">
@@ -48,7 +56,7 @@ export default function DashboardPage() {
           <div>
             <span className="eyebrow block mb-4">Geospatial Overview</span>
             <div className="map-frame">
-              <MapShell />
+              <MapShell weather={weather} />
             </div>
           </div>
 
