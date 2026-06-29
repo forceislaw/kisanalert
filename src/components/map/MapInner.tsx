@@ -66,21 +66,25 @@ function WeatherMarkers({ weather }: { weather: WeatherData[] }) {
           <div style="
             background: #E07A5F;
             color: #F7F5F0;
-            padding: 3px 10px;
-            border-radius: 12px;
+            padding: 4px 12px;
+            border-radius: 999px;
             font-family: 'DM Sans', sans-serif;
             font-size: 10px;
             text-align: center;
             line-height: 1.2;
-            min-width: 40px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-          ">
-            <div style="font-weight: 600; font-size: 9px;">${w.state}</div>
-            <div style="font-size: 14px; font-weight: 700;">${w.temp}°</div>
+            white-space: nowrap;
+            cursor: default;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            transition: transform 0.15s, box-shadow 0.15s;
+          "
+          onmouseenter="this.style.transform='scale(1.1)';this.style.boxShadow='0 3px 10px rgba(0,0,0,0.25)'"
+          onmouseleave="this.style.transform='scale(1)';this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)'">
+            <span style="font-weight: 600; font-size: 9px; opacity: 0.9;">${w.state}</span>
+            <span style="font-size: 14px; font-weight: 700; margin-left: 4px;">${w.temp}°</span>
           </div>
         `,
-        iconSize: [60, 40],
-        iconAnchor: [30, 20],
+        iconSize: [80, 36],
+        iconAnchor: [40, 18],
       });
 
       return L.marker([w.lat, w.lng], { icon }).addTo(map);

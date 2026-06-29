@@ -14,7 +14,13 @@ const STATES = [
   { name: 'Bihar', city: 'Patna', lat: 25.5941, lng: 85.1376 },
   { name: 'Rajasthan', city: 'Jaipur', lat: 26.9124, lng: 75.7873 },
   { name: 'Odisha', city: 'Bhubaneswar', lat: 20.2961, lng: 85.8245 },
+  { name: 'West Bengal', city: 'Kolkata', lat: 22.5726, lng: 88.3639 },
+  { name: 'Chhattisgarh', city: 'Raipur', lat: 21.2514, lng: 81.6296 },
+  { name: 'Jharkhand', city: 'Ranchi', lat: 23.3441, lng: 85.3096 },
   { name: 'Assam', city: 'Guwahati', lat: 26.1445, lng: 91.7362 },
+  { name: 'Kerala', city: 'Kochi', lat: 9.9312, lng: 76.2673 },
+  { name: 'Uttarakhand', city: 'Dehradun', lat: 30.3165, lng: 78.0322 },
+  { name: 'Himachal Pradesh', city: 'Shimla', lat: 31.1048, lng: 77.1734 },
 ]
 
 export async function GET() {
