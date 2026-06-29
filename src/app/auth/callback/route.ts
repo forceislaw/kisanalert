@@ -47,6 +47,11 @@ export async function GET(req: NextRequest) {
           { onConflict: 'id' },
         )
       }
+
+      // Email signup confirmation (identity provider is "email") → show verified page
+      const isEmailSignup = user?.identities?.length === 1 && user.identities[0]?.provider === 'email'
+      if (isEmailSignup) return NextResponse.redirect(new URL('/email-verified', origin))
+
       const from = searchParams.get('from')
       if (from === 'register') {
         const hasMultipleIdentities = (user?.identities?.length || 0) > 1
