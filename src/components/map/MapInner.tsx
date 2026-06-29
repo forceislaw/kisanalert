@@ -52,11 +52,6 @@ export interface WeatherData {
   lat: number;
   lng: number;
   temp: number;
-  feelsLike: number;
-  humidity: number;
-  condition: string;
-  description: string;
-  icon: string;
 }
 
 function WeatherMarkers({ weather }: { weather: WeatherData[] }) {
@@ -70,25 +65,23 @@ function WeatherMarkers({ weather }: { weather: WeatherData[] }) {
         className: 'weather-marker',
         html: `
           <div style="
-            background: #1C1917CC;
-            color: #F7F5F0;
-            padding: 4px 8px;
+            background: #FDFCFA;
+            color: #6B6560;
+            padding: 3px 8px;
             border-radius: 8px;
             font-family: 'DM Sans', sans-serif;
-            font-size: 11px;
+            font-size: 10px;
             text-align: center;
-            line-height: 1.3;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.15);
-            min-width: 60px;
+            line-height: 1.2;
+            border: 1px solid #D1CCC3;
+            min-width: 50px;
           ">
-            <div style="font-weight: 600; font-size: 10px; opacity: 0.7;">${w.name}</div>
-            <div style="font-size: 16px; font-weight: 700; line-height: 1;">${w.temp}°C</div>
-            <div style="font-size: 9px; opacity: 0.7; text-transform: capitalize;">${w.description}</div>
+            <div style="font-weight: 600; color: #1C1917;">${w.name}</div>
+            <div style="font-size: 13px; font-weight: 700; color: #1C1917;">${w.temp}°C</div>
           </div>
         `,
-        iconSize: [80, 60],
-        iconAnchor: [40, 30],
+        iconSize: [70, 44],
+        iconAnchor: [35, 22],
       });
 
       return L.marker([w.lat, w.lng], { icon }).addTo(map);
