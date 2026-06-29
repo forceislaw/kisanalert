@@ -69,7 +69,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     })
     
-    if (error) return { error: error.message }
+    if (error) {
+      const msg = typeof error === 'object' && error !== null ? (error as { message?: string }).message || JSON.stringify(error) : String(error)
+      return { error: msg }
+    }
 
     if (!data.user || !data.user.identities || data.user.identities.length === 0) {
       return { error: 'An account with this email already exists. Try signing in instead.' }
