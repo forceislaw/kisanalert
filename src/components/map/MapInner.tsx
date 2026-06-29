@@ -83,8 +83,8 @@ function WeatherMarkers({ weather }: { weather: WeatherData[] }) {
             <span style="font-size: 14px; font-weight: 700; margin-left: 4px;">${w.temp}°</span>
           </div>
         `,
-        iconSize: [80, 36],
-        iconAnchor: [40, 18],
+        iconSize: [300, 36],
+        iconAnchor: [150, 18],
       });
 
       return L.marker([w.lat, w.lng], { icon }).addTo(map);
