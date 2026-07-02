@@ -7,8 +7,6 @@ import { useAuth } from '@/lib/auth/AuthProvider'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 export default function RootPage() {
-  const router = useRouter()
-
   useEffect(() => {
     const search = window.location.search
     if (search) {
