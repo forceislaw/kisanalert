@@ -179,11 +179,12 @@ export default function PillNav() {
           </div>
 
           <button
-            className="mobile-menu-button mobile-only"
+            className={`mobile-menu-button mobile-only${mobileOpen ? ' is-open' : ''}`}
             onClick={toggleMobile}
             aria-label="Toggle menu"
             ref={hamburgerRef}
           >
+            <span className="hamburger-line" />
             <span className="hamburger-line" />
             <span className="hamburger-line" />
           </button>
