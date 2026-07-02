@@ -36,8 +36,15 @@ function StateCard({ d }: { d: RiskData }) {
         <span>{d.season.replace('Kharif (', '').replace('Rabi (', '').replace(')', '')}</span>
         <span>{d.recentReports} report{d.recentReports !== 1 ? 's' : ''}</span>
       </div>
-      {d.topPests.length > 0 && (
-        <p className="text-xs text-terra font-medium">{d.topPests.join(', ')}</p>
+      {d.risk.factors.length > 0 && (
+        <div className="text-[10px] text-charcoal-muted space-y-0.5">
+          {d.risk.factors.map((f, i) => (
+            <p key={i} className="flex items-start gap-1">
+              <span className="shrink-0 mt-0.5">&ndash;</span>
+              <span>{f}</span>
+            </p>
+          ))}
+        </div>
       )}
     </div>
   )

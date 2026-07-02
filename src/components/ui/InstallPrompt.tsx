@@ -1,14 +1,16 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 export default function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
   const [show, setShow] = useState(false)
+  const dismissed = useRef(false)
 
   useEffect(() => {
     const handler = (e: Event) => {
       e.preventDefault()
+      if (dismissed.current) return
       setDeferredPrompt(e)
       setShow(true)
     }
@@ -20,8 +22,16 @@ export default function InstallPrompt() {
     if (!deferredPrompt) return
     deferredPrompt.prompt()
     const result = await deferredPrompt.userChoice
-    if (result.outcome === 'accepted') setShow(false)
+    if (result.outcome === 'accepted') {
+      setShow(false)
+      dismissed.current = true
+    }
     setDeferredPrompt(null)
+  }
+
+  const handleDismiss = () => {
+    setShow(false)
+    dismissed.current = true
   }
 
   if (!show) return null
@@ -38,7 +48,7 @@ export default function InstallPrompt() {
           <p className="text-xs text-charcoal-muted truncate">Get faster access &amp; offline support</p>
         </div>
         <button onClick={handleInstall} className="btn-primary text-xs px-3 py-1.5 shrink-0">Install</button>
-        <button onClick={() => setShow(false)} className="text-charcoal-muted hover:text-charcoal shrink-0 p-1">
+        <button onClick={handleDismiss} className="text-charcoal-muted hover:text-charcoal shrink-0 p-1">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeWidth={1.5} d="M6 6l12 12M18 6l-12 12" />
           </svg>
