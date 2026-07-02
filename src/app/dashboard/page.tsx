@@ -6,6 +6,7 @@ import KpiGrid from '@/components/dashboard/KpiGrid'
 import MapShell from '@/components/map/MapShell'
 import OutbreakTrendChart from '@/components/dashboard/OutbreakTrendChart'
 import TopDistrictsTable from '@/components/dashboard/TopDistrictsTable'
+import PestRiskCard from '@/components/dashboard/PestRiskCard'
 import type { WeatherData } from '@/components/map/MapInner'
 
 const TIME_RANGES = [
@@ -83,6 +84,13 @@ export default function DashboardPage() {
         </div>
 
         <div className="space-y-10">
+          <div>
+            <span className="eyebrow block mb-4">Pest Risk Forecast</span>
+            <PestRiskCard />
+          </div>
+
+          <hr className="rule-h" />
+
           <div>
             <span className="eyebrow block mb-4">{dict.dashboard.overallRisk}</span>
             <KpiGrid days={days} />
