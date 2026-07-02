@@ -241,6 +241,9 @@ export default function RootPage() {
                 <p className="text-xs text-charcoal-muted">— <a href="https://www.niti.gov.in" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-charcoal">NITI Aayog Agriculture Strategy 2023</a></p>
               </div>
             </div>
+            <div className="text-center mt-8">
+              <a href="/research" className="text-sm text-sage font-medium hover:underline">View full research &amp; methodology &rarr;</a>
+            </div>
           </div>
         </section>
 
