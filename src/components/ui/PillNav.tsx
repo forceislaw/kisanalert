@@ -205,6 +205,7 @@ export default function PillNav() {
             ))}
           </ul>
           <div className="flex items-center gap-3 px-4 py-3 border-t border-stone mt-2">
+            <Link href="/research" className="text-xs font-medium text-charcoal-muted hover:text-charcoal no-underline" onClick={() => { setMobileOpen(false); toggleMobile() }}>Research</Link>
             {loading ? null : user ? (
               <button onClick={signOut} className="text-xs font-medium text-charcoal-muted hover:text-charcoal cursor-pointer">Sign Out</button>
             ) : (
@@ -216,6 +217,7 @@ export default function PillNav() {
       </div>
 
         <div className="hidden md:flex items-center gap-3">
+          <Link href="/research" className="text-xs font-medium text-charcoal-muted hover:text-charcoal no-underline">Research</Link>
           {loading ? null : user ? (
             <button onClick={signOut} className="text-xs font-medium text-charcoal-muted hover:text-charcoal cursor-pointer">Sign Out</button>
           ) : (
