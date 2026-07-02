@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import SplitText from '@/components/ui/SplitText'
 import { useAuth } from '@/lib/auth/AuthProvider'
@@ -13,9 +12,9 @@ export default function RootPage() {
   useEffect(() => {
     const search = window.location.search
     if (search) {
-      router.replace('/auth/callback' + search)
+      window.location.href = '/auth/callback' + search
     }
-  }, [router])
+  }, [])
   const { user, loading } = useAuth()
   const { dict } = useLocale()
   const [splash, setSplash] = useState(true)
