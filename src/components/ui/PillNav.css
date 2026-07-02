@@ -204,10 +204,27 @@
   border-bottom: none;
 }
 
-.mobile-menu-link:hover,
-.mobile-menu-link.is-active {
+.mobile-menu-link:hover {
   background: rgba(224, 122, 95, 0.08);
   color: #1C1917;
+}
+
+.mobile-menu-link.is-active {
+  color: #1C1917;
+  font-weight: 600;
+  position: relative;
+}
+
+.mobile-menu-link.is-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 18px;
+  border-radius: 3px;
+  background: #E07A5F;
 }
 
 .mobile-only {
