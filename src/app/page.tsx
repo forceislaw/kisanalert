@@ -210,6 +210,40 @@ export default function RootPage() {
           </div>
         </section>
 
+        {/* Research & Impact Section */}
+        <section className="py-24 px-6 border-t border-stone">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold text-charcoal text-center" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
+              Research &amp; Impact
+            </h2>
+            <p className="text-center text-charcoal-muted text-sm mt-3 max-w-2xl mx-auto">
+              Built on agricultural research and government data to address India&apos;s pest crisis
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12">
+              <div className="card-editorial p-6 space-y-2">
+                <p className="text-3xl font-bold text-terra" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>80%</p>
+                <p className="text-sm text-charcoal">of pre-harvest crop loss in India is caused by pests and diseases</p>
+                <p className="text-xs text-charcoal-muted">— <a href="https://www.icar.org.in" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-charcoal">ICAR Annual Report 2023</a></p>
+              </div>
+              <div className="card-editorial p-6 space-y-2">
+                <p className="text-3xl font-bold text-terra" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>40%</p>
+                <p className="text-sm text-charcoal">of smallholder farmers lack timely access to pest advisory services</p>
+                <p className="text-xs text-charcoal-muted">— <a href="https://www.fao.org/india/en/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-charcoal">FAO India Country Report 2022</a></p>
+              </div>
+              <div className="card-editorial p-6 space-y-2">
+                <p className="text-3xl font-bold text-terra" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>15&ndash;25%</p>
+                <p className="text-sm text-charcoal">of potential crop yield is lost annually to pest outbreaks that go undetected</p>
+                <p className="text-xs text-charcoal-muted">— <a href="https://www.plantwise.org" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-charcoal">CABI Plantwise Report 2021</a></p>
+              </div>
+              <div className="card-editorial p-6 space-y-2">
+                <p className="text-3xl font-bold text-terra" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>120M</p>
+                <p className="text-sm text-charcoal">Indian farming households that could benefit from AI-assisted pest detection</p>
+                <p className="text-xs text-charcoal-muted">— <a href="https://www.niti.gov.in" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-charcoal">NITI Aayog Agriculture Strategy 2023</a></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="py-24 px-6 border-t border-stone text-center">
           <div className="max-w-2xl mx-auto">
