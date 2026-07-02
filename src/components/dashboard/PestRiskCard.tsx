@@ -37,13 +37,21 @@ function StateCard({ d }: { d: RiskData }) {
         <span>{d.recentReports} report{d.recentReports !== 1 ? 's' : ''}</span>
       </div>
       {d.risk.factors.length > 0 && (
-        <div className="text-[10px] text-charcoal-muted space-y-0.5">
-          {d.risk.factors.map((f, i) => (
-            <p key={i} className="flex items-start gap-1">
-              <span className="shrink-0 mt-0.5">&ndash;</span>
-              <span>{f}</span>
-            </p>
-          ))}
+        <div className="text-[10px] space-y-0.5">
+          {d.risk.factors.map((f, i) => {
+            const color = f.includes('No pest threshold') ? '#3D5A45'
+              : f.includes('threshold triggered') || f.includes('accelerates') ? '#C0392B'
+              : f.includes('Extreme heat') ? '#C0392B'
+              : f.includes('High heat') ? '#E07A5F'
+              : f.includes('Kharif') || f.includes('reports in your zone') ? '#D4A04A'
+              : '#8B8174'
+            return (
+              <p key={i} className="flex items-start gap-1" style={{ color }}>
+                <span className="shrink-0 mt-0.5">&ndash;</span>
+                <span>{f}</span>
+              </p>
+            )
+          })}
         </div>
       )}
     </div>
@@ -102,7 +110,7 @@ export default function PestRiskCard() {
       </div>
 
       <div className="flex flex-col gap-3">
-        {data.slice(0, 6).map(d => (
+        {[...data].sort((a, b) => b.risk.score - a.risk.score).slice(0, 6).map(d => (
           <StateCard key={d.state} d={d} />
         ))}
       </div>
