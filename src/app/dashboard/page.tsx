@@ -81,16 +81,16 @@ export default function DashboardPage() {
             <span className="eyebrow block mb-4">{dict.dashboard.outbreakTrend}</span>
             <OutbreakTrendChart days={days} />
           </div>
-        </div>
 
-        <div className="space-y-10">
+          <hr className="rule-h" />
+
           <div>
             <span className="eyebrow block mb-4">Pest Risk Forecast</span>
             <PestRiskCard />
           </div>
+        </div>
 
-          <hr className="rule-h" />
-
+        <div className="space-y-10">
           <div>
             <span className="eyebrow block mb-4">{dict.dashboard.overallRisk}</span>
             <KpiGrid days={days} />

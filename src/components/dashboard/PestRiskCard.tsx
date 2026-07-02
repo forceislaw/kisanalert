@@ -61,12 +61,17 @@ function StateCard({ d }: { d: RiskData }) {
 export default function PestRiskCard() {
   const [data, setData] = useState<RiskData[]>([])
   const [loading, setLoading] = useState(true)
+  const [selected, setSelected] = useState('')
 
   useEffect(() => {
     fetch('/api/pest-risk').then(r => r.json()).then(d => {
       if (d.risk) setData(d.risk)
     }).catch(() => {}).finally(() => setLoading(false))
   }, [])
+
+  const sorted = [...data].sort((a, b) => b.risk.score - a.risk.score)
+  const focused = selected ? data.find(d => d.state === selected) : null
+  const rest = focused ? sorted.filter(d => d.state !== selected) : sorted
 
   const counts: Record<string, number> = {}
   for (const l of LEVELS) counts[l] = data.filter(d => d.risk.level === l).length
@@ -89,11 +94,23 @@ export default function PestRiskCard() {
 
   return (
     <div className="space-y-3">
-      <div>
-        <h3 className="text-sm font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>
-          Pest Risk Forecast
-        </h3>
-        <p className="text-xs text-charcoal-muted">3-day forecast &middot; temp + season + reports</p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="text-sm font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>
+            Pest Risk Forecast
+          </h3>
+          <p className="text-xs text-charcoal-muted">3-day forecast &middot; temp + season + reports</p>
+        </div>
+        <select
+          value={selected}
+          onChange={e => setSelected(e.target.value)}
+          className="text-xs border border-stone bg-parchment-tint text-charcoal px-2 py-1 shrink-0 cursor-pointer"
+        >
+          <option value="">All states</option>
+          {data.map(d => (
+            <option key={d.state} value={d.state}>{d.state}</option>
+          ))}
+        </select>
       </div>
 
       <div className="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-wider">
@@ -110,7 +127,40 @@ export default function PestRiskCard() {
       </div>
 
       <div className="flex flex-col gap-3">
-        {[...data].sort((a, b) => b.risk.score - a.risk.score).slice(0, 6).map(d => (
+        {focused && (
+          <div className="card-alert p-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-bold text-charcoal">{focused.state} <span className="text-[10px] font-normal text-charcoal-muted"> &mdash; your selection</span></span>
+              <span className="text-[10px] font-bold px-2 py-0.5 border uppercase tracking-wider" style={{ borderColor: LEVEL_META[focused.risk.level].dot, color: LEVEL_META[focused.risk.level].dot }}>
+                {LEVEL_META[focused.risk.level].label} &middot; {focused.risk.score}/100
+              </span>
+            </div>
+            <div className="flex items-center gap-3 text-xs text-charcoal-muted">
+              <span>{focused.temp.toFixed(0)}&deg;C</span>
+              <span>{focused.season.replace('Kharif (', '').replace('Rabi (', '').replace(')', '')}</span>
+              <span>{focused.recentReports} report{focused.recentReports !== 1 ? 's' : ''}</span>
+            </div>
+            {focused.risk.factors.length > 0 && (
+              <div className="text-[10px] space-y-0.5">
+                {focused.risk.factors.map((f, i) => {
+                  const color = f.includes('No pest threshold') ? '#3D5A45'
+                    : f.includes('threshold triggered') || f.includes('accelerates') ? '#C0392B'
+                    : f.includes('Extreme heat') ? '#C0392B'
+                    : f.includes('High heat') ? '#E07A5F'
+                    : f.includes('Kharif') || f.includes('reports in your zone') ? '#D4A04A'
+                    : '#8B8174'
+                  return (
+                    <p key={i} className="flex items-start gap-1" style={{ color }}>
+                      <span className="shrink-0 mt-0.5">&ndash;</span>
+                      <span>{f}</span>
+                    </p>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
+        {rest.slice(0, focused ? 4 : 6).map(d => (
           <StateCard key={d.state} d={d} />
         ))}
       </div>
