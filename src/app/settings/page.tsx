@@ -15,6 +15,53 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
   const [prefsLoading, setPrefsLoading] = useState(false)
+  const [pushEnabled, setPushEnabled] = useState(false)
+  const [pushSupported, setPushSupported] = useState(false)
+  const [pushGranted, setPushGranted] = useState(false)
+
+  useEffect(() => {
+    setPushSupported('serviceWorker' in navigator && 'PushManager' in window)
+    if (typeof Notification !== 'undefined') {
+      setPushGranted(Notification.permission === 'granted')
+      setPushEnabled(Notification.permission === 'granted')
+    }
+  }, [])
+
+  const handlePushToggle = async () => {
+    if (!pushEnabled) {
+      const permission = await Notification.requestPermission()
+      setPushGranted(permission === 'granted')
+      if (permission === 'granted') {
+        setPushEnabled(true)
+        try {
+          const reg = await navigator.serviceWorker.ready
+          const sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: 'BEyRqiEDbkucm9Uw9yd3bGUqTOI1DbS_athnQpx489WSRcfx38hJ_Q1eVJPpMGnJa2-MQwAoEsaWg7lNZiwdu-M',
+          })
+          await fetch('/api/push/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sub.toJSON()),
+          })
+        } catch { /* ignore */ }
+      }
+    } else {
+      setPushEnabled(false)
+      try {
+        const reg = await navigator.serviceWorker.ready
+        const sub = await reg.pushManager.getSubscription()
+        if (sub) {
+          await fetch('/api/push/unsubscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ endpoint: sub.endpoint }),
+          })
+          await sub.unsubscribe()
+        }
+      } catch { /* ignore */ }
+    }
+  }
 
   useEffect(() => {
     const fetchPrefs = async () => {
@@ -147,6 +194,21 @@ export default function SettingsPage() {
                     </span>
                   </label>
                 </label>
+
+                {pushSupported && (
+                  <label className="flex items-center justify-between py-2 border-t border-stone/50 pt-3">
+                    <div>
+                      <span className="text-sm text-charcoal font-medium">Push Notifications</span>
+                      <p className="text-xs text-charcoal-muted">{pushGranted ? 'Receive alerts instantly even when browser is closed' : 'Allow notification access in your browser settings'}</p>
+                    </div>
+                    <label className="toggle-switch">
+                      <input type="checkbox" checked={pushEnabled} onChange={handlePushToggle} disabled={!pushGranted && pushEnabled === false && false} />
+                      <span className="toggle-track">
+                        <span className="toggle-thumb" />
+                      </span>
+                    </label>
+                  </label>
+                )}
               </div>
 
               <div className="mt-4 flex items-center gap-3">

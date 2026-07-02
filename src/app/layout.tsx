@@ -8,6 +8,7 @@ import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 import Header from "@/components/layout/Header";
 import ClickSparkWrapper from "@/components/ui/ClickSparkWrapper";
+import InstallPrompt from "@/components/ui/InstallPrompt";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -67,6 +68,7 @@ export default async function RootLayout({
                   {children}
                 </div>
               </div>
+              <InstallPrompt />
             </LocaleProvider>
           </AuthProvider>
         </ClickSparkWrapper>
