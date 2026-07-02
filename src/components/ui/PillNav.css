@@ -196,6 +196,11 @@
   font-weight: 500;
   text-decoration: none;
   transition: background 0.2s, color 0.2s;
+  border-bottom: 1px solid #EDEAE5;
+}
+
+.mobile-menu-link:last-of-type {
+  border-bottom: none;
 }
 
 .mobile-menu-link:hover,
