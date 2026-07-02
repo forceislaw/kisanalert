@@ -85,19 +85,19 @@ export default function DashboardPage() {
           <hr className="rule-h" />
 
           <div>
-            <span className="eyebrow block mb-4">{dict.dashboard.overallRisk}</span>
-            <KpiGrid days={days} />
-          </div>
-
-          <hr className="rule-h" />
-
-          <div>
             <span className="eyebrow block mb-4">{dict.dashboard.topDistricts}</span>
             <TopDistrictsTable days={days} />
           </div>
         </div>
 
         <div className="space-y-10">
+          <div>
+            <span className="eyebrow block mb-4">{dict.dashboard.overallRisk}</span>
+            <KpiGrid days={days} />
+          </div>
+
+          <hr className="rule-h" />
+
           <div>
             <span className="eyebrow block mb-4">Pest Risk Forecast</span>
             <PestRiskCard />
