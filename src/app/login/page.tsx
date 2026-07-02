@@ -18,7 +18,7 @@ export default function LoginPage() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search)
       if (params.get('error') === 'email_exists') return 'An account with this email already exists. Sign in below or use Google.'
-      if (params.get('error') === 'auth_failed') return 'Google sign-in failed. Please try again.'
+      if (params.get('error') === 'auth_failed') return 'Sign-in failed. Please try again.'
     }
     return null
   })

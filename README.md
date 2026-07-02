@@ -46,3 +46,9 @@ vercel --prod
 ## Translations
 
 Nav and dashboard sections are fully translated into hi/mr/te/kn. The landing page, auth flows, onboarding, and UI labels still need native-speaker translations — see `src/lib/i18n/dictionary.ts`.
+
+## Known Limitations
+
+- **CSP**: Page routes use `unsafe-inline` and `unsafe-eval` because Next.js hydration scripts and GSAP animations require them. API routes have strict CSP (`default-src 'none'`).
+- **Rate limiting**: Per-instance in-memory (not distributed across Vercel regions). Requires Vercel KV (paid) or Upstash Redis to share state.
+- **Offline**: Service worker caches static assets only. Full offline support would require a more aggressive caching strategy.

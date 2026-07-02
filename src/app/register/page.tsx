@@ -30,7 +30,7 @@ export default function RegisterPage() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search)
       if (params.get('error') === 'email_exists') return 'An account with this email already exists. Try signing in instead.'
-      if (params.get('error') === 'auth_failed') return 'Google sign-in failed. Please try again.'
+      if (params.get('error') === 'auth_failed') return 'Sign-in failed. Please try again.'
     }
     return null
   })

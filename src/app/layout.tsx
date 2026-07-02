@@ -70,6 +70,11 @@ export default async function RootLayout({
             </LocaleProvider>
           </AuthProvider>
         </ClickSparkWrapper>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js')`,
+          }}
+        />
       </body>
     </html>
   );
