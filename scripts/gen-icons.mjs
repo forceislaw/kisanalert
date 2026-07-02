@@ -1,0 +1,12 @@
+import sharp from 'sharp'
+import { writeFileSync } from 'fs'
+
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <rect width="40" height="40" rx="20" fill="#E07A5F"/>
+  <path d="M20 28 C11 24 13 12 20 8 C27 12 29 24 20 28Z" fill="#F7F5F0"/>
+</svg>`
+
+for (const size of [192, 512]) {
+  await sharp(Buffer.from(svg)).resize(size, size).png().toFile(`public/icon-${size}.png`)
+  console.log(`icon-${size}.png generated`)
+}
