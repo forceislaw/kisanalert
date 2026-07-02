@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
   if (tokenHash && type === 'signup') {
     const supabase = await getSupabase()
     const { error } = await supabase.auth.verifyOtp({ type: 'signup', token_hash: tokenHash })
-    if (!error) return NextResponse.redirect(new URL('/email-verified', origin))
+    if (!error) return NextResponse.redirect(new URL('/login?verified=true', origin))
     return NextResponse.redirect(new URL('/login?error=auth_failed', origin))
   }
 
@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
     // If type=signup is present, this is email verification, skip OAuth exchange
     if (type === 'signup') {
       const { error: verifyError } = await supabase.auth.verifyOtp({ type: 'signup', token_hash: code })
-      if (!verifyError) return NextResponse.redirect(new URL('/email-verified', origin))
+      if (!verifyError) return NextResponse.redirect(new URL('/login?verified=true', origin))
       errorMsg = verifyError?.message
     } else {
       // OAuth flow (Google sign-in or PKCE email verification)
@@ -60,10 +60,6 @@ export async function GET(req: NextRequest) {
             { onConflict: 'id' },
           )
         }
-
-        // Email signup confirmation (identity provider is "email") → show verified page
-        const isEmailSignup = user?.identities?.length === 1 && user.identities[0]?.provider === 'email'
-        if (isEmailSignup) return NextResponse.redirect(new URL('/email-verified', origin))
 
         const from = searchParams.get('from')
         if (from === 'register') {
@@ -93,7 +89,7 @@ export async function GET(req: NextRequest) {
 
       // Exchange failed — try email verification via code (acts as token_hash)
       const { error: verifyError } = await supabase.auth.verifyOtp({ type: 'signup', token_hash: code })
-      if (!verifyError) return NextResponse.redirect(new URL('/email-verified', origin))
+      if (!verifyError) return NextResponse.redirect(new URL('/login?verified=true', origin))
 
       errorMsg = exchangeError?.message || verifyError?.message
     }

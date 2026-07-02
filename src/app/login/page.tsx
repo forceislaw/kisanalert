@@ -22,6 +22,12 @@ export default function LoginPage() {
     }
     return null
   })
+  const [verified] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('verified') === 'true'
+    }
+    return false
+  })
   const [loading, setLoading] = useState(false)
 
   React.useEffect(() => {
@@ -82,6 +88,9 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {verified && (
+            <div className="p-3 border border-sage bg-sage/10 text-sage-dark text-sm">Email verified! You can now sign in.</div>
+          )}
           {error && (
             <div className="p-3 border border-terra bg-terra/10 text-terra-dark text-sm">{error}</div>
           )}
