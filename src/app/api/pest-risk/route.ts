@@ -31,34 +31,34 @@ function getSeason(): { name: string; label: string } {
   return { name: 'zaid', label: 'Zaid (Apr\u2013May)' }
 }
 
-const ZONE_PESTS: Record<string, Array<{ pest: string; crop: string; tempThresh: number; severity: string }>> = {
+const ZONE_PESTS: Record<string, Array<{ pest: string; crop: string; tempThresh: number; severity: string; source: string }>> = {
   north: [
-    { pest: 'Yellow Rust', crop: 'Wheat', tempThresh: 18, severity: 'high' },
-    { pest: 'Pink Bollworm', crop: 'Cotton', tempThresh: 32, severity: 'high' },
+    { pest: 'Yellow Rust', crop: 'Wheat', tempThresh: 18, severity: 'high', source: 'ICAR-IIWBR' },
+    { pest: 'Pink Bollworm', crop: 'Cotton', tempThresh: 32, severity: 'high', source: 'ICAR-CICR' },
   ],
   south: [
-    { pest: 'Brown Planthopper', crop: 'Paddy', tempThresh: 22, severity: 'high' },
-    { pest: 'Leaf Blight', crop: 'Paddy', tempThresh: 28, severity: 'medium' },
+    { pest: 'Brown Planthopper', crop: 'Paddy', tempThresh: 22, severity: 'high', source: 'ICAR-NRRI' },
+    { pest: 'Leaf Blight', crop: 'Paddy', tempThresh: 28, severity: 'medium', source: 'ICAR-NRRI' },
   ],
   east: [
-    { pest: 'Rice Blast', crop: 'Paddy', tempThresh: 25, severity: 'high' },
-    { pest: 'Leaf Folder', crop: 'Paddy', tempThresh: 27, severity: 'medium' },
+    { pest: 'Rice Blast', crop: 'Paddy', tempThresh: 25, severity: 'high', source: 'ICAR-NRRI' },
+    { pest: 'Leaf Folder', crop: 'Paddy', tempThresh: 27, severity: 'medium', source: 'ICAR-NRRI' },
   ],
   west: [
-    { pest: 'Pink Bollworm', crop: 'Cotton', tempThresh: 32, severity: 'high' },
-    { pest: 'Aphids', crop: 'Pulses', tempThresh: 28, severity: 'medium' },
+    { pest: 'Pink Bollworm', crop: 'Cotton', tempThresh: 32, severity: 'high', source: 'ICAR-CICR' },
+    { pest: 'Aphids', crop: 'Pulses', tempThresh: 28, severity: 'medium', source: 'ICAR-IARI' },
   ],
   central: [
-    { pest: 'Fall Armyworm', crop: 'Maize', tempThresh: 30, severity: 'high' },
-    { pest: 'Pod Borer', crop: 'Pulses', tempThresh: 26, severity: 'medium' },
+    { pest: 'Fall Armyworm', crop: 'Maize', tempThresh: 30, severity: 'high', source: 'ICAR-IIMR' },
+    { pest: 'Pod Borer', crop: 'Pulses', tempThresh: 26, severity: 'medium', source: 'ICAR-IIPR' },
   ],
   northeast: [
-    { pest: 'Rice Blast', crop: 'Paddy', tempThresh: 25, severity: 'high' },
-    { pest: 'Stem Borer', crop: 'Paddy', tempThresh: 24, severity: 'medium' },
+    { pest: 'Rice Blast', crop: 'Paddy', tempThresh: 25, severity: 'high', source: 'ICAR-NRRI' },
+    { pest: 'Stem Borer', crop: 'Paddy', tempThresh: 24, severity: 'medium', source: 'ICAR-NRRI' },
   ],
 }
 
-function calcRisk(temp: number, reportCount: number, season: string, zonePests: Array<{ pest: string; crop: string; tempThresh: number; severity: string }>): {
+function calcRisk(temp: number, reportCount: number, season: string, zonePests: Array<{ pest: string; crop: string; tempThresh: number; severity: string; source: string }>): {
   level: 'low' | 'medium' | 'high' | 'critical'
   score: number
   factors: string[]
@@ -70,11 +70,13 @@ function calcRisk(temp: number, reportCount: number, season: string, zonePests: 
 
   // Temperature-based risk
   const tempAbove = zonePests.filter(p => temp >= p.tempThresh)
-  triggeredPests.push(...tempAbove.map(p => `${p.pest} (${p.crop})`))
+  tempAbove.forEach(p => triggeredPests.push(`${p.pest} (${p.crop})`))
   if (tempAbove.length > 0) {
     score += tempAbove.length * 20
     if (tempAbove.some(p => p.severity === 'high')) score += 10
+    const sources = [...new Set(tempAbove.map(p => p.source))].join(', ')
     factors.push(`${tempAbove.length} pest threshold${tempAbove.length > 1 ? 's' : ''} triggered at ${temp.toFixed(1)}\u00b0C`)
+    factors.push(`Source: ${sources}`)
   } else {
     factors.push('No pest thresholds triggered by current temperature')
   }

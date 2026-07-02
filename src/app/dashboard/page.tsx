@@ -7,6 +7,7 @@ import MapShell from '@/components/map/MapShell'
 import OutbreakTrendChart from '@/components/dashboard/OutbreakTrendChart'
 import TopDistrictsTable from '@/components/dashboard/TopDistrictsTable'
 import PestRiskCard from '@/components/dashboard/PestRiskCard'
+import CollapsibleSection from '@/components/ui/CollapsibleSection'
 import type { WeatherData } from '@/components/map/MapInner'
 
 const TIME_RANGES = [
@@ -54,8 +55,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
-          <div>
-            <span className="eyebrow block mb-4">Geospatial Overview</span>
+          <CollapsibleSection title="Geospatial Overview">
             <div className="map-frame">
               <MapShell weather={weather} />
             </div>
@@ -73,35 +73,25 @@ export default function DashboardPage() {
                 </span>
               ))}
             </div>
-          </div>
+          </CollapsibleSection>
 
-          <hr className="rule-h" />
-
-          <div>
-            <span className="eyebrow block mb-4">{dict.dashboard.outbreakTrend}</span>
+          <CollapsibleSection title={dict.dashboard.outbreakTrend}>
             <OutbreakTrendChart days={days} />
-          </div>
+          </CollapsibleSection>
 
-          <hr className="rule-h" />
-
-          <div>
-            <span className="eyebrow block mb-4">{dict.dashboard.topDistricts}</span>
+          <CollapsibleSection title={dict.dashboard.topDistricts}>
             <TopDistrictsTable days={days} />
-          </div>
+          </CollapsibleSection>
         </div>
 
         <div className="space-y-10">
-          <div>
-            <span className="eyebrow block mb-4">{dict.dashboard.overallRisk}</span>
+          <CollapsibleSection title={dict.dashboard.overallRisk}>
             <KpiGrid days={days} />
-          </div>
+          </CollapsibleSection>
 
-          <hr className="rule-h" />
-
-          <div>
-            <span className="eyebrow block mb-4">Pest Risk Forecast</span>
+          <CollapsibleSection title="Pest Risk Forecast">
             <PestRiskCard />
-          </div>
+          </CollapsibleSection>
         </div>
       </div>
     </div>

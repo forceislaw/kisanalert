@@ -39,15 +39,16 @@ function StateCard({ d }: { d: RiskData }) {
       {d.risk.factors.length > 0 && (
         <div className="text-[10px] space-y-0.5">
           {d.risk.factors.map((f, i) => {
-            const color = f.includes('No pest threshold') ? '#3D5A45'
+            const color = f.startsWith('Source:') ? '#8B8174'
+              : f.includes('No pest threshold') ? '#3D5A45'
               : f.includes('threshold triggered') || f.includes('accelerates') ? '#C0392B'
               : f.includes('Extreme heat') ? '#C0392B'
               : f.includes('High heat') ? '#E07A5F'
               : f.includes('Kharif') || f.includes('reports in your zone') ? '#D4A04A'
               : '#8B8174'
             return (
-              <p key={i} className="flex items-start gap-1" style={{ color }}>
-                <span className="shrink-0 mt-0.5">&ndash;</span>
+              <p key={i} className="flex items-start gap-1" style={{ color, fontStyle: f.startsWith('Source:') ? 'italic' : 'normal' }}>
+                <span className="shrink-0 mt-0.5">{f.startsWith('Source:') ? '\u2014' : '\u2013'}</span>
                 <span>{f}</span>
               </p>
             )
@@ -143,15 +144,16 @@ export default function PestRiskCard() {
             {focused.risk.factors.length > 0 && (
               <div className="text-[10px] space-y-0.5">
                 {focused.risk.factors.map((f, i) => {
-                  const color = f.includes('No pest threshold') ? '#3D5A45'
+                  const color = f.startsWith('Source:') ? '#8B8174'
+                    : f.includes('No pest threshold') ? '#3D5A45'
                     : f.includes('threshold triggered') || f.includes('accelerates') ? '#C0392B'
                     : f.includes('Extreme heat') ? '#C0392B'
                     : f.includes('High heat') ? '#E07A5F'
                     : f.includes('Kharif') || f.includes('reports in your zone') ? '#D4A04A'
                     : '#8B8174'
                   return (
-                    <p key={i} className="flex items-start gap-1" style={{ color }}>
-                      <span className="shrink-0 mt-0.5">&ndash;</span>
+                    <p key={i} className="flex items-start gap-1" style={{ color, fontStyle: f.startsWith('Source:') ? 'italic' : 'normal' }}>
+                      <span className="shrink-0 mt-0.5">{f.startsWith('Source:') ? '\u2014' : '\u2013'}</span>
                       <span>{f}</span>
                     </p>
                   )
