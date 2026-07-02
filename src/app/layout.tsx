@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     apple: '/favicon.svg',
   },
   other: {
-    "theme-color": "#E07A5F",
+    "theme-color": "#F7F5F0",
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "default",
   },
