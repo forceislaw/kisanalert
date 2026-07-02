@@ -19,6 +19,21 @@ export interface Dictionary {
     riskLevel: string
     activeReports: string
     weeklyActivity: string
+    geoTitle: string
+    pestRisk: string
+    pestRiskSub: string
+    allStates: string
+    yourSelection: string
+    temp: string
+    tempCool: string
+    tempWarm: string
+    tempHot: string
+    tempExtreme: string
+    days7: string
+    days30: string
+    daysAll: string
+    riskFactors: string
+    source: string
   }
   map: {
     title: string
@@ -195,6 +210,10 @@ export interface Dictionary {
     done: string
     confirm: string
     cancel: string
+    installTitle: string
+    installDesc: string
+    install: string
+    loading: string
   }
 }
 
@@ -220,6 +239,21 @@ export const dictionary: Record<string, Dictionary> = {
       riskLevel: 'Risk Level',
       activeReports: 'Active Reports',
       weeklyActivity: 'Weekly report activity',
+      geoTitle: 'Geospatial Overview',
+      pestRisk: 'Pest Risk Forecast',
+      pestRiskSub: '3-day forecast \u00b7 temp + season + reports',
+      allStates: 'All states',
+      yourSelection: 'your selection',
+      temp: 'Temp',
+      tempCool: '\u2264 27\u00b0',
+      tempWarm: '28\u201332\u00b0',
+      tempHot: '33\u201337\u00b0',
+      tempExtreme: '\u2265 38\u00b0',
+      days7: '7 days',
+      days30: '30 days',
+      daysAll: 'All',
+      riskFactors: 'Risk Factors',
+      source: 'Source',
     },
     map: {
       title: 'Geospatial Monitoring',
@@ -396,6 +430,10 @@ export const dictionary: Record<string, Dictionary> = {
       done: 'Done',
       confirm: 'Confirm',
       cancel: 'Cancel',
+      installTitle: 'Install KisanAlert',
+      installDesc: 'Get faster access & offline support',
+      install: 'Install',
+      loading: 'Loading...',
     },
   },
   hi: {
@@ -419,6 +457,21 @@ export const dictionary: Record<string, Dictionary> = {
       riskLevel: 'जोखिम स्तर',
       activeReports: 'सक्रिय रिपोर्ट्स',
       weeklyActivity: 'साप्ताहिक रिपोर्ट गतिविधि',
+      geoTitle: 'भू-स्थानिक अवलोकन',
+      pestRisk: 'कीट जोखिम पूर्वानुमान',
+      pestRiskSub: '3 दिन का पूर्वानुमान · तापमान + मौसम + रिपोर्ट',
+      allStates: 'सभी राज्य',
+      yourSelection: 'आपका चयन',
+      temp: 'तापमान',
+      tempCool: '≤ 27°',
+      tempWarm: '28–32°',
+      tempHot: '33–37°',
+      tempExtreme: '≥ 38°',
+      days7: '7 दिन',
+      days30: '30 दिन',
+      daysAll: 'सभी',
+      riskFactors: 'जोखिम कारक',
+      source: 'स्रोत',
     },
     map: {
       title: 'भू-स्थानिक निगरानी',
@@ -595,6 +648,10 @@ export const dictionary: Record<string, Dictionary> = {
       done: 'हो गया',
       confirm: 'पुष्टि करें',
       cancel: 'रद्द करें',
+      installTitle: 'KisanAlert इंस्टॉल करें',
+      installDesc: 'तेज़ पहुंच और ऑफलाइन समर्थन',
+      install: 'इंस्टॉल करें',
+      loading: 'लोड हो रहा है...',
     },
   },
   mr: {
@@ -618,6 +675,21 @@ export const dictionary: Record<string, Dictionary> = {
       riskLevel: 'धोका पातळी',
       activeReports: 'सक्रिय अहवाल',
       weeklyActivity: 'साप्ताहिक अहवाल क्रियाकलाप',
+      geoTitle: 'भौगोलिक विहंगावलोकन',
+      pestRisk: 'कीड जोखीम अंदाज',
+      pestRiskSub: '3 दिवसांचा अंदाज · तापमान + हंगाम + अहवाल',
+      allStates: 'सर्व राज्य',
+      yourSelection: 'तुमची निवड',
+      temp: 'तापमान',
+      tempCool: '≤ 27°',
+      tempWarm: '28–32°',
+      tempHot: '33–37°',
+      tempExtreme: '≥ 38°',
+      days7: '7 दिवस',
+      days30: '30 दिवस',
+      daysAll: 'सर्व',
+      riskFactors: 'जोखीम घटक',
+      source: 'स्त्रोत',
     },
     map: {
       title: 'भौगोलिक निरीक्षण',
@@ -794,6 +866,10 @@ export const dictionary: Record<string, Dictionary> = {
       done: 'झालं',
       confirm: 'पुष्टी करा',
       cancel: 'रद्द करा',
+      installTitle: 'KisanAlert स्थापित करा',
+      installDesc: 'जलद प्रवेश आणि ऑफलाइन समर्थन',
+      install: 'स्थापित करा',
+      loading: 'लोड होत आहे...',
     },
   },
   te: {
@@ -817,6 +893,21 @@ export const dictionary: Record<string, Dictionary> = {
       riskLevel: 'ప్రమాద స్థాయి',
       activeReports: 'చురుకైన నివేదికలు',
       weeklyActivity: 'వారపు నివేదిక కార్యకలాపం',
+      geoTitle: 'భౌగోళిక అవలోకనం',
+      pestRisk: 'పీడ ప్రమాద సూచన',
+      pestRiskSub: '3-రోజుల సూచన · ఉష్ణోగ్రత + సీజన్ + నివేదికలు',
+      allStates: 'అన్ని రాష్ట్రాలు',
+      yourSelection: 'మీ ఎంపిక',
+      temp: 'ఉష్ణోగ్రత',
+      tempCool: '≤ 27°',
+      tempWarm: '28–32°',
+      tempHot: '33–37°',
+      tempExtreme: '≥ 38°',
+      days7: '7 రోజులు',
+      days30: '30 రోజులు',
+      daysAll: 'అన్నీ',
+      riskFactors: 'ప్రమాద కారకాలు',
+      source: 'మూలం',
     },
     map: {
       title: 'భూగోళ పర్యవేక్షణ',
@@ -993,6 +1084,10 @@ export const dictionary: Record<string, Dictionary> = {
       done: 'పూర్తయింది',
       confirm: 'నిర్ధారించు',
       cancel: 'రద్దు చేయి',
+      installTitle: 'KisanAlert ఇన్‌స్టాల్ చేయండి',
+      installDesc: 'వేగవంతమైన యాక్సెస్ & ఆఫ్‌లైన్ మద్దతు',
+      install: 'ఇన్‌స్టాల్ చేయండి',
+      loading: 'లోడ్ అవుతోంది...',
     },
   },
   kn: {
@@ -1016,6 +1111,21 @@ export const dictionary: Record<string, Dictionary> = {
       riskLevel: 'ಅಪಾಯದ ಮಟ್ಟ',
       activeReports: 'ಸಕ್ರಿಯ ವರದಿಗಳು',
       weeklyActivity: 'ಸಾಪ್ತಾಹಿಕ ವರದಿ ಚಟುವಟಿಕೆ',
+      geoTitle: 'ಭೌಗೋಳಿಕ ಅವಲೋಕನ',
+      pestRisk: 'ಕೀಟ ಅಪಾಯ ಮುನ್ಸೂಚನೆ',
+      pestRiskSub: '3-ದಿನಗಳ ಮುನ್ಸೂಚನೆ · ತಾಪಮಾನ + ಋತು + ವರದಿಗಳು',
+      allStates: 'ಎಲ್ಲ ರಾಜ್ಯಗಳು',
+      yourSelection: 'ನಿಮ್ಮ ಆಯ್ಕೆ',
+      temp: 'ತಾಪಮಾನ',
+      tempCool: '≤ 27°',
+      tempWarm: '28–32°',
+      tempHot: '33–37°',
+      tempExtreme: '≥ 38°',
+      days7: '7 ದಿನಗಳು',
+      days30: '30 ದಿನಗಳು',
+      daysAll: 'ಎಲ್ಲ',
+      riskFactors: 'ಅಪಾಯದ ಅಂಶಗಳು',
+      source: 'ಮೂಲ',
     },
     map: {
       title: 'ಭೌಗೋಳಿಕ ಮೇಲ್ವಿಚಾರಣೆ',
@@ -1192,6 +1302,10 @@ export const dictionary: Record<string, Dictionary> = {
       done: 'ಮುಗಿಯಿತು',
       confirm: 'ದೃಢಪಡಿಸಿ',
       cancel: 'ರದ್ದುಮಾಡಿ',
+      installTitle: 'KisanAlert ಸ್ಥಾಪಿಸಿ',
+      installDesc: 'ವೇಗದ ಪ್ರವೇಶ ಮತ್ತು ಆಫ್‌ಲೈನ್ ಬೆಂಬಲ',
+      install: 'ಸ್ಥಾಪಿಸಿ',
+      loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ...',
     },
   },
 }

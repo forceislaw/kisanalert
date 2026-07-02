@@ -9,8 +9,6 @@ export async function GET(req: NextRequest) {
   const tokenHash = searchParams.get('token_hash')
   const type = searchParams.get('type')
 
-  let errorMsg = searchParams.get('error')
-
   async function getSupabase() {
     const cookieStore = await cookies()
     return createServerClient<Database>(
@@ -30,8 +28,7 @@ export async function GET(req: NextRequest) {
   if (tokenHash && type === 'signup') {
     const supabase = await getSupabase()
     const { error } = await supabase.auth.verifyOtp({ type: 'signup', token_hash: tokenHash })
-    if (!error) return NextResponse.redirect(new URL('/login?verified=true', origin))
-    return NextResponse.redirect(new URL('/login?error=auth_failed', origin))
+    return NextResponse.redirect(new URL(error ? '/login' : '/login?verified=true', origin))
   }
 
   if (code) {
@@ -40,8 +37,7 @@ export async function GET(req: NextRequest) {
     // If type=signup is present, this is email verification, skip OAuth exchange
     if (type === 'signup') {
       const { error: verifyError } = await supabase.auth.verifyOtp({ type: 'signup', token_hash: code })
-      if (!verifyError) return NextResponse.redirect(new URL('/login?verified=true', origin))
-      errorMsg = verifyError?.message
+      return NextResponse.redirect(new URL(verifyError ? '/login' : '/login?verified=true', origin))
     } else {
       // OAuth flow (Google sign-in or PKCE email verification)
       let exchangeError: { message: string } | null = null
@@ -90,19 +86,9 @@ export async function GET(req: NextRequest) {
       // Exchange failed — try email verification via code (acts as token_hash)
       const { error: verifyError } = await supabase.auth.verifyOtp({ type: 'signup', token_hash: code })
       if (!verifyError) return NextResponse.redirect(new URL('/login?verified=true', origin))
-
-      errorMsg = exchangeError?.message || verifyError?.message
+      return NextResponse.redirect(new URL('/login', origin))
     }
   }
 
-  const params = new URLSearchParams()
-  if (errorMsg) {
-    if (errorMsg.toLowerCase().includes('already registered') || errorMsg.toLowerCase().includes('already exists')) {
-      params.set('error', 'email_exists')
-    } else {
-      params.set('error', 'auth_failed')
-    }
-  }
-  const qs = params.toString()
-  return NextResponse.redirect(new URL(qs ? `/login?${qs}` : '/login', origin))
+  return NextResponse.redirect(new URL('/login', origin))
 }

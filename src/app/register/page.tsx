@@ -63,12 +63,6 @@ export default function RegisterPage() {
 
     setLoading(true)
 
-    if (email.toLowerCase().includes('protonvpngamecheck')) {
-      setError('This email is not allowed to register.')
-      setLoading(false)
-      return
-    }
-
     const { error } = await signUp(email, password)
     setLoading(false)
 
