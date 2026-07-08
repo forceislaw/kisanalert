@@ -100,8 +100,7 @@ export default function RootPage() {
         </div>
         <SplitText
           text={dict.landing.pestIntelligence}
-          className="text-xs sm:text-sm text-charcoal-muted tracking-[0.25em] uppercase mt-6"
-          style={{ fontFamily: 'var(--font-blanka), Blanka, sans-serif' }}
+          className="text-xs sm:text-sm tracking-[0.25em] uppercase mt-6 text-charcoal-muted font-sans"
           delay={120}
           duration={0.6}
           ease="power3.out"
