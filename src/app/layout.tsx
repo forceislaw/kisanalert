@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, DM_Sans, DM_Mono } from "next/font/google";
+import { Playfair_Display, DM_Sans, DM_Mono, Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -31,6 +31,13 @@ const dmMono = DM_Mono({
   display: "swap",
 });
 
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Apentomos - Pest Early Warning System",
   description: "Enterprise geospatial monitoring for agricultural pest outbreaks",
@@ -57,7 +64,7 @@ export default async function RootLayout({
   const dictionary = getDictionary(locale);
 
   return (
-    <html lang={locale} className={cn("scroll-smooth", playfair.variable, dmSans.variable, dmMono.variable)}>
+    <html lang={locale} className={cn("scroll-smooth", playfair.variable, dmSans.variable, dmMono.variable, inter.variable)}>
       <body className="font-sans antialiased min-h-screen flex flex-col">
         <ClickSparkWrapper>
           <AuthProvider>
