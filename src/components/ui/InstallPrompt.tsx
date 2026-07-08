@@ -44,7 +44,7 @@ export default function InstallPrompt() {
           <path d="M20 28C11 24 13 12 20 8C27 12 29 24 20 28Z" fill="#F7F5F0"/>
         </svg>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-charcoal">Install KisanAlert</p>
+          <p className="text-sm font-semibold text-charcoal">Install Apentomos</p>
           <p className="text-xs text-charcoal-muted truncate">Get faster access &amp; offline support</p>
         </div>
         <button onClick={handleInstall} className="btn-primary text-xs px-3 py-1.5 shrink-0">Install</button>

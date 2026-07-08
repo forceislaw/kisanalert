@@ -1,4 +1,4 @@
-# KisanAlert — Pest Intelligence Platform
+# Apentomos — Pest Intelligence Platform
 
 AI-powered agricultural pest detection, monitoring, and early warning for Indian farmers.
 

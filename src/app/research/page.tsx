@@ -3,8 +3,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Research — KisanAlert',
-  description: 'Data sources, methodology, and research behind KisanAlert\u2019s pest intelligence platform',
+  title: 'Research — Apentomos',
+  description: 'Data sources, methodology, and research behind Apentomos\u2019s pest intelligence platform',
 }
 
 export default function ResearchPage() {
@@ -17,7 +17,7 @@ export default function ResearchPage() {
           Research &amp; Impact
         </h1>
         <p className="text-sm text-charcoal-muted mt-2 max-w-xl">
-          Data sources, methodology, and the agricultural pest crisis that KisanAlert addresses.
+          Data sources, methodology, and the agricultural pest crisis that Apentomos addresses.
         </p>
       </div>
 
@@ -80,7 +80,7 @@ export default function ResearchPage() {
             <li>Each 1\u00b0C rise in winter minimum temperature correlates with a 12\u201315% increase in early-season pest incidence in rabi crops</li>
           </ul>
           <p className="text-sm text-charcoal leading-relaxed">
-            These findings directly inform KisanAlert&rsquo;s weather overlay: temperature anomalies flagged on the dashboard are drawn from these published thresholds.
+            These findings directly inform Apentomos&rsquo;s weather overlay: temperature anomalies flagged on the dashboard are drawn from these published thresholds.
           </p>
         </div>
       </section>
@@ -150,7 +150,7 @@ export default function ResearchPage() {
                   <td className="py-2 text-sage">Free</td>
                 </tr>
                 <tr>
-                  <td className="py-2 pr-3 font-semibold text-charcoal">KisanAlert</td>
+                  <td className="py-2 pr-3 font-semibold text-charcoal">Apentomos</td>
                   <td className="py-2 pr-3 text-sage">Yes</td>
                   <td className="py-2 pr-3 text-sage">Yes</td>
                   <td className="py-2 pr-3 text-sage">Yes</td>
@@ -234,7 +234,7 @@ export default function ResearchPage() {
 
         <div className="card-editorial p-6 space-y-3">
           <p className="text-sm text-charcoal leading-relaxed">
-            KisanAlert translates these research findings into a practical tool:
+            Apentomos translates these research findings into a practical tool:
           </p>
           <div className="space-y-3 text-sm text-charcoal leading-relaxed">
             <p><strong>AI Diagnosis</strong> — Our vision model is prompted with pest lists drawn from the ICAR Crop Loss Database and CABI Plantwise knowledge bank. Each prediction is mapped to a severity level calibrated against ICAR&rsquo;s economic threshold tables, determining whether intervention is needed.</p>
@@ -252,7 +252,7 @@ export default function ResearchPage() {
 
         <div className="card-editorial p-6 space-y-3">
           <p className="text-sm text-charcoal leading-relaxed">
-            Based on the IFPRI cost-benefit model (2021) and the CABI Plantwise intervention data (2021), a conservative projection for KisanAlert at scale:
+            Based on the IFPRI cost-benefit model (2021) and the CABI Plantwise intervention data (2021), a conservative projection for Apentomos at scale:
           </p>
           <ul className="list-disc pl-5 text-sm text-charcoal leading-relaxed space-y-1">
             <li><strong>1 million active users</strong> within 3 years (0.8% of farming households)</li>
@@ -288,7 +288,7 @@ export default function ResearchPage() {
           <li>Google. (2024). <em>Gemini API: Multimodal AI for Image Understanding</em>. https://ai.google.dev</li>
         </ol>
         <p className="text-xs text-charcoal-muted pt-2">
-          All data and statistics are from publicly available sources cited above. Figures may vary year to year; we recommend consulting the latest reports for up-to-date figures. KisanAlert is an independent project and is not affiliated with any of the cited organizations.
+          All data and statistics are from publicly available sources cited above. Figures may vary year to year; we recommend consulting the latest reports for up-to-date figures. Apentomos is an independent project and is not affiliated with any of the cited organizations.
         </p>
       </section>
 

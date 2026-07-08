@@ -1,6 +1,6 @@
-const CACHE = 'kisanalert-v2'
+const CACHE = 'apentomos-v2'
 const OFFLINE_URL = '/offline.html'
-const DB_NAME = 'kisanalert-offline'
+const DB_NAME = 'apentomos-offline'
 const DB_VERSION = 1
 const PUSH_PUBLIC_KEY = 'BEyRqiEDbkucm9Uw9yd3bGUqTOI1DbS_athnQpx489WSRcfx38hJ_Q1eVJPpMGnJa2-MQwAoEsaWg7lNZiwdu-M'
 
@@ -48,8 +48,8 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   if (!event.data) return
   let data
-  try { data = event.data.json() } catch { data = { title: 'KisanAlert', body: event.data.text() } }
-  const title = data.title || 'KisanAlert'
+  try { data = event.data.json() } catch { data = { title: 'Apentomos', body: event.data.text() } }
+  const title = data.title || 'Apentomos'
   const options = {
     body: data.body || '',
     icon: '/icon-192.png',

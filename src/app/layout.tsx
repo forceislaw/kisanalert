@@ -32,7 +32,7 @@ const dmMono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "KisanAlert - Pest Early Warning System",
+  title: "Apentomos - Pest Early Warning System",
   description: "Enterprise geospatial monitoring for agricultural pest outbreaks",
   manifest: "/manifest.json",
   icons: {
@@ -52,7 +52,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const rawLocale = cookieStore.get("kisanalert-locale")?.value || "en";
+  const rawLocale = cookieStore.get("apentomos-locale")?.value || "en";
   const locale = locales.includes(rawLocale as Locale) ? rawLocale : "en";
   const dictionary = getDictionary(locale);
 

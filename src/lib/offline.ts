@@ -1,4 +1,4 @@
-const DB_NAME = 'kisanalert-offline'
+const DB_NAME = 'apentomos-offline'
 const DB_VERSION = 1
 
 function openDB(): Promise<IDBDatabase> {

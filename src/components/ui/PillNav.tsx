@@ -140,7 +140,7 @@ export default function PillNav() {
       <div className="flex items-center justify-between max-w-7xl mx-auto px-4 md:px-8 lg:px-12 py-3">
         <div className="pill-nav-container">
         <nav className="pill-nav" aria-label="Primary">
-          <Link href="/dashboard" className="pill-logo" aria-label="KisanAlert Home" onClick={(e) => {
+          <Link href="/dashboard" className="pill-logo" aria-label="Apentomos Home" onClick={(e) => {
             const el = e.currentTarget.querySelector('svg')
             if (el) {
               el.classList.remove('spin-once')
@@ -152,7 +152,7 @@ export default function PillNav() {
               <circle cx="20" cy="20" r="20" fill="#E07A5F"/>
               <path d="M20 28 C11 24 13 12 20 8 C27 12 29 24 20 28Z" fill="#F7F5F0"/>
             </svg>
-            <span style={{ fontFamily: 'var(--font-sans), DM Sans, sans-serif', fontSize: '0.9375rem', fontWeight: 600, letterSpacing: '-0.01em', color: '#6B6560' }}>KisanAlert</span>
+            <span style={{ fontFamily: 'var(--font-sans), DM Sans, sans-serif', fontSize: '0.9375rem', fontWeight: 600, letterSpacing: '-0.01em', color: '#6B6560' }}>Apentomos</span>
           </Link>
 
           <div className="pill-nav-items desktop-only" ref={navRef}>

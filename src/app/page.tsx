@@ -88,18 +88,9 @@ export default function RootPage() {
       >
         <div className="flex items-baseline flex-wrap justify-center">
           <SplitText
-            text="Kisan"
-            className="text-[clamp(3rem,12vw,9rem)] font-bold tracking-[-0.04em] text-charcoal leading-none"
+            text="Apentomos"
+            className="text-[clamp(3rem,12vw,9rem)] font-bold tracking-[-0.04em] text-terra leading-none"
             delay={60}
-            duration={0.8}
-            ease="power4.out"
-            from={{ opacity: 0, y: 60 }}
-            to={{ opacity: 1, y: 0 }}
-          />
-          <SplitText
-            text="Alert"
-            className="text-[clamp(3rem,12vw,9rem)] font-bold tracking-[-0.04em] text-terra leading-none ml-3 sm:ml-5"
-            delay={80}
             duration={0.8}
             ease="power4.out"
             from={{ opacity: 0, y: 60 }}
@@ -265,7 +256,7 @@ export default function RootPage() {
         {/* Footer */}
         <footer className="border-t border-stone py-8 px-6">
           <div className="max-w-6xl mx-auto flex items-center justify-between text-xs text-charcoal-muted font-mono">
-            <span>&copy; 2026 KisanAlert</span>
+            <span>&copy; 2026 Apentomos</span>
             <span>{dict.landing.footerTagline}</span>
           </div>
         </footer>

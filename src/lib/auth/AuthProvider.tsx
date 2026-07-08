@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const supabase = createClient()
     await supabase.auth.signOut()
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('kisanalert-onboarded')
+      localStorage.removeItem('apentomos-onboarded')
     }
   }
 

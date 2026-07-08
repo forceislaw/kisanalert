@@ -18,7 +18,7 @@ export default function DataPage() {
           <h1 className="text-3xl font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
             Your Data & Privacy
           </h1>
-          <p className="eyebrow mt-1">How KisanAlert handles your information</p>
+          <p className="eyebrow mt-1">How Apentomos handles your information</p>
         </div>
 
         <div className="space-y-6">

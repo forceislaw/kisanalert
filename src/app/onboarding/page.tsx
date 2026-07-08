@@ -26,7 +26,7 @@ export default function OnboardingPage() {
       >
         <Step>
           <StepTitle>
-            {dict.onboarding.welcomeTitle.split('KisanAlert')[0]}<span className="text-terra">KisanAlert</span>
+            {dict.onboarding.welcomeTitle.split('Apentomos')[0]}<span className="text-terra">Apentomos</span>
           </StepTitle>
           <StepBody>
             {dict.onboarding.welcomeBody}

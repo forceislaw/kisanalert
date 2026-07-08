@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { getDictionary, Dictionary, Locale, locales } from './getDictionary';
 
-const COOKIE_NAME = 'kisanalert-locale';
+const COOKIE_NAME = 'apentomos-locale';
 
 function getCookie(name: string): string | null {
   if (typeof document === 'undefined') return null;

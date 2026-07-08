@@ -40,7 +40,7 @@ function New-Icon {
     $bmp.Dispose()
 }
 
-$publicDir = "C:\Users\dhirn\OneDrive\crop\kisanalert-app\public"
+$publicDir = "C:\Users\dhirn\OneDrive\crop\apentomos-app\public"
 New-Icon -Size 192 -Path (Join-Path $publicDir "icon-192.png")
 New-Icon -Size 512 -Path (Join-Path $publicDir "icon-512.png")
 

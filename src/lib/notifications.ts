@@ -14,7 +14,7 @@ export async function sendNotification(params: {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'KisanAlert <notifications@kisanalert.app>',
+        from: 'Apentomos <notifications@apentomos.app>',
         to: params.to,
         subject: params.subject,
         text: params.text,

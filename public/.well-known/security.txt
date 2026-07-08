@@ -1,4 +1,4 @@
-Contact: mailto:security@kisanalert.app
+Contact: mailto:security@apentomos.app
 Preferred-Languages: en
-Canonical: https://kisanalert-app.vercel.app/.well-known/security.txt
-Policy: https://kisanalert-app.vercel.app/security
+Canonical: https://apentomos-app.vercel.app/.well-known/security.txt
+Policy: https://apentomos-app.vercel.app/security

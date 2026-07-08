@@ -240,7 +240,7 @@ export async function POST(req: NextRequest) {
 
           sendNotification({
             to: user.email,
-            subject: `KisanAlert: ${severity_level} severity pest report in ${(districtData as DistrictRow | null)?.name_en || 'unknown'} district`,
+            subject: `Apentomos: ${severity_level} severity pest report in ${(districtData as DistrictRow | null)?.name_en || 'unknown'} district`,
             text: `A new pest report has been recorded.\nSeverity: ${severity_level}\nStatus: ${status}\nConfidence: ${(confidence * 100).toFixed(0)}%`,
           })
         }

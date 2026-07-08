@@ -12,7 +12,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Notifications (email alerts) in Settings also require login. Preference rows keyed to `user_id`.
 
 ## Polish Items Completed (24 Jun 2026)
-- Auth pages (login, register, forgot, reset) wrapped in `card-editorial` with KisanAlert leaf SVG logo.
+- Auth pages (login, register, forgot, reset) wrapped in `card-editorial` with Apentomos leaf SVG logo.
 - 404 and error pages use `card-alert` with logo.
 - Text search on Reports page: `search` query param → API does `ilike` on districts.name_en, crops.key_name, pests.key_name, then `or()` filter on IDs.
 - Dashboard time filter: 7d/30d/All buttons, `days` prop drilled down to KpiGrid, TopDistrictsTable, OutbreakTrendChart.
