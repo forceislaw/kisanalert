@@ -21,6 +21,7 @@ interface SplitTextProps {
   rootMargin?: string
   textAlign?: string
   onLetterAnimationComplete?: () => void
+  style?: React.CSSProperties
 }
 
 export default function SplitText({
@@ -36,6 +37,7 @@ export default function SplitText({
   rootMargin = '-100px',
   textAlign = 'center',
   onLetterAnimationComplete,
+  style,
 }: SplitTextProps) {
   const ref = useRef<HTMLElement | null>(null)
   const animationCompletedRef = useRef(false)
@@ -155,7 +157,7 @@ export default function SplitText({
   return (
     <div
       ref={ref as React.Ref<HTMLDivElement>}
-      style={{ textAlign, overflow: 'hidden', display: 'inline-block', whiteSpace: 'normal', wordWrap: 'break-word' } as React.CSSProperties}
+      style={{ ...style, textAlign, overflow: 'hidden', display: 'inline-block', whiteSpace: 'normal', wordWrap: 'break-word' } as React.CSSProperties}
       className={`split-parent ${className}`}
     >
       {text}
