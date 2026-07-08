@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import { Playfair_Display, DM_Sans, DM_Mono, Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
@@ -38,6 +39,12 @@ const inter = Inter({
   display: "swap",
 });
 
+const blanka = localFont({
+  src: "../../public/fonts/Blanka.otf",
+  variable: "--font-blanka",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Apentomos - Pest Early Warning System",
   description: "Enterprise geospatial monitoring for agricultural pest outbreaks",
@@ -64,7 +71,7 @@ export default async function RootLayout({
   const dictionary = getDictionary(locale);
 
   return (
-    <html lang={locale} className={cn("scroll-smooth", playfair.variable, dmSans.variable, dmMono.variable, inter.variable)}>
+    <html lang={locale} className={cn("scroll-smooth", playfair.variable, dmSans.variable, dmMono.variable, inter.variable, blanka.variable)}>
       <body className="font-sans antialiased min-h-screen flex flex-col">
         <ClickSparkWrapper>
           <AuthProvider>
