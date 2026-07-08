@@ -90,7 +90,7 @@ export default function RootPage() {
           <SplitText
             text="APENTOMOS"
             className="text-[clamp(2rem,8vw,6rem)] font-bold tracking-[0.08em] text-sage leading-[1.15]"
-            style={{ fontFamily: 'var(--font-blanka), Blanka, sans-serif' }}
+            style={{ fontFamily: 'Georgia, serif' }}
             delay={60}
             duration={0.8}
             ease="power4.out"
