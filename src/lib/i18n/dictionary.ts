@@ -214,6 +214,9 @@ export interface Dictionary {
     installDesc: string
     install: string
     loading: string
+    availableProducts: string
+    nearbyStores: string
+    pricesMayVary: string
   }
 }
 
@@ -434,6 +437,9 @@ export const dictionary: Record<string, Dictionary> = {
       installDesc: 'Get faster access & offline support',
       install: 'Install',
       loading: 'Loading...',
+      availableProducts: 'Available Products',
+      nearbyStores: 'Nearby stores in',
+      pricesMayVary: 'Prices may vary by store location',
     },
   },
   hi: {
@@ -652,6 +658,9 @@ export const dictionary: Record<string, Dictionary> = {
       installDesc: 'तेज़ पहुंच और ऑफलाइन समर्थन',
       install: 'इंस्टॉल करें',
       loading: 'लोड हो रहा है...',
+      availableProducts: 'उपलब्ध उत्पाद',
+      nearbyStores: 'आस-पास की दुकानें',
+      pricesMayVary: 'दुकान के अनुसार कीमतें भिन्न हो सकती हैं',
     },
   },
   mr: {
@@ -870,6 +879,9 @@ export const dictionary: Record<string, Dictionary> = {
       installDesc: 'जलद प्रवेश आणि ऑफलाइन समर्थन',
       install: 'स्थापित करा',
       loading: 'लोड होत आहे...',
+      availableProducts: 'उपलब्ध उत्पादने',
+      nearbyStores: 'जवळील दुकाने',
+      pricesMayVary: 'दुकानानुसार किंमती बदलू शकतात',
     },
   },
   te: {
@@ -1088,6 +1100,9 @@ export const dictionary: Record<string, Dictionary> = {
       installDesc: 'వేగవంతమైన యాక్సెస్ & ఆఫ్‌లైన్ మద్దతు',
       install: 'ఇన్‌స్టాల్ చేయండి',
       loading: 'లోడ్ అవుతోంది...',
+      availableProducts: 'అందుబాటులో ఉన్న ఉత్పత్తులు',
+      nearbyStores: 'సమీపంలోని దుకాణాలు',
+      pricesMayVary: 'దుకాణాన్ని బట్టి ధరలు మారవచ్చు',
     },
   },
   kn: {
@@ -1306,6 +1321,9 @@ export const dictionary: Record<string, Dictionary> = {
       installDesc: 'ವೇಗದ ಪ್ರವೇಶ ಮತ್ತು ಆಫ್‌ಲೈನ್ ಬೆಂಬಲ',
       install: 'ಸ್ಥಾಪಿಸಿ',
       loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ...',
+      availableProducts: 'ಲಭ್ಯವಿರುವ ಉತ್ಪನ್ನಗಳು',
+      nearbyStores: 'ಹತ್ತಿರದ ಅಂಗಡಿಗಳು',
+      pricesMayVary: 'ಅಂಗಡಿಯನ್ನು ಅವಲಂಬಿಸಿ ಬೆಲೆಗಳು ಬದಲಾಗಬಹುದು',
     },
   },
 }

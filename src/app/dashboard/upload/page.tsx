@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import UploadDropzone from '@/components/upload/UploadDropzone'
 import VisionResultCard from '@/components/upload/VisionResultCard'
 import { DistrictSearch } from '@/components/ui/DistrictSearch'
+import StoreProducts from '@/components/ui/StoreProducts'
 import { VisionAnalysisResult } from '@/app/api/vision-analyze/route'
 import { RAIN_SHADOW_DISTRICTS } from '@/lib/seed/districts'
 export default function UploadPage() {
@@ -226,6 +227,13 @@ export default function UploadPage() {
             onDiscard={handleDiscard}
             isSubmitting={isSubmitting}
           />
+
+          <div className="border-t border-stone pt-6 mt-2">
+            <StoreProducts
+              districtId={selectedDistrict}
+              pestName={analysisResult.pest_name === 'none' || !analysisResult.is_pest_detected ? 'none' : analysisResult.pest_name}
+            />
+          </div>
         </div>
       ) : null}
     </div>

@@ -89,6 +89,41 @@ export interface Database {
           danger_level?: 'low' | 'moderate' | 'high' | 'critical'
         }
       }
+      store_products: {
+        Row: {
+          id: number
+          pest_key: string
+          product_name: string
+          product_type: 'pesticide' | 'fungicide' | 'insecticide' | 'herbicide' | 'bio-control' | 'trap' | 'other'
+          brand: string
+          price_range: string
+          store_type: 'general' | 'agro'
+          unit: string
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          pest_key: string
+          product_name: string
+          product_type: 'pesticide' | 'fungicide' | 'insecticide' | 'herbicide' | 'bio-control' | 'trap' | 'other'
+          brand: string
+          price_range: string
+          store_type: 'general' | 'agro'
+          unit: string
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          pest_key?: string
+          product_name?: string
+          product_type?: 'pesticide' | 'fungicide' | 'insecticide' | 'herbicide' | 'bio-control' | 'trap' | 'other'
+          brand?: string
+          price_range?: string
+          store_type?: 'general' | 'agro'
+          unit?: string
+          created_at?: string
+        }
+      }
       user_notification_prefs: {
         Row: {
           id: string

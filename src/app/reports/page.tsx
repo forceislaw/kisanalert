@@ -6,6 +6,7 @@ import { useLocale } from '@/lib/i18n/LocaleProvider'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import SeverityBadge from '@/components/ui/SeverityBadge'
 import { DistrictSearch } from '@/components/ui/DistrictSearch'
+import StoreProducts from '@/components/ui/StoreProducts'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import Toast from '@/components/ui/Toast'
 import type { ToastType } from '@/components/ui/Toast'
@@ -264,6 +265,13 @@ export default function ReportsPage() {
               }`}>{selectedReport.status || 'pending'}</span>
               <span className="text-charcoal-muted">Date</span>
               <span className="text-charcoal">{new Date(selectedReport.reported_at).toLocaleString()}</span>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-stone">
+              <StoreProducts
+                districtId={selectedReport.district_id}
+                pestName={getPestName(selectedReport) === 'No Pest' ? 'none' : getPestName(selectedReport)}
+              />
             </div>
 
             {user && selectedReport.user_id === user.id && (
