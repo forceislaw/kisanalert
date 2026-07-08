@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 export default function DataPage() {
-  const { dict } = useLocale()
+  useLocale()
 
   return (
     <div className="max-w-2xl mx-auto mt-12">

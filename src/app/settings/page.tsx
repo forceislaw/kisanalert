@@ -15,17 +15,10 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
   const [prefsLoading, setPrefsLoading] = useState(false)
-  const [pushEnabled, setPushEnabled] = useState(false)
-  const [pushSupported, setPushSupported] = useState(false)
-  const [pushGranted, setPushGranted] = useState(false)
-
-  useEffect(() => {
-    setPushSupported('serviceWorker' in navigator && 'PushManager' in window)
-    if (typeof Notification !== 'undefined') {
-      setPushGranted(Notification.permission === 'granted')
-      setPushEnabled(Notification.permission === 'granted')
-    }
-  }, [])
+  const grantInitial = typeof Notification !== 'undefined' && Notification.permission === 'granted'
+  const [pushEnabled, setPushEnabled] = useState(grantInitial)
+  const [pushSupported] = useState(() => 'serviceWorker' in navigator && 'PushManager' in window)
+  const [pushGranted, setPushGranted] = useState(grantInitial)
 
   const handlePushToggle = async () => {
     if (!pushEnabled) {

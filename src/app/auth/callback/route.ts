@@ -44,8 +44,8 @@ export async function GET(req: NextRequest) {
       try {
         const result = await supabase.auth.exchangeCodeForSession(code)
         exchangeError = result.error
-      } catch (e: any) {
-        exchangeError = { message: e?.message || 'Unexpected error exchanging code' }
+      } catch (e: unknown) {
+        exchangeError = { message: e instanceof Error ? e.message : 'Unexpected error exchanging code' }
       }
 
       if (!exchangeError) {

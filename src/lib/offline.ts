@@ -26,6 +26,7 @@ export async function queueRequest(url: string, method: string, headers: Record<
   })
   if ('serviceWorker' in navigator && 'sync' in ServiceWorkerRegistration.prototype) {
     const reg = await navigator.serviceWorker.ready
-    ;(reg as any).sync.register('submit-report')
+    const swReg = reg as ServiceWorkerRegistration & { sync: { register: (tag: string) => Promise<void> } }
+    swReg.sync.register('submit-report')
   }
 }

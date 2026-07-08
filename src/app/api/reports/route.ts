@@ -6,18 +6,6 @@ import type { Database } from '@/lib/supabase/types'
 
 type DistrictRow = Database['public']['Tables']['districts']['Row']
 
-const CreateReportSchema = z.object({
-  district_id: z.number(),
-  crop_id: z.number(),
-  detected_pest_id: z.number().nullable(),
-  ai_pest_name: z.string().max(200).optional().nullable(),
-  severity_level: z.enum(['low', 'moderate', 'high', 'critical']),
-  image_storage_path: z.string(),
-  confidence_score: z.number().optional().nullable(),
-  latitude: z.number().min(-90).max(90).optional().nullable(),
-  longitude: z.number().min(-180).max(180).optional().nullable(),
-})
-
 const BASE_FIELDS = `
   id, user_id, crop_id, district_id, detected_pest_id,
   image_storage_path, severity_level, status, confidence_score,
