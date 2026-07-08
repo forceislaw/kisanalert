@@ -206,6 +206,7 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (error) {
+      console.error('Reports insert error:', JSON.stringify(error))
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
