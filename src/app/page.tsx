@@ -89,7 +89,7 @@ export default function RootPage() {
         <div className="flex items-baseline flex-wrap justify-center">
           <SplitText
             text="Apentomos"
-            className="text-[clamp(3rem,12vw,9rem)] font-bold tracking-[-0.04em] text-charcoal leading-none"
+            className="text-[clamp(3rem,12vw,9rem)] font-bold tracking-[-0.04em] text-charcoal leading-[1.15]"
             style={{ fontFamily: 'var(--font-display), Georgia, serif' }}
             delay={60}
             duration={0.8}
