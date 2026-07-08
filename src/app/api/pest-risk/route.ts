@@ -161,11 +161,17 @@ export async function GET(req: NextRequest) {
             temp += (Math.random() - 0.5) * 4
           }
 
+          const { data: districtRows } = await supabase
+            .from('districts')
+            .select('id')
+            .eq('state_en', state.name)
+          const districtIds = districtRows?.map(d => d.id) || []
+
           const { count } = await supabase
             .from('pest_reports')
             .select('*', { count: 'exact', head: true })
             .gte('created_at', sevenDaysAgo)
-            .eq('state', state.name)
+            .in('district_id', districtIds.length > 0 ? districtIds : [-1])
 
           const zonePests = ZONE_PESTS[state.zone] || []
           const risk = calcRisk(temp, count || 0, season.name, zonePests)
