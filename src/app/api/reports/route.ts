@@ -114,6 +114,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient()
+    const serviceClient = createServiceClient()
     const formData = await req.formData()
 
     const getNum = (key: string): number | null => {
@@ -186,7 +187,7 @@ export async function POST(req: NextRequest) {
       diagnosis_translations.en = ai_pest_name
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await serviceClient
       .from('pest_reports')
       .insert([{
         district_id,
