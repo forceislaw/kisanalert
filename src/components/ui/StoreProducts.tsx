@@ -39,7 +39,7 @@ function shortenName(name: string): string {
 function parseMaxPrice(priceRange: string): number {
   const matches = priceRange.match(/₹([\d,]+)/g)
   if (!matches) return 0
-  const vals = matches.map(s => parseFloat(s.replace(/,/g, '')))
+  const vals = matches.map(s => parseFloat(s.replace(/[₹,]/g, '')))
   return Math.max(...vals)
 }
 
