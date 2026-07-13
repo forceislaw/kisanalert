@@ -104,7 +104,7 @@ export default function StoreProducts({ districtId, pestName, districtName }: St
         </p>
       )}
 
-      {isSerp && products.length > 1 && (
+      {products.length > 1 && (
         <div className="mb-4 px-2 py-3 border border-stone bg-parchment-tint">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal-muted">Price</span>
