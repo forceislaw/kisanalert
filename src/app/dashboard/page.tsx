@@ -86,7 +86,7 @@ export default function DashboardPage() {
 
         <div className="space-y-10">
           <CollapsibleSection title={dict.dashboard.overallRisk}>
-            <KpiGrid days={days} />
+            <KpiGrid key={`kpi-${days}`} days={days} />
           </CollapsibleSection>
 
           <CollapsibleSection title="Pest Risk Forecast">
