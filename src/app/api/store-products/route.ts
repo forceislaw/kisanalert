@@ -110,7 +110,7 @@ async function searchSerpApi(pestName: string, districtName?: string): Promise<S
         api_key: SERP_API_KEY!,
         gl: 'in',
         hl: 'en',
-        num: '12',
+        num: '20',
       })
 
       const res = await fetch(`https://serpapi.com/search?${params}`, { signal: AbortSignal.timeout(8000) })
@@ -120,7 +120,9 @@ async function searchSerpApi(pestName: string, districtName?: string): Promise<S
       if (json.error) throw new Error(json.error)
       if (!json.shopping_results?.length) return []
 
-      const products: SerpProduct[] = json.shopping_results.map((r) => {
+      const products: SerpProduct[] = json.shopping_results
+        .filter(r => isAgriProduct(r.title, r.source))
+        .map((r) => {
         const product_name = r.title
         const unit = extractUnit(product_name)
         const product_type = classifyProduct(product_name)
@@ -152,25 +154,40 @@ async function searchSerpApi(pestName: string, districtName?: string): Promise<S
   return promise
 }
 
+const MEDICAL_KEYWORDS = /tablet|capsule|syrup|suspension|injection|medicin|pharmacy|toothpaste|toothbrush|stabilizer|water.?purifier|cap |tab |red.?gel|rat.?repellent|dabur|1mg|apollo247|pharmeasy|blinkit|jiomart|amazon|truemeds|medplusmart|chemist180|kogland/i
+
+const AGRI_KEYWORDS = /insecticid|fungicid|pesticid|acaricide|nematicid|bio.?control|neem|pheromone|trap|imida|cyper|spino|lambda|emamectin|chlorpyrifos|acephate|acetamiprid|dimethoate|tebuconazol|propiconazol|mancozeb|hexaconazol|carbendazim|chlorothalonil|sulphur|copper|spray|seed.?treatment|growth|fertilizer|npk|biocontrol|verti|beauveria|trichoderma|bacillus|metarhizium/i
+
+function isAgriProduct(name: string, source: string): boolean {
+  const l = `${name} ${source}`.toLowerCase()
+  if (MEDICAL_KEYWORDS.test(l)) return false
+  if (AGRI_KEYWORDS.test(l)) return true
+  if (l.includes('agro') || l.includes('kisan') || l.includes('krishi') || l.includes('farm') || l.includes('crop') || l.includes('rythu') || l.includes('bighaat')) return true
+  if (source.toLowerCase().includes('amazon') || source.toLowerCase().includes('flipkart')) {
+    return AGRI_KEYWORDS.test(name.toLowerCase())
+  }
+  return false
+}
+
 const PEST_TO_SEARCH: Record<string, string> = {
-  wheat_rust: 'wheat rust fungicide',
-  yellow_rust: 'yellow rust fungicide',
-  stripe_rust: 'stripe rust fungicide',
-  brown_plant_hopper: 'brown plant hopper insecticide',
-  rice_leaf_folder: 'rice leaf folder insecticide',
-  rice_stem_borer: 'rice stem borer insecticide',
-  rice_blast: 'rice blast fungicide',
-  bacterial_leaf_blight: 'bacterial leaf blight treatment',
-  pink_bollworm: 'pink bollworm insecticide',
-  fall_armyworm: 'fall armyworm insecticide',
-  pod_borer: 'pod borer insecticide',
-  aphids: 'aphids insecticide',
-  fruit_fly: 'fruit fly trap insecticide',
-  leaf_miner: 'leaf miner insecticide',
-  thrips: 'thrips insecticide',
-  whitefly: 'whitefly insecticide',
-  mite: 'mite acaricide',
-  nematode: 'nematode treatment',
+  wheat_rust: 'buy fungicide for wheat rust',
+  yellow_rust: 'buy fungicide for yellow rust',
+  stripe_rust: 'buy fungicide for stripe rust',
+  brown_plant_hopper: 'buy insecticide for brown plant hopper',
+  rice_leaf_folder: 'buy insecticide for rice leaf folder',
+  rice_stem_borer: 'buy insecticide for rice stem borer',
+  rice_blast: 'buy fungicide for rice blast',
+  bacterial_leaf_blight: 'buy bactericide for bacterial leaf blight',
+  pink_bollworm: 'buy insecticide for pink bollworm cotton',
+  fall_armyworm: 'buy insecticide for fall armyworm maize',
+  pod_borer: 'buy insecticide for pod borer',
+  aphids: 'buy insecticide for aphids on crops',
+  fruit_fly: 'buy fruit fly trap lure',
+  leaf_miner: 'buy insecticide for leaf miner',
+  thrips: 'buy insecticide for thrips',
+  whitefly: 'buy insecticide for whitefly',
+  mite: 'buy acaricide for mite control',
+  nematode: 'buy nematicide for root knot nematode',
 }
 
 export async function GET(req: NextRequest) {
