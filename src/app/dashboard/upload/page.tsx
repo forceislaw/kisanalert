@@ -8,7 +8,6 @@ import VisionResultCard from '@/components/upload/VisionResultCard'
 import { DistrictSearch } from '@/components/ui/DistrictSearch'
 import StoreProducts from '@/components/ui/StoreProducts'
 import { VisionAnalysisResult } from '@/app/api/vision-analyze/route'
-import { RAIN_SHADOW_DISTRICTS } from '@/lib/seed/districts'
 export default function UploadPage() {
   const { dict } = useLocale()
   const router = useRouter()
@@ -54,22 +53,12 @@ export default function UploadPage() {
           if (latitude < 6 || latitude > 37 || longitude < 68 || longitude > 98) { latitude = 0; longitude = 0 }
           setUserLat(latitude)
           setUserLng(longitude)
-          let closestName = ''
-          let minDist = Infinity
-          RAIN_SHADOW_DISTRICTS.forEach((d) => {
-            const dist = Math.hypot(d.latitude - latitude, d.longitude - longitude)
-            if (dist < minDist) { minDist = dist; closestName = d.name_en }
-          })
-          if (minDist < 2 && closestName) {
-            const id = districtMap[closestName]
-            if (id) setSelectedDistrict(id)
-          }
         },
         () => {},
         { enableHighAccuracy: false, timeout: 5000 }
       )
     }
-  }, [lookupsReady, districtMap])
+  }, [lookupsReady])
 
   const handleAnalysisComplete = (result: VisionAnalysisResult, url: string, file: File) => {
     if (result.crop_guess === 'unknown') {
@@ -230,8 +219,10 @@ export default function UploadPage() {
 
           <div className="border-t border-stone pt-6 mt-2">
             <StoreProducts
+              key={`sp-${selectedDistrict || 'none'}-${analysisResult.pest_name || 'none'}`}
               districtId={selectedDistrict}
               pestName={analysisResult.pest_name === 'none' || !analysisResult.is_pest_detected ? 'none' : analysisResult.pest_name}
+              districtName={selectedDistrict ? Object.entries(districtMap).find(([, v]) => v === selectedDistrict)?.[0] : undefined}
             />
           </div>
         </div>

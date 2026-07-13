@@ -9,6 +9,25 @@ interface KpiData {
   totalRegions: number
   overallRisk: number
   totalReports: number
+  changes: {
+    activeAlerts: number | null
+    totalReports: number | null
+    overallRisk: number | null
+  } | null
+}
+
+function ChangeBadge({ value }: { value: number | null }) {
+  if (value === null) return null
+  const isUp = value > 0
+  const isDown = value < 0
+  const arrow = isUp ? '↑' : isDown ? '↓' : '→'
+  const abs = Math.abs(value)
+  const color = isUp ? 'text-terra' : isDown ? 'text-forest' : 'text-charcoal-muted'
+  return (
+    <span className={`ml-1.5 text-[11px] font-semibold ${color}`}>
+      {arrow}{abs}%
+    </span>
+  )
 }
 
 export default function KpiGrid({ days }: { days?: number }) {
@@ -23,7 +42,7 @@ export default function KpiGrid({ days }: { days?: number }) {
         const json = await res.json()
         if (json.data) setData(json.data)
       } catch {
-        setData({ totalCrops: 12, activeAlerts: 0, totalRegions: 13, overallRisk: 0, totalReports: 0 })
+        setData({ totalCrops: 12, activeAlerts: 0, totalRegions: 13, overallRisk: 0, totalReports: 0, changes: null })
       }
     }
     fetchData()
@@ -53,8 +72,16 @@ export default function KpiGrid({ days }: { days?: number }) {
 
       <div className="border border-terra bg-parchment-tint p-4">
         <span className="eyebrow block mb-1">{dict.dashboard.activeAlerts}</span>
-        <span className="block text-3xl font-mono font-bold text-charcoal">{data.activeAlerts}</span>
-        <span className="block text-xs text-terra-dark mt-1">{data.totalReports} total reports</span>
+        <div className="flex items-baseline">
+          <span className="block text-3xl font-mono font-bold text-charcoal">{data.activeAlerts}</span>
+          <ChangeBadge value={data.changes?.activeAlerts ?? null} />
+        </div>
+        <span className="block text-xs text-terra-dark mt-1">
+          {data.totalReports} total reports
+          {data.changes?.totalReports !== null && data.changes?.totalReports !== undefined && (
+            <ChangeBadge value={data.changes?.totalReports ?? null} />
+          )}
+        </span>
       </div>
 
       <div className="border border-stone bg-parchment-tint p-4">
@@ -65,7 +92,10 @@ export default function KpiGrid({ days }: { days?: number }) {
 
       <div className="border border-stone bg-parchment-tint p-4">
         <span className="eyebrow block mb-1">{dict.dashboard.overallRisk}</span>
-        <span className="block text-3xl font-mono font-bold text-charcoal">{data.overallRisk}</span>
+        <div className="flex items-baseline">
+          <span className="block text-3xl font-mono font-bold text-charcoal">{data.overallRisk}</span>
+          <ChangeBadge value={data.changes?.overallRisk ?? null} />
+        </div>
         <span className="block text-xs text-charcoal-muted mt-1">Moderate-High scale</span>
       </div>
     </div>

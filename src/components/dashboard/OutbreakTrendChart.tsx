@@ -9,18 +9,17 @@ interface DataPoint {
   critical: number
 }
 
-const defaultData: DataPoint[] = [
-  { date: '--', reports: 0, critical: 0 },
-  { date: '--', reports: 0, critical: 0 },
-  { date: '--', reports: 0, critical: 0 },
-  { date: '--', reports: 0, critical: 0 },
-  { date: '--', reports: 0, critical: 0 },
-  { date: '--', reports: 0, critical: 0 },
-  { date: '--', reports: 0, critical: 0 },
-]
+function makeEmptyData(count: number): DataPoint[] {
+  return Array.from({ length: count }, () => ({
+    date: '--',
+    reports: 0,
+    critical: 0,
+  }))
+}
 
 export default function OutbreakTrendChart({ days }: { days?: number }) {
-  const [data, setData] = useState<DataPoint[]>(defaultData)
+  const bucketCount = (days && days > 0) ? Math.min(days, 30) : 30
+  const [data, setData] = useState<DataPoint[]>(() => makeEmptyData(bucketCount))
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,13 +29,15 @@ export default function OutbreakTrendChart({ days }: { days?: number }) {
         const json = await res.json()
         if (json.data?.trendData) setData(json.data.trendData)
       } catch {
-        // keep default
+        setData(makeEmptyData(bucketCount))
       }
     }
     fetchData()
-  }, [days])
+  }, [days, bucketCount])
 
-  if (data === defaultData) {
+  const isSkeleton = data.length === bucketCount && data[0]?.date === '--'
+
+  if (isSkeleton) {
     return (
       <div className="card-editorial p-5">
         <div className="h-64 flex items-center justify-center">
@@ -69,7 +70,7 @@ export default function OutbreakTrendChart({ days }: { days?: number }) {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#D1CCC3" strokeOpacity={0.5} />
-            <XAxis dataKey="date" tick={{ fill: '#6B6560', fontSize: 11 }} axisLine={{ stroke: '#D1CCC3' }} tickLine={false} />
+            <XAxis dataKey="date" tick={{ fill: '#6B6560', fontSize: 10 }} axisLine={{ stroke: '#D1CCC3' }} tickLine={false} interval="preserveStartEnd" />
             <YAxis tick={{ fill: '#6B6560', fontSize: 11 }} axisLine={{ stroke: '#D1CCC3' }} tickLine={false} width={40} />
             <Tooltip
               contentStyle={{

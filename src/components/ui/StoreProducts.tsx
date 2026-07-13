@@ -10,6 +10,7 @@ interface Product {
   price_range: string
   store_type: 'general' | 'agro'
   unit: string
+  link?: string
 }
 
 interface StoreProductsProps {
@@ -27,9 +28,17 @@ const TYPE_COLORS: Record<string, string> = {
   other: 'bg-parchment-dark text-charcoal-muted border-stone',
 }
 
+function shortenName(name: string): string {
+  const BORING = /\b(buy|online|best|price|in|india|for|of|the|at|shop|now|get)\b/gi
+  let s = name.replace(BORING, '').replace(/\s+/g, ' ').trim()
+  if (s.length > 60) s = s.slice(0, 57) + '...'
+  return s
+}
+
 export default function StoreProducts({ districtId, pestName, districtName }: StoreProductsProps) {
   const { dict } = useLocale()
   const [products, setProducts] = useState<Product[] | null>(null)
+  const [isSerp, setIsSerp] = useState(false)
 
   useEffect(() => {
     const ctrl = new AbortController()
@@ -41,6 +50,7 @@ export default function StoreProducts({ districtId, pestName, districtName }: St
       .then(data => {
         if (ctrl.signal.aborted) return
         setProducts(data.products || [])
+        setIsSerp(data.source === 'serp')
       })
       .catch(() => {
         if (!ctrl.signal.aborted) setProducts([])
@@ -70,24 +80,43 @@ export default function StoreProducts({ districtId, pestName, districtName }: St
       )}
       <div className="space-y-1.5">
         {products.map((p, i) => (
-          <div key={i} className="flex items-center gap-2.5 px-3 py-2 border border-stone bg-parchment">
-            <span className={`text-[10px] font-semibold uppercase px-1.5 py-0.5 border rounded-sm shrink-0 ${TYPE_COLORS[p.product_type] || TYPE_COLORS.other}`}>
+          <div
+            key={i}
+            className={`flex items-start gap-2 px-3 py-2 border border-stone bg-parchment ${p.link ? 'hover:border-charcoal-muted transition-colors' : ''}`}
+          >
+            <span className={`text-[10px] font-semibold uppercase px-1.5 py-0.5 border rounded-sm shrink-0 mt-0.5 ${TYPE_COLORS[p.product_type] || TYPE_COLORS.other}`}>
               {p.product_type}
             </span>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-charcoal truncate">{p.product_name}</p>
-              <p className="text-[11px] text-charcoal-muted">{p.brand} · {p.unit}</p>
+              <p className="text-sm font-medium text-charcoal leading-snug line-clamp-2" title={p.product_name}>
+                {shortenName(p.product_name)}
+              </p>
+              <p className="text-[11px] text-charcoal-muted mt-0.5">
+                {p.brand}
+                {isSerp && p.link && (
+                  <a href={p.link} target="_blank" rel="noopener noreferrer" className="ml-2 text-sage underline hover:text-sage-dark" onClick={e => e.stopPropagation()}>
+                    View Deal
+                  </a>
+                )}
+              </p>
             </div>
-            <div className="text-right shrink-0">
-              <p className="text-xs font-semibold text-charcoal whitespace-nowrap">{p.price_range}</p>
-              <p className="text-[10px] text-charcoal-muted">{p.store_type === 'general' ? 'General Store' : 'Agro Store'}</p>
+            <div className="text-right shrink-0 min-w-[90px]">
+              <p className="text-xs font-semibold text-charcoal">{p.price_range}</p>
+              <p className="text-[10px] text-charcoal-muted mt-0.5">{p.store_type === 'general' ? 'General Store' : 'Agro Store'}</p>
             </div>
           </div>
         ))}
       </div>
-      <p className="text-[10px] text-charcoal-muted mt-2 italic">
-        {dict.ui.pricesMayVary || 'Prices may vary by store location'}
-      </p>
+      {isSerp && (
+        <p className="text-[10px] text-charcoal-muted mt-2">
+          Prices from Google Shopping · may vary by store
+        </p>
+      )}
+      {!isSerp && (
+        <p className="text-[10px] text-charcoal-muted mt-2 italic">
+          {dict.ui.pricesMayVary || 'Prices may vary by store location'}
+        </p>
+      )}
     </div>
   )
 }

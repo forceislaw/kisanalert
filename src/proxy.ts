@@ -17,6 +17,8 @@ const LIMITS: Record<string, number> = {
 const ALLOWED_ORIGINS = [
   'https://apentomos-app.vercel.app',
   'https://apentomos.vercel.app',
+  'https://kisanalert-app.vercel.app',
+  'https://kisanalert-j2zl23r0y-forceislaws-projects.vercel.app',
   process.env.NEXT_PUBLIC_SITE_URL,
   'http://localhost:3000',
   'http://localhost:3001',
