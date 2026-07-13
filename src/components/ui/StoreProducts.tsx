@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 interface Product {
@@ -35,10 +35,23 @@ function shortenName(name: string): string {
   return s
 }
 
+function parseMaxPrice(priceRange: string): number {
+  const matches = priceRange.match(/₹([\d,]+)/g)
+  if (!matches) return 0
+  const vals = matches.map(s => parseFloat(s.replace(/,/g, '')))
+  return Math.max(...vals)
+}
+
+function formatPriceValue(num: number): string {
+  if (num >= 1000) return `₹${(num / 1000).toFixed(num >= 10000 ? 0 : 1)}k`
+  return `₹${num}`
+}
+
 export default function StoreProducts({ districtId, pestName, districtName }: StoreProductsProps) {
   const { dict } = useLocale()
   const [products, setProducts] = useState<Product[] | null>(null)
   const [isSerp, setIsSerp] = useState(false)
+  const [priceFilter, setPriceFilter] = useState(100)
 
   useEffect(() => {
     const ctrl = new AbortController()
@@ -57,6 +70,17 @@ export default function StoreProducts({ districtId, pestName, districtName }: St
       })
     return () => { ctrl.abort() }
   }, [districtId, pestName])
+
+  const maxPrice = useMemo(() => {
+    if (!products?.length) return 0
+    return Math.max(...products.map(p => parseMaxPrice(p.price_range)))
+  }, [products])
+
+  const filtered = useMemo(() => {
+    if (!products?.length) return []
+    const threshold = maxPrice * priceFilter / 100
+    return products.filter(p => parseMaxPrice(p.price_range) <= threshold)
+  }, [products, maxPrice, priceFilter])
 
   if (products === null) {
     return (
@@ -78,8 +102,31 @@ export default function StoreProducts({ districtId, pestName, districtName }: St
           {dict.ui.nearbyStores || 'Nearby stores in'} <span className="font-medium text-charcoal">{districtName}</span>
         </p>
       )}
+
+      {isSerp && products.length > 1 && (
+        <div className="mb-4 px-2 py-3 border border-stone bg-parchment-tint">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal-muted">Price</span>
+            <span className="text-[11px] font-medium text-charcoal">
+              Up to {formatPriceValue(maxPrice * priceFilter / 100)}
+              <span className="text-charcoal-muted font-normal ml-1">({filtered.length}/{products.length})</span>
+            </span>
+          </div>
+          <div className="relative h-8 flex items-center">
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={priceFilter}
+              onChange={e => setPriceFilter(Number(e.target.value))}
+              className="price-slider w-full"
+            />
+          </div>
+        </div>
+      )}
+
       <div className="space-y-1.5">
-        {products.map((p, i) => (
+        {filtered.map((p, i) => (
           <div
             key={i}
             className={`flex items-start gap-2 px-3 py-2 border border-stone bg-parchment ${p.link ? 'hover:border-charcoal-muted transition-colors' : ''}`}
@@ -107,6 +154,11 @@ export default function StoreProducts({ districtId, pestName, districtName }: St
           </div>
         ))}
       </div>
+
+      {filtered.length === 0 && products.length > 0 && (
+        <p className="text-[11px] text-charcoal-muted mt-2">No products within this price range.</p>
+      )}
+
       {isSerp && (
         <p className="text-[10px] text-charcoal-muted mt-2">
           Prices from Google Shopping · may vary by store
