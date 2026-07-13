@@ -80,7 +80,7 @@ export default function DashboardPage() {
           </CollapsibleSection>
 
           <CollapsibleSection title={dict.dashboard.topDistricts}>
-            <TopDistrictsTable days={days} />
+            <TopDistrictsTable key={`td-${days}`} days={days} />
           </CollapsibleSection>
         </div>
 
