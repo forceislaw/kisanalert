@@ -333,61 +333,6 @@
     transform: translateX(calc(2rem - 1.125rem));
   }
 
-  .price-slider {
-    -webkit-appearance: none;
-    appearance: none;
-    outline: none;
-    height: 28px;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    cursor: pointer;
-  }
-
-  .price-slider::-webkit-slider-runnable-track {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 28px;
-    border-radius: 14px;
-    background: linear-gradient(90deg, #4A5D23 0%, #6B8E3A 100%);
-    opacity: 0.85;
-  }
-
-  .price-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #FDFCFA;
-    border: 2px solid #1C1917;
-    box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.15);
-    cursor: pointer;
-    margin-top: 4px;
-    transition: transform 0.1s ease;
-  }
-
-  .price-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.15);
-  }
-
-  .price-slider::-moz-range-track {
-    height: 28px;
-    border-radius: 14px;
-    background: linear-gradient(90deg, #4A5D23 0%, #6B8E3A 100%);
-    opacity: 0.85;
-  }
-
-  .price-slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #FDFCFA;
-    border: 2px solid #1C1917;
-    box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.15);
-    cursor: pointer;
-  }
 }
 
 /* Leaflet Editorial Overrides */

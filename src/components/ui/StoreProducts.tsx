@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useMemo } from 'react'
+import * as Slider from '@radix-ui/react-slider'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 interface Product {
@@ -112,16 +113,21 @@ export default function StoreProducts({ districtId, pestName, districtName }: St
               <span className="text-charcoal-muted font-normal ml-1">({filtered.length}/{products.length})</span>
             </span>
           </div>
-          <div className="relative h-8 flex items-center">
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={priceFilter}
-              onChange={e => setPriceFilter(Number(e.target.value))}
-              className="price-slider w-full"
+          <Slider.Root
+            className="relative flex items-center select-none touch-none w-full h-5"
+            value={[priceFilter]}
+            onValueChange={([v]) => setPriceFilter(v)}
+            max={100}
+            step={1}
+          >
+            <Slider.Track className="relative flex-grow rounded-full h-1 bg-stone-tint">
+              <Slider.Range className="absolute rounded-full h-full bg-sage" />
+            </Slider.Track>
+            <Slider.Thumb
+              className="block w-4 h-4 bg-parchment-tint border border-charcoal shadow-[2px_2px_0px_0px_rgba(0,0,0,0.15)] rounded-full hover:bg-parchment focus:outline-none focus:shadow-[0_0_0_4px_rgba(74,93,35,0.3)]"
+              aria-label="Max price"
             />
-          </div>
+          </Slider.Root>
         </div>
       )}
 
