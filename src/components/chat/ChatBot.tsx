@@ -110,9 +110,17 @@ export default function ChatBot() {
   async function startRecording() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })
+      const mimeType = [
+        'audio/webm;codecs=opus',
+        'audio/webm',
+        'audio/ogg;codecs=opus',
+        'audio/mp4',
+      ].find(t => MediaRecorder.isTypeSupported(t)) || ''
+      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : {})
       chunksRef.current = []
       mediaRecorderRef.current = recorder
+
+      const ext = mimeType.includes('mp4') ? 'mp4' : mimeType.includes('ogg') ? 'ogg' : 'webm'
 
       recorder.ondataavailable = e => {
         if (e.data.size > 0) chunksRef.current.push(e.data)
@@ -120,14 +128,15 @@ export default function ChatBot() {
 
       recorder.onstop = async () => {
         stream.getTracks().forEach(t => t.stop())
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
+        const blob = new Blob(chunksRef.current, { type: `audio/${ext}` })
         if (blob.size < 1000) return
         await transcribe(blob)
       }
 
       recorder.start()
       setRecording(true)
-    } catch {
+    } catch (e) {
+      console.error('Mic error:', e)
       setRecording(false)
     }
   }
@@ -143,7 +152,7 @@ export default function ChatBot() {
     setTranscribing(true)
     try {
       const formData = new FormData()
-      formData.append('audio', audioBlob, 'recording.webm')
+      formData.append('audio', audioBlob)
       const res = await fetch('/api/chat/transcribe', { method: 'POST', body: formData })
       const data = await res.json()
       if (data.text) {
