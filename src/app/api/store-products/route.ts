@@ -1,12 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { STORE_PRODUCTS } from '@/lib/seed/store-products'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { persistSession: false } }
-)
 
 const SERP_API_KEY = process.env.SERPAPI_KEY
 
