@@ -19,6 +19,25 @@ const QUIL_LOGO = (
   </svg>
 )
 
+const SEND_ICON = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+  </svg>
+)
+
+const MIC_ICON = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"/>
+    <path d="M10 3a2 2 0 1 0-4 0v5a2 2 0 1 0 4 0z"/>
+  </svg>
+)
+
+const STOP_ICON = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5z"/>
+  </svg>
+)
+
 export default function ChatBot() {
   const { dict } = useLocale()
   const [open, setOpen] = useState(false)
@@ -27,8 +46,12 @@ export default function ChatBot() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [nonFarming, setNonFarming] = useState(false)
+  const [recording, setRecording] = useState(false)
+  const [transcribing, setTranscribing] = useState(false)
   const listRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const chunksRef = useRef<Blob[]>([])
 
   const greet = useCallback(() => {
     const hour = new Date().getHours()
@@ -82,6 +105,56 @@ export default function ChatBot() {
 
   function handleKey(e: React.KeyboardEvent) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }
+  }
+
+  async function startRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })
+      chunksRef.current = []
+      mediaRecorderRef.current = recorder
+
+      recorder.ondataavailable = e => {
+        if (e.data.size > 0) chunksRef.current.push(e.data)
+      }
+
+      recorder.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop())
+        const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
+        if (blob.size < 1000) return
+        await transcribe(blob)
+      }
+
+      recorder.start()
+      setRecording(true)
+    } catch {
+      setRecording(false)
+    }
+  }
+
+  function stopRecording() {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop()
+    }
+    setRecording(false)
+  }
+
+  async function transcribe(audioBlob: Blob) {
+    setTranscribing(true)
+    try {
+      const formData = new FormData()
+      formData.append('audio', audioBlob, 'recording.webm')
+      const res = await fetch('/api/chat/transcribe', { method: 'POST', body: formData })
+      const data = await res.json()
+      if (data.text) {
+        setInput(data.text)
+        inputRef.current?.focus()
+      }
+    } catch {
+      // silent
+    } finally {
+      setTranscribing(false)
+    }
   }
 
   const icon = open ? (
@@ -140,14 +213,38 @@ export default function ChatBot() {
               onKeyDown={handleKey}
               placeholder={dict.chat.placeholder}
               className="flex-1 px-3 py-2 text-sm border border-sage/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-sage/30 bg-parchment/50"
-              disabled={loading}
+              disabled={loading || transcribing}
             />
+            <button
+              onClick={recording ? stopRecording : startRecording}
+              disabled={transcribing}
+              className={`px-2.5 py-2 rounded-lg text-sm transition-colors ${
+                recording
+                  ? 'bg-terra text-white animate-pulse'
+                  : 'bg-parchment text-ink border border-sage/20 hover:bg-sage/10'
+              } disabled:opacity-40`}
+              title={recording ? 'Stop recording' : 'Record voice'}
+            >
+              {transcribing ? (
+                <span className="inline-flex gap-0.5">
+                  <span className="w-1 h-1 bg-sage-dark rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
+                  <span className="w-1 h-1 bg-sage-dark rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
+                  <span className="w-1 h-1 bg-sage-dark rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
+                </span>
+              ) : recording ? STOP_ICON : MIC_ICON}
+            </button>
             <button
               onClick={send}
               disabled={loading || !input.trim()}
-              className="px-3 py-2 bg-sage-dark text-white text-sm rounded-lg hover:bg-sage-dark/90 disabled:opacity-40 transition-colors"
+              className="px-3 py-2 bg-sage-dark text-white rounded-lg hover:bg-sage-dark/90 disabled:opacity-40 transition-colors flex items-center"
             >
-              {loading ? '...' : dict.chat.send}
+              {loading ? (
+                <span className="inline-flex gap-0.5">
+                  <span className="w-1 h-1 bg-white rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
+                  <span className="w-1 h-1 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
+                  <span className="w-1 h-1 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
+                </span>
+              ) : SEND_ICON}
             </button>
           </div>
         </div>
