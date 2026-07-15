@@ -32,17 +32,21 @@ const FARMING_KEYWORDS = [
   'weather', 'rain', 'drought', 'flood', 'temperature',
   'market', 'price', 'sell', 'buy', 'mandi', 'quintal',
   'subsidy', 'scheme', 'loan', 'insurance', 'pm-kisan', 'kcc', 'pmfby',
-  'kheti', 'kisaan', 'kisan', 'krishi', 'khad', 'beej',
+  'kheti', 'kisaan', 'kisan', 'krishi', 'khad', 'beej', 'bhai',
   'acre', 'hectare', 'tonne', 'kg',
   'paddy', 'wheat', 'rice', 'maize', 'cotton', 'sugarcane',
   'vegetable', 'fruit', 'pulses', 'oilseed',
-  'फसल', 'कीट', 'खेत', 'किसान', 'खाद', 'बीज', 'सिंचाई',
+  'infected', 'infection', 'fungal', 'bacterial', 'virus', 'blight',
+  'rot', 'rust', 'mildew', 'wilt', 'spot', 'leaf', 'root', 'stem',
+  'फसल', 'कीट', 'खेत', 'किसान', 'खाद', 'बीज', 'सिंचाई', 'भाई',
+  'गेहूं', 'धान', 'मक्का', 'कपास', 'गन्ना', 'सब्जी', 'फल',
   'पीक', 'कीड', 'शेत', 'शेतकरी',
   'పంట', 'తెగులు', 'సేద్యం', 'రైతు',
 ]
 
 function isFarmingRelated(text: string): boolean {
-  const lower = text.toLowerCase()
+  const lower = text.toLowerCase().trim()
+  if (lower.length < 4) return true
   return FARMING_KEYWORDS.some(kw => lower.includes(kw))
 }
 
