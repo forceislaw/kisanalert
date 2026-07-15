@@ -18,5 +18,5 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: "https://qkpcftdcpgcrznekorav.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrcGNmdGRjcGdjcnpuZWtvcmF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTg5MjEsImV4cCI6MjA5NzQzNDkyMX0.wtqDWVyqDJncCgei50oif6xAM4ULgjCpLZ80ijLtIQ4"
