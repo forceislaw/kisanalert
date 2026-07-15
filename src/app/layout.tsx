@@ -9,6 +9,7 @@ import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 import Header from "@/components/layout/Header";
 import ClickSparkWrapper from "@/components/ui/ClickSparkWrapper";
+import { GlobalErrorHandler } from "@/components/ui/GlobalErrorHandler";
 import InstallPrompt from "@/components/ui/InstallPrompt";
 import ChatBot from "@/components/chat/ChatBot";
 
@@ -77,14 +78,16 @@ export default async function RootLayout({
         <ClickSparkWrapper>
           <AuthProvider>
             <LocaleProvider serverLocale={locale} serverDictionary={dictionary}>
-              <div className="min-h-screen bg-parchment">
-                <Header />
-                <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16 py-10">
-                  {children}
+              <GlobalErrorHandler>
+                <div className="min-h-screen bg-parchment">
+                  <Header />
+                  <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16 py-10">
+                    {children}
+                  </div>
                 </div>
-              </div>
-              <InstallPrompt />
-              <ChatBot />
+                <InstallPrompt />
+                <ChatBot />
+              </GlobalErrorHandler>
             </LocaleProvider>
           </AuthProvider>
         </ClickSparkWrapper>
