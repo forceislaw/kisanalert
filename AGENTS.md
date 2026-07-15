@@ -20,3 +20,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Loading skeletons: reports table → 5 skeleton rows; KPI grid → 4 skeleton blocks; OutbreakTrendChart → skeleton bars; TopDistrictsTable → skeleton list items.
 - ConfirmDialog component at `src/components/ui/ConfirmDialog.tsx` — used for "Discard" on upload analysis.
 - `.toggle-switch` CSS added to `globals.css` in `@layer components`.
+
+## Infrastructure Fixes (15 Jul 2026)
+- **OpenWeather blocked from Vercel US East**: Moved weather data fetch to client side via `src/lib/useWeather.ts` hook. Requires `NEXT_PUBLIC_OPENWEATHER_API_KEY` in Vercel env (same value as `OPENWEATHER_API_KEY`). Browser fetches OpenWeather directly, bypassing Vercel server block.
+- **Error tracking**: Added `src/components/ui/ErrorBoundary.tsx` (React error boundary), `src/components/ui/GlobalErrorHandler.tsx` (catches `window.onerror` + unhandled rejections), and `src/app/api/log-error/route.ts` (POST endpoint that logs to `console.error`, visible in Vercel deployment logs).
+- **PostCSS CVE (GHSA-qx2v-qp2m-jg93)**: Next.js 16.2.9 bundles `postcss@8.4.31` internally. Cannot be overridden via `overrides` in `package.json`. Not exploitable in this app (XSS via CSS stringify requires user-generated CSS input). Accepted risk.
