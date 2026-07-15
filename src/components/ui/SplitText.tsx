@@ -42,17 +42,17 @@ export default function SplitText({
   const ref = useRef<HTMLElement | null>(null)
   const animationCompletedRef = useRef(false)
   const onCompleteRef = useRef(onLetterAnimationComplete)
-  const [fontsLoaded, setFontsLoaded] = useState(document.fonts?.status === 'loaded')
+  const [fontsLoaded, setFontsLoaded] = useState(true)
 
   useEffect(() => {
     onCompleteRef.current = onLetterAnimationComplete
   }, [onLetterAnimationComplete])
 
   useEffect(() => {
-    if (!fontsLoaded) {
+    if (typeof document !== 'undefined' && document.fonts?.status !== 'loaded') {
       document.fonts.ready.then(() => setFontsLoaded(true))
     }
-  }, [fontsLoaded])
+  }, [])
 
   useGSAP(
     () => {
