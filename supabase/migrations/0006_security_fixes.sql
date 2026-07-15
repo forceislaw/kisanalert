@@ -13,39 +13,47 @@ ALTER TABLE pest_reports ENABLE ROW LEVEL SECURITY;
 -- ============================================================
 -- 2. profiles: add RLS policies (missing from initial setup)
 -- ============================================================
-CREATE POLICY IF NOT EXISTS "profiles_select_own" ON profiles
+DROP POLICY IF EXISTS "profiles_select_own" ON profiles;
+CREATE POLICY "profiles_select_own" ON profiles
   FOR SELECT TO authenticated
   USING (auth.uid() = id);
 
-CREATE POLICY IF NOT EXISTS "profiles_update_own" ON profiles
+DROP POLICY IF EXISTS "profiles_update_own" ON profiles;
+CREATE POLICY "profiles_update_own" ON profiles
   FOR UPDATE TO authenticated
   USING (auth.uid() = id);
 
-CREATE POLICY IF NOT EXISTS "profiles_insert_own" ON profiles
+DROP POLICY IF EXISTS "profiles_insert_own" ON profiles;
+CREATE POLICY "profiles_insert_own" ON profiles
   FOR INSERT TO authenticated
   WITH CHECK (auth.uid() = id);
 
 -- Allow service_role full access
-CREATE POLICY IF NOT EXISTS "profiles_service_all" ON profiles
+DROP POLICY IF EXISTS "profiles_service_all" ON profiles;
+CREATE POLICY "profiles_service_all" ON profiles
   FOR ALL TO service_role
   USING (true);
 
 -- ============================================================
 -- 3. user_notification_prefs: add RLS policies
 -- ============================================================
-CREATE POLICY IF NOT EXISTS "prefs_select_own" ON user_notification_prefs
+DROP POLICY IF EXISTS "prefs_select_own" ON user_notification_prefs;
+CREATE POLICY "prefs_select_own" ON user_notification_prefs
   FOR SELECT TO authenticated
   USING (auth.uid() = user_id);
 
-CREATE POLICY IF NOT EXISTS "prefs_upsert_own" ON user_notification_prefs
+DROP POLICY IF EXISTS "prefs_upsert_own" ON user_notification_prefs;
+CREATE POLICY "prefs_upsert_own" ON user_notification_prefs
   FOR INSERT TO authenticated
   WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY IF NOT EXISTS "prefs_update_own" ON user_notification_prefs
+DROP POLICY IF EXISTS "prefs_update_own" ON user_notification_prefs;
+CREATE POLICY "prefs_update_own" ON user_notification_prefs
   FOR UPDATE TO authenticated
   USING (auth.uid() = user_id);
 
-CREATE POLICY IF NOT EXISTS "prefs_service_all" ON user_notification_prefs
+DROP POLICY IF EXISTS "prefs_service_all" ON user_notification_prefs;
+CREATE POLICY "prefs_service_all" ON user_notification_prefs
   FOR ALL TO service_role
   USING (true);
 
@@ -54,8 +62,9 @@ CREATE POLICY IF NOT EXISTS "prefs_service_all" ON user_notification_prefs
 --    Keep anonymous upsert (needed for PWA push from unauthenticated users)
 --    but add a delete policy scoped to the same endpoint
 -- ============================================================
--- Drop the overly permissive ALL policy
+-- Drop overly permissive ALL policies
 DROP POLICY IF EXISTS "Anyone can upsert their own subscription" ON push_subscriptions;
+DROP POLICY IF EXISTS push_all ON push_subscriptions;
 
 -- Separate policies for each operation
 CREATE POLICY "push_anon_insert" ON push_subscriptions
@@ -85,8 +94,8 @@ CREATE INDEX IF NOT EXISTS idx_security_log_created_at ON security_log(created_a
 -- 6. Revoke EXECUTE on SECURITY DEFINER functions from public roles
 --    These functions should only be callable by the trigger/database internals
 -- ============================================================
-REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM anon, authenticated;
-REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM PUBLIC;
 
 -- ============================================================
 -- 7. Enable leaked password protection
