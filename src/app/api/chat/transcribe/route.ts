@@ -23,7 +23,6 @@ export async function POST(req: NextRequest) {
     const ext = audio.type.includes('mp4') ? 'mp4' : audio.type.includes('ogg') ? 'ogg' : 'webm'
     whisperForm.append('file', audio, `recording.${ext}`)
     whisperForm.append('model', 'whisper-large-v3-turbo')
-    whisperForm.append('language', 'hi')
     whisperForm.append('response_format', 'json')
 
     const res = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
