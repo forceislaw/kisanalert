@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useLocale } from '@/lib/i18n/LocaleProvider'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -19,6 +20,7 @@ const QUIL_LOGO = (
 )
 
 export default function ChatBot() {
+  const { dict } = useLocale()
   const [open, setOpen] = useState(false)
   const [greeted, setGreeted] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
@@ -82,6 +84,12 @@ export default function ChatBot() {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }
   }
 
+  const icon = open ? (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="quil-icon"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+  ) : (
+    <span className="quil-icon">{QUIL_LOGO}</span>
+  )
+
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {open && (
@@ -89,7 +97,7 @@ export default function ChatBot() {
           <div className="bg-sage-dark text-white px-4 py-3 flex items-center gap-2.5">
             <div className="flex-shrink-0">{QUIL_LOGO}</div>
             <span className="font-semibold text-sm tracking-wide">Quil</span>
-            <span className="ml-auto text-[10px] text-white/50 uppercase tracking-wider">Farming AI</span>
+            <span className="ml-auto text-[10px] text-white/50 uppercase tracking-wider">{dict.chat.farmingAI}</span>
             <button onClick={() => setOpen(false)} className="text-white/70 hover:text-white text-lg leading-none ml-1">&times;</button>
           </div>
 
@@ -120,7 +128,7 @@ export default function ChatBot() {
 
           {nonFarming && (
             <div className="px-3 pb-1 text-xs text-terra">
-              Only farming &amp; agriculture questions are supported.
+              {dict.chat.nonFarmingWarning}
             </div>
           )}
 
@@ -130,7 +138,7 @@ export default function ChatBot() {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKey}
-              placeholder="Ask about crops, pests..."
+              placeholder={dict.chat.placeholder}
               className="flex-1 px-3 py-2 text-sm border border-sage/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-sage/30 bg-parchment/50"
               disabled={loading}
             />
@@ -139,7 +147,7 @@ export default function ChatBot() {
               disabled={loading || !input.trim()}
               className="px-3 py-2 bg-sage-dark text-white text-sm rounded-lg hover:bg-sage-dark/90 disabled:opacity-40 transition-colors"
             >
-              {loading ? '...' : 'Send'}
+              {loading ? '...' : dict.chat.send}
             </button>
           </div>
         </div>
@@ -147,19 +155,21 @@ export default function ChatBot() {
 
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-14 h-14 rounded-full bg-sage-dark text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center animate-in fade-in"
-        style={{
-          animation: 'quilPulse 2s ease-in-out infinite',
-        }}
+        className="w-14 h-14 rounded-full bg-sage-dark text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center quil-btn"
       >
-        {open ? (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-        ) : (
-          QUIL_LOGO
-        )}
+        {icon}
       </button>
 
       <style jsx>{`
+        .quil-btn {
+          animation: quilPulse 2s ease-in-out infinite;
+        }
+        .quil-icon {
+          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        :global(.quil-btn:hover) .quil-icon {
+          transform: rotate(90deg);
+        }
         @keyframes quilPulse {
           0%, 100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.4); }
           50% { box-shadow: 0 0 0 12px rgba(45, 106, 79, 0); }

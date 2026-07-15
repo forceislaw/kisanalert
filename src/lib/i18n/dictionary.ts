@@ -218,6 +218,12 @@ export interface Dictionary {
     nearbyStores: string
     pricesMayVary: string
   }
+  chat: {
+    placeholder: string
+    nonFarmingWarning: string
+    farmingAI: string
+    send: string
+  }
 }
 
 export const dictionary: Record<string, Dictionary> = {
@@ -441,6 +447,12 @@ export const dictionary: Record<string, Dictionary> = {
       nearbyStores: 'Nearby stores in',
       pricesMayVary: 'Prices may vary by store location',
     },
+    chat: {
+      placeholder: 'Ask about crops, pests...',
+      nonFarmingWarning: 'Only farming & agriculture questions are supported.',
+      farmingAI: 'Farming AI',
+      send: 'Send',
+    },
   },
   hi: {
     nav: {
@@ -661,6 +673,12 @@ export const dictionary: Record<string, Dictionary> = {
       availableProducts: 'उपलब्ध उत्पाद',
       nearbyStores: 'आस-पास की दुकानें',
       pricesMayVary: 'दुकान के अनुसार कीमतें भिन्न हो सकती हैं',
+    },
+    chat: {
+      placeholder: 'फसल, कीट के बारे में पूछें...',
+      nonFarmingWarning: 'केवल खेती और कृषि संबंधी प्रश्नों का समर्थन किया जाता है।',
+      farmingAI: 'कृषि AI',
+      send: 'भेजें',
     },
   },
   mr: {
@@ -883,6 +901,12 @@ export const dictionary: Record<string, Dictionary> = {
       nearbyStores: 'जवळील दुकाने',
       pricesMayVary: 'दुकानानुसार किंमती बदलू शकतात',
     },
+    chat: {
+      placeholder: 'पीक, कीड याबद्दल विचारा...',
+      nonFarmingWarning: 'केवळ शेती आणि कृषी प्रश्नांना समर्थन आहे.',
+      farmingAI: 'कृषी AI',
+      send: 'पाठवा',
+    },
   },
   te: {
     nav: {
@@ -1104,6 +1128,12 @@ export const dictionary: Record<string, Dictionary> = {
       nearbyStores: 'సమీపంలోని దుకాణాలు',
       pricesMayVary: 'దుకాణాన్ని బట్టి ధరలు మారవచ్చు',
     },
+    chat: {
+      placeholder: 'పంటలు, తెగుళ్ళ గురించి అడగండి...',
+      nonFarmingWarning: 'వ్యవసాయం మరియు సాగు సంబంధిత ప్రశ్నలకు మాత్రమే మద్దతు ఉంటుంది.',
+      farmingAI: 'వ్యవసాయ AI',
+      send: 'పంపు',
+    },
   },
   kn: {
     nav: {
@@ -1324,6 +1354,12 @@ export const dictionary: Record<string, Dictionary> = {
       availableProducts: 'ಲಭ್ಯವಿರುವ ಉತ್ಪನ್ನಗಳು',
       nearbyStores: 'ಹತ್ತಿರದ ಅಂಗಡಿಗಳು',
       pricesMayVary: 'ಅಂಗಡಿಯನ್ನು ಅವಲಂಬಿಸಿ ಬೆಲೆಗಳು ಬದಲಾಗಬಹುದು',
+    },
+    chat: {
+      placeholder: 'ಬೆಳೆಗಳು, ಕೀಟಗಳ ಬಗ್ಗೆ ಕೇಳಿ...',
+      nonFarmingWarning: 'ಕೃಷಿ ಮತ್ತು ವ್ಯವಸಾಯ ಸಂಬಂಧಿತ ಪ್ರಶ್ನೆಗಳನ್ನು ಮಾತ್ರ ಬೆಂಬಲಿಸಲಾಗುತ್ತದೆ.',
+      farmingAI: 'ಕೃಷಿ AI',
+      send: 'ಕಳುಹಿಸು',
     },
   },
 }
