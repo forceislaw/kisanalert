@@ -1,7 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { STORE_PRODUCTS } from '@/lib/seed/store-products'
+import { createClient } from '@supabase/supabase-js'
 
 const SERP_API_KEY = process.env.SERPAPI_KEY
+
+let supabaseClient: ReturnType<typeof createClient> | null = null
+function getSupabase() {
+  if (!supabaseClient) {
+    supabaseClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { persistSession: false } }
+    )
+  }
+  return supabaseClient
+}
 
 const cache = new Map<string, { data: SerpProduct[]; ts: number }>()
 const CACHE_TTL = 3_600_000
@@ -190,7 +203,7 @@ export async function GET(req: NextRequest) {
 
   let districtName = ''
   if (districtId) {
-    const { data } = await supabase
+    const { data } = await getSupabase()
       .from('districts')
       .select('name_en')
       .eq('id', Number(districtId))
