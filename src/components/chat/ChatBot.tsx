@@ -116,8 +116,6 @@ export default function ChatBot() {
 
   async function startRecording() {
     try {
-      await navigator.mediaDevices.getUserMedia({ audio: true })
-
       if (SpeechRecognition) {
         const recognition = new SpeechRecognition()
         recognition.continuous = true
@@ -126,27 +124,31 @@ export default function ChatBot() {
         recognitionRef.current = recognition
 
         recognition.onresult = (e: any) => {
-          const text = Array.from(e.results)
-            .map((r: any) => r[0].transcript)
-            .join(' ')
-          setInput(text)
+          const final: string[] = []
+          const interim: string[] = []
+          for (let i = e.resultIndex; i < e.results.length; i++) {
+            const r = e.results[i]
+            ;(r.isFinal ? final : interim).push(r[0].transcript)
+          }
+          setInput([...final, ...interim].join(' '))
         }
 
-        recognition.onerror = () => { setRecording(false) }
         recognition.onend = () => { setRecording(false) }
+        recognition.onerror = (e: any) => { console.error('SpeechRecognition error:', e.error); setRecording(false) }
 
         recognition.start()
         setRecording(true)
         return
       }
 
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       const mimeType = [
         'audio/webm;codecs=opus',
         'audio/webm',
         'audio/ogg;codecs=opus',
         'audio/mp4',
       ].find(t => MediaRecorder.isTypeSupported(t)) || ''
-      const recorder = new MediaRecorder(await navigator.mediaDevices.getUserMedia({ audio: true }), mimeType ? { mimeType } : {})
+      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : {})
       chunksRef.current = []
       mediaRecorderRef.current = recorder
 
@@ -157,7 +159,7 @@ export default function ChatBot() {
       }
 
       recorder.onstop = async () => {
-        recorder.stream.getTracks().forEach(t => t.stop())
+        stream.getTracks().forEach(t => t.stop())
         const blob = new Blob(chunksRef.current, { type: `audio/${ext}` })
         if (blob.size < 1000) return
         await transcribe(blob)
