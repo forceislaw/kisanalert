@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import Stepper, { Step } from '@/components/ui/Stepper'
 import { createClient } from '@/lib/supabase/client'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
@@ -8,6 +9,12 @@ import { useLocale } from '@/lib/i18n/LocaleProvider'
 export default function OnboardingPage() {
   const router = useRouter()
   const { dict } = useLocale()
+
+  useEffect(() => {
+    createClient().auth.getUser().then(({ data: { user } }) => {
+      if (!user) router.replace('/login')
+    })
+  }, [router])
 
   const handleComplete = async () => {
     const supabase = createClient()
