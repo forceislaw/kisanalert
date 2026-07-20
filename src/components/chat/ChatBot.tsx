@@ -65,7 +65,7 @@ export default function ChatBot() {
       setGreeted(true)
       setMessages([{
         role: 'assistant',
-        content: `${greet()}! I'm Quil, your farming assistant. Ask me about crops, pests, soil, or any agriculture topic. I speak multiple languages — just ask!`,
+        content: `${greet()}! I'm Bob, your farming assistant. Ask me about crops, pests, soil, or any agriculture topic. I speak multiple languages — just ask!`,
       }])
     }
   }, [open, greeted, greet])
@@ -167,18 +167,18 @@ export default function ChatBot() {
   }
 
   const icon = open ? (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="quil-icon"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="bob-icon"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
   ) : (
-    <span className="quil-icon">{QUIL_LOGO}</span>
+    <span className="bob-icon">{QUIL_LOGO}</span>
   )
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className="fixed sm:bottom-6 bottom-20 right-6 z-50 flex flex-col items-end">
       {open && (
         <div className="mb-3 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-sage/20 overflow-hidden flex flex-col animate-in slide-in-from-right-8 fade-in duration-200">
           <div className="bg-sage-dark text-white px-4 py-3 flex items-center gap-2.5">
             <div className="flex-shrink-0">{QUIL_LOGO}</div>
-            <span className="font-semibold text-sm tracking-wide">Quil</span>
+            <span className="font-semibold text-sm tracking-wide">Bob</span>
             <span className="ml-auto text-[10px] text-white/50 uppercase tracking-wider">{dict.chat.farmingAI}</span>
             <button onClick={() => setOpen(false)} className="text-white/70 hover:text-white text-lg leading-none ml-1">&times;</button>
           </div>
@@ -261,22 +261,22 @@ export default function ChatBot() {
 
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-14 h-14 rounded-full bg-sage-dark text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center quil-btn"
+        className="w-14 h-14 rounded-full bg-sage-dark text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center bob-btn"
       >
         {icon}
       </button>
 
       <style jsx>{`
-        .quil-btn {
-          animation: quilPulse 2s ease-in-out infinite;
+        .bob-btn {
+          animation: bobPulse 2s ease-in-out infinite;
         }
-        .quil-icon {
+        .bob-icon {
           transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        :global(.quil-btn:hover) .quil-icon {
+        :global(.bob-btn:hover) .bob-icon {
           transform: rotate(90deg);
         }
-        @keyframes quilPulse {
+        @keyframes bobPulse {
           0%, 100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.4); }
           50% { box-shadow: 0 0 0 12px rgba(45, 106, 79, 0); }
         }

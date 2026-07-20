@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const GROQ_CHAT_API_KEY = process.env.GROQ_CHAT_API_KEY
 
-const SYSTEM_PROMPT = `You are an expert agricultural assistant for Indian farmers, named Quil. You ONLY answer questions about:
+const SYSTEM_PROMPT = `You are an expert agricultural assistant for Indian farmers, named Bob. You ONLY answer questions about:
 - Crop farming and cultivation
 - Pest and disease identification, prevention, and treatment
 - Soil management and fertilizers
@@ -21,7 +21,7 @@ LANGUAGE RULES:
 - Never explain what language you're using — just switch seamlessly.
 
 If a question is NOT related to farming, crops, or agriculture, politely respond:
-"I'm Quil, a farming assistant. I can only help with agriculture-related questions. Please ask me about crops, pests, soil, or farming."
+"I'm Bob, a farming assistant. I can only help with agriculture-related questions. Please ask me about crops, pests, soil, or farming."
 
 Be practical, specific, and use Indian context (local crop names, measurements in acres/quintals, INR pricing). Keep responses concise (under 150 words).`
 
@@ -36,6 +36,16 @@ const FARMING_KEYWORDS = [
   'acre', 'hectare', 'tonne', 'kg',
   'paddy', 'wheat', 'rice', 'maize', 'cotton', 'sugarcane',
   'vegetable', 'fruit', 'pulses', 'oilseed',
+  'tomato', 'potato', 'onion', 'chilli', 'turmeric', 'ginger', 'garlic',
+  'mango', 'banana', 'apple', 'grape', 'orange', 'coconut', 'guava',
+  'groundnut', 'mustard', 'soybean', 'sunflower', 'castor',
+  'tea', 'coffee', 'rubber', 'jute', 'tobacco', 'bamboo',
+  'coriander', 'cumin', 'cardamom', 'pepper', 'clove', 'cinnamon',
+  'mushroom', 'fodder', 'grass', 'nursery', 'floriculture', 'sericulture',
+  'टमाटर', 'आलू', 'प्याज', 'मिर्च', 'हल्दी', 'अदरक', 'लहसुन',
+  'आम', 'केला', 'सेब', 'अंगूर', 'संतरा', 'नारियल', 'अमरूद',
+  'मूंगफली', 'सरसों', 'सोयाबीन', 'सूरजमुखी',
+  'चाय', 'कॉफी', 'रबर', 'जूट', 'तम्बाकू', 'बांस',
   'infected', 'infection', 'fungal', 'bacterial', 'virus', 'blight',
   'rot', 'rust', 'mildew', 'wilt', 'spot', 'leaf', 'root', 'stem',
   'फसल', 'कीट', 'खेत', 'किसान', 'खाद', 'बीज', 'सिंचाई', 'भाई',
