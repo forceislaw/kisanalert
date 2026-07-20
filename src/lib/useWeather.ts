@@ -3,6 +3,10 @@
 import { useState, useEffect } from 'react'
 import type { WeatherData } from '@/components/map/MapInner'
 
+const CACHE_KEY = 'apentomos_weather'
+const CACHE_TTL = 30 * 60 * 1000
+const FETCH_TIMEOUT = 5000
+
 const STATES = [
   { name: 'Punjab', lat: 30.901, lng: 75.8573, zone: 'north' as const },
   { name: 'Haryana', lat: 29.6857, lng: 76.9905, zone: 'north' as const },
@@ -39,56 +43,93 @@ function getSeason(): 'kharif' | 'rabi' | 'zaid' {
   return 'zaid'
 }
 
+function getCached(): WeatherData[] | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    if (!raw) return null
+    const { data, ts } = JSON.parse(raw)
+    if (Date.now() - ts > CACHE_TTL) {
+      localStorage.removeItem(CACHE_KEY)
+      return null
+    }
+    return data
+  } catch { return null }
+}
+
+function setCached(data: WeatherData[]) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() })) } catch { }
+}
+
+function generateFallback(): WeatherData[] {
+  const season = getSeason()
+  const temps = SEASON_TEMPS[season]
+  return STATES.map(s => ({
+    state: s.name,
+    lat: s.lat,
+    lng: s.lng,
+    temp: Math.round((temps[s.zone] || 28) + (Math.random() - 0.5) * 4),
+  }))
+}
+
 export function useWeather() {
-  const [weather, setWeather] = useState<WeatherData[]>([])
+  const [weather, setWeather] = useState<WeatherData[]>(() => {
+    if (typeof window === 'undefined') return []
+    return getCached() || []
+  })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const apiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY
     let cancelled = false
 
-    function fallback() {
-      if (cancelled) return
-      const season = getSeason()
-      const temps = SEASON_TEMPS[season]
-      const data = STATES.map(s => ({
-        state: s.name,
-        lat: s.lat,
-        lng: s.lng,
-        temp: Math.round((temps[s.zone] || 28) + (Math.random() - 0.5) * 4),
-      }))
-      setWeather(data)
+    const cached = getCached()
+    if (cached) {
+      setWeather(cached)
       setLoading(false)
-    }
-
-    if (!apiKey) {
-      fallback()
       return
     }
 
+    const apiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY
+    if (!apiKey) {
+      const fb = generateFallback()
+      setWeather(fb)
+      setCached(fb)
+      setLoading(false)
+      return
+    }
+
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT)
+
     Promise.all(
       STATES.map(async (s) => {
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${s.lat}&lon=${s.lng}&appid=${apiKey}&units=metric`
-        const res = await fetch(url)
-        if (!res.ok) return null
-        const data = await res.json()
-        return { state: s.name, lat: s.lat, lng: s.lng, temp: Math.round(data.main.temp) }
+        try {
+          const url = `https://api.openweathermap.org/data/2.5/weather?lat=${s.lat}&lon=${s.lng}&appid=${apiKey}&units=metric`
+          const res = await fetch(url, { signal: controller.signal })
+          if (!res.ok) return null
+          const d = await res.json()
+          return { state: s.name, lat: s.lat, lng: s.lng, temp: Math.round(d.main.temp) } as WeatherData
+        } catch { return null }
       })
     ).then(results => {
+      clearTimeout(timer)
       if (cancelled) return
       const real = results.filter(Boolean) as WeatherData[]
       if (real.length > 0) {
         setWeather(real)
+        setCached(real)
       } else {
-        fallback()
+        const fb = generateFallback()
+        setWeather(fb)
+        setCached(fb)
       }
-      setLoading(false)
-    }).catch(() => {
-      if (!cancelled) fallback()
       setLoading(false)
     })
 
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+      controller.abort()
+      clearTimeout(timer)
+    }
   }, [])
 
   return { weather, loading }
