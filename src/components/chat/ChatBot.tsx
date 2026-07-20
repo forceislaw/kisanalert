@@ -39,7 +39,11 @@ const STOP_ICON = (
 )
 
 export default function ChatBot() {
-  const { dict } = useLocale()
+  const SpeechRecognition = (typeof window !== 'undefined')
+    ? ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)
+    : null
+
+  const { dict, locale } = useLocale()
   const [open, setOpen] = useState(false)
   const [greeted, setGreeted] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
@@ -48,10 +52,13 @@ export default function ChatBot() {
   const [nonFarming, setNonFarming] = useState(false)
   const [recording, setRecording] = useState(false)
   const [transcribing, setTranscribing] = useState(false)
+  const LANG_MAP: Record<string, string> = { en: 'en-IN', hi: 'hi-IN', mr: 'mr-IN', te: 'te-IN', kn: 'kn-IN' }
+
   const listRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
+  const recognitionRef = useRef<any>(null)
 
   const greet = useCallback(() => {
     const hour = new Date().getHours()
@@ -109,14 +116,37 @@ export default function ChatBot() {
 
   async function startRecording() {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      await navigator.mediaDevices.getUserMedia({ audio: true })
+
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition()
+        recognition.continuous = true
+        recognition.interimResults = true
+        recognition.lang = LANG_MAP[locale] || 'en-IN'
+        recognitionRef.current = recognition
+
+        recognition.onresult = (e: any) => {
+          const text = Array.from(e.results)
+            .map((r: any) => r[0].transcript)
+            .join(' ')
+          setInput(text)
+        }
+
+        recognition.onerror = () => { setRecording(false) }
+        recognition.onend = () => { setRecording(false) }
+
+        recognition.start()
+        setRecording(true)
+        return
+      }
+
       const mimeType = [
         'audio/webm;codecs=opus',
         'audio/webm',
         'audio/ogg;codecs=opus',
         'audio/mp4',
       ].find(t => MediaRecorder.isTypeSupported(t)) || ''
-      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : {})
+      const recorder = new MediaRecorder(await navigator.mediaDevices.getUserMedia({ audio: true }), mimeType ? { mimeType } : {})
       chunksRef.current = []
       mediaRecorderRef.current = recorder
 
@@ -127,7 +157,7 @@ export default function ChatBot() {
       }
 
       recorder.onstop = async () => {
-        stream.getTracks().forEach(t => t.stop())
+        recorder.stream.getTracks().forEach(t => t.stop())
         const blob = new Blob(chunksRef.current, { type: `audio/${ext}` })
         if (blob.size < 1000) return
         await transcribe(blob)
@@ -142,7 +172,10 @@ export default function ChatBot() {
   }
 
   function stopRecording() {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop()
+      recognitionRef.current = null
+    } else if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       mediaRecorderRef.current.stop()
     }
     setRecording(false)
