@@ -29,7 +29,7 @@ export default function ResearchPage() {
 
         <div className="card-editorial p-6 space-y-3">
           <p className="text-sm text-charcoal leading-relaxed">
-            India is one of the world&rsquo;s largest agricultural producers, with <strong>157.35 million hectares</strong> of gross cropped area (Ministry of Agriculture, 2022) and over <strong>120 million farming households</strong> (NITI Aayog, 2023). Despite this, the country loses an estimated <strong>$30\u201336 billion</strong> annually in crop value to pests, diseases, and weeds (ICAR, 2023; CABI, 2021).
+            India is one of the world&rsquo;s largest agricultural producers, with <strong>157.35 million hectares</strong> of gross cropped area (Ministry of Agriculture, 2022) and over <strong>120 million farming households</strong> (NITI Aayog, 2023). Despite this, the country loses an estimated <strong>$30–36 billion</strong> annually in crop value to pests, diseases, and weeds (ICAR, 2023; CABI, 2021).
           </p>
           <p className="text-sm text-charcoal leading-relaxed">
             These losses are not evenly distributed. The <strong>Indo-Gangetic Plains</strong> (Uttar Pradesh, Punjab, Haryana, Bihar) account for the highest absolute losses due to their intensive monocropping of rice and wheat. The <strong>Deccan Plateau</strong> (Maharashtra, Karnataka, Telangana) sees the highest per-hectare losses from cotton and pulse pests. The <strong>coastal regions</strong> (Tamil Nadu, Andhra Pradesh, West Bengal, Kerala) face chronic outbreaks from brown plant hopper and bacterial leaf blight in paddy (ICAR Crop Loss Database, 2023).
@@ -39,10 +39,10 @@ export default function ResearchPage() {
         <div className="card-editorial p-6 space-y-3">
           <h3 className="text-sm font-bold text-charcoal">Major Pest Outbreaks in Indian History</h3>
           <div className="space-y-2 text-sm text-charcoal leading-relaxed">
-            <p><strong>2019\u201320 Fall Armyworm Crisis</strong> — Invasive species <em>Spodoptera frugiperda</em> spread across 12 states in under 18 months, destroying maize on 500,000+ hectares. Farm-level losses exceeded $2 billion (ICAR &amp; ICRISAT joint assessment, 2020). The outbreak exposed the complete absence of a real-time surveillance system.</p>
-            <p><strong>2019\u20132022 Locust Upsurge</strong> — The worst locust outbreak in 26 years affected Rajasthan, Gujarat, Punjab, Haryana, Uttar Pradesh, and Madhya Pradesh. Over 200,000 hectares were treated, but the economic damage to kharif crops was estimated at $1.3 billion (FAO Locust Watch, 2022).</p>
-            <p><strong>2022 Pink Bollworm in Cotton</strong> — Punjab, Haryana, and Rajasthan lost an estimated 30\u201340% of their Bt cotton crop to pink bollworm resistance. The Indian Council of Agricultural Research confirmed resistance to Cry1Ac and Cry2Ab toxins in multiple districts (ICAR Annual Report 2023).</p>
-            <p><strong>2023 Blast Disease in Paddy</strong> — An unusually wet monsoon triggered the worst rice blast outbreak in five years across West Bengal, Assam, and Odisha. Yield losses of 20\u201350% were reported in severely affected blocks (ICAR-National Rice Research Institute, 2023).</p>
+            <p><strong>2019–20 Fall Armyworm Crisis</strong> — Invasive species <em>Spodoptera frugiperda</em> spread across 12 states in under 18 months, destroying maize on 500,000+ hectares. Farm-level losses exceeded $2 billion (ICAR &amp; ICRISAT joint assessment, 2020). The outbreak exposed the complete absence of a real-time surveillance system.</p>
+            <p><strong>2019–2022 Locust Upsurge</strong> — The worst locust outbreak in 26 years affected Rajasthan, Gujarat, Punjab, Haryana, Uttar Pradesh, and Madhya Pradesh. Over 200,000 hectares were treated, but the economic damage to kharif crops was estimated at $1.3 billion (FAO Locust Watch, 2022).</p>
+            <p><strong>2022 Pink Bollworm in Cotton</strong> — Punjab, Haryana, and Rajasthan lost an estimated 30–40% of their Bt cotton crop to pink bollworm resistance. The Indian Council of Agricultural Research confirmed resistance to Cry1Ac and Cry2Ab toxins in multiple districts (ICAR Annual Report 2023).</p>
+            <p><strong>2023 Blast Disease in Paddy</strong> — An unusually wet monsoon triggered the worst rice blast outbreak in five years across West Bengal, Assam, and Odisha. Yield losses of 20–50% were reported in severely affected blocks (ICAR-National Rice Research Institute, 2023).</p>
           </div>
         </div>
       </section>
@@ -55,16 +55,17 @@ export default function ResearchPage() {
 
         <div className="card-editorial p-6 space-y-3">
           <p className="text-sm text-charcoal leading-relaxed">
-            India&rsquo;s public agricultural extension system operates at a ratio of approximately <strong>1 extension worker per 1,200 farm households</strong> (FAO India Country Report, 2022). This is three times the FAO-recommended ratio of 1:400. The result is that the majority of smallholder farmers receive pest advisory only after an outbreak has been officially declared\u2014often weeks after it began.
+            India&rsquo;s public agricultural extension system operates at a ratio of approximately <strong>1 extension worker per 1,200 farm households</strong> (FAO India Country Report, 2022). This is three times the FAO-recommended ratio of 1:400. The result is that the majority of smallholder farmers receive pest advisory only after an outbreak has been officially declared—often weeks after it began.
           </p>
           <p className="text-sm text-charcoal leading-relaxed">
             The <strong>National Sample Survey (NSS) 77th Round</strong> (2021) found that only <strong>5.7% of farmer households</strong> accessed any form of extension service in the previous year. Among those, only <strong>1.2%</strong> received pest-specific advisory. Digital extension services reached fewer than 0.5% of households surveyed.
           </p>
           <p className="text-sm text-charcoal leading-relaxed">
-            A <strong>World Bank study (2022)</strong> on digital agriculture in South Asia found that farmers who received smartphone-based pest alerts acted <strong>2.7 days faster</strong> and reduced pesticide overuse by <strong>34%</strong> compared to those relying on traditional extension. Each day of earlier intervention translated to approximately <strong>6\u20138% lower crop loss</strong> in the study&rsquo;s sample of 4,200 farmers across India and Bangladesh.
+            A <strong>World Bank study (2022)</strong> on digital agriculture in South Asia found that farmers who received smartphone-based pest alerts acted <strong>2.7 days faster</strong> and reduced pesticide overuse by <strong>34%</strong> compared to those relying on traditional extension. Each day of earlier intervention translated to approximately <strong>6–8% lower crop loss</strong> in the study&rsquo;s sample of 4,200 farmers across India and Bangladesh.
           </p>
         </div>
-      </section>\n      </FadeUp>
+      </section>
+      </FadeUp>
 
       <FadeUp delay={0.2}>
       {/* 3. Climate Change and Pest Dynamics */}
@@ -73,22 +74,23 @@ export default function ResearchPage() {
 
         <div className="card-editorial p-6 space-y-3">
           <p className="text-sm text-charcoal leading-relaxed">
-            The <strong>Intergovernmental Panel on Climate Change (IPCC) Sixth Assessment Report (2022)</strong> projects that warming of 1.5\u20132.0\u00b0C in South Asia will expand the geographic range of 23 major agricultural pests and increase the number of pest generations per growing season.
+            The <strong>Intergovernmental Panel on Climate Change (IPCC) Sixth Assessment Report (2022)</strong> projects that warming of 1.5–2.0°C in South Asia will expand the geographic range of 23 major agricultural pests and increase the number of pest generations per growing season.
           </p>
           <p className="text-sm text-charcoal leading-relaxed">
             Research by the <strong>ICAR-National Institute of Biotic Stress Management (2022)</strong> found that:
           </p>
           <ul className="list-disc pl-5 text-sm text-charcoal leading-relaxed space-y-1">
-            <li>Brown planthopper outbreaks in paddy correlate strongly with minimum temperatures above 22\u00b0C during the vegetative stage (r&#x00B2; = 0.74)</li>
-            <li>Pink bollworm population doubling time decreases from 45 days at 25\u00b0C to 28 days at 32\u00b0C</li>
-            <li>Leaf rust in wheat progresses 1.8x faster when nighttime temperatures exceed 18\u00b0C during the grain-filling stage</li>
-            <li>Each 1\u00b0C rise in winter minimum temperature correlates with a 12\u201315% increase in early-season pest incidence in rabi crops</li>
+            <li>Brown planthopper outbreaks in paddy correlate strongly with minimum temperatures above 22°C during the vegetative stage (r&#x00B2; = 0.74)</li>
+            <li>Pink bollworm population doubling time decreases from 45 days at 25°C to 28 days at 32°C</li>
+            <li>Leaf rust in wheat progresses 1.8x faster when nighttime temperatures exceed 18°C during the grain-filling stage</li>
+            <li>Each 1°C rise in winter minimum temperature correlates with a 12–15% increase in early-season pest incidence in rabi crops</li>
           </ul>
           <p className="text-sm text-charcoal leading-relaxed">
             These findings directly inform Apentomos&rsquo;s weather overlay: temperature anomalies flagged on the dashboard are drawn from these published thresholds.
           </p>
         </div>
-      </section>\n      </FadeUp>
+      </section>
+      </FadeUp>
 
       <FadeUp delay={0.3}>
       {/* 4. Economic Impact on Smallholder Farmers */}
@@ -100,15 +102,16 @@ export default function ResearchPage() {
             Smallholder farmers (operating on less than 2 hectares) constitute <strong>86% of all agricultural households</strong> in India (NSS 77th Round, 2021). They are disproportionately vulnerable to pest losses for three reasons:
           </p>
           <ol className="list-decimal pl-5 text-sm text-charcoal leading-relaxed space-y-2">
-            <li><strong>No financial buffer</strong> — The average smallholder household spends 45\u201355% of its monthly income on food (NITI Aayog, 2023). A single pest outbreak that destroys 30% of a crop can push a household below the poverty line.</li>
-            <li><strong>No crop insurance uptake</strong> — Despite the Pradhan Mantri Fasal Bima Yojana (PMFBY), only 30% of smallholders are covered. Among those, claim settlement takes an average of 7\u201312 months (Ministry of Agriculture PMFBY Dashboard, 2024).</li>
+            <li><strong>No financial buffer</strong> — The average smallholder household spends 45–55% of its monthly income on food (NITI Aayog, 2023). A single pest outbreak that destroys 30% of a crop can push a household below the poverty line.</li>
+            <li><strong>No crop insurance uptake</strong> — Despite the Pradhan Mantri Fasal Bima Yojana (PMFBY), only 30% of smallholders are covered. Among those, claim settlement takes an average of 7–12 months (Ministry of Agriculture PMFBY Dashboard, 2024).</li>
             <li><strong>No diagnostic access</strong> — The nearest plant health clinic is, on average, 28 km from a smallholder farm in rural India (FAO, 2022). By the time a farmer travels to the clinic and back, the outbreak has typically spread beyond treatable levels.</li>
           </ol>
           <p className="text-sm text-charcoal leading-relaxed">
-            A cost-benefit analysis by the <strong>International Food Policy Research Institute (IFPRI, 2021)</strong> estimated that a digital pest surveillance system covering 50% of Indian farmland would generate net benefits of <strong>$8\u201312 billion per year</strong> through reduced crop losses, optimized pesticide use, and improved market timing.
+            A cost-benefit analysis by the <strong>International Food Policy Research Institute (IFPRI, 2021)</strong> estimated that a digital pest surveillance system covering 50% of Indian farmland would generate net benefits of <strong>$8–12 billion per year</strong> through reduced crop losses, optimized pesticide use, and improved market timing.
           </p>
         </div>
-      </section>\n      </FadeUp>
+      </section>
+      </FadeUp>
 
       <FadeUp delay={0.4}>
       {/* 5. Technology Landscape & Gap */}
@@ -171,7 +174,8 @@ export default function ResearchPage() {
             Comparison based on publicly available feature lists and product documentation as of June 2026.
           </p>
         </div>
-      </section>\n      </FadeUp>
+      </section>
+      </FadeUp>
 
       <FadeUp delay={0.5}>
       {/* 6. Data Sources & Methodology */}
@@ -191,14 +195,14 @@ export default function ResearchPage() {
             label: 'of farmers lack timely pest advisory',
             source: 'FAO India Country Report 2022',
             url: 'https://www.fao.org/india/en/',
-            detail: 'Based on stratified survey of 8,400 farm households across 24 states. Also found that 72% of farmers rely on pesticide retailers for pest identification, leading to widespread misdiagnosis and unnecessary pesticide application. India uses 4\u20136x more pesticide per hectare for cotton than the global average (FAO Stat, 2022).',
+            detail: 'Based on stratified survey of 8,400 farm households across 24 states. Also found that 72% of farmers rely on pesticide retailers for pest identification, leading to widespread misdiagnosis and unnecessary pesticide application. India uses 4–6x more pesticide per hectare for cotton than the global average (FAO Stat, 2022).',
           },
           {
-            stat: '15\u201325%',
+            stat: '15–25%',
             label: 'annual yield loss to undetected outbreaks',
             source: 'CABI Plantwise Report 2021',
             url: 'https://www.plantwise.org',
-            detail: 'Meta-analysis of 47 intervention studies across South Asia. CABI found that early detection (within 72 hours of first appearance) reduces total crop loss by 55\u201365% compared to late detection (after 2 weeks). The 15\u201325% figure represents the loss attributable specifically to detection delay, not total pest loss.',
+            detail: 'Meta-analysis of 47 intervention studies across South Asia. CABI found that early detection (within 72 hours of first appearance) reduces total crop loss by 55–65% compared to late detection (after 2 weeks). The 15–25% figure represents the loss attributable specifically to detection delay, not total pest loss.',
           },
           {
             stat: '120M',
@@ -234,7 +238,8 @@ export default function ResearchPage() {
             </p>
           </div>
         ))}
-      </section>\n      </FadeUp>
+      </section>
+      </FadeUp>
 
       <FadeUp delay={0.6}>
       {/* 7. From Research to Product */}
@@ -248,12 +253,13 @@ export default function ResearchPage() {
           <div className="space-y-3 text-sm text-charcoal leading-relaxed">
             <p><strong>AI Diagnosis</strong> — Our vision model is prompted with pest lists drawn from the ICAR Crop Loss Database and CABI Plantwise knowledge bank. Each prediction is mapped to a severity level calibrated against ICAR&rsquo;s economic threshold tables, determining whether intervention is needed.</p>
             <p><strong>Community Reports</strong> — Geotagged reports from farmers feed a live severity heatmap. This replicates the surveillance network that the NSS found missing from 94% of farm households. Reports are aggregated anonymously and visible to all users without login, removing the information asymmetry that smallholders face.</p>
-            <p><strong>Weather Overlay</strong> — Temperature thresholds on the dashboard are based on ICAR-NIBSM research. For example, brown planthopper risk is flagged when minimum temperature exceeds 22\u00b0C during the rice vegetative stage, matching the correlation (r&#x00B2; = 0.74) found in the published research.</p>
+            <p><strong>Weather Overlay</strong> — Temperature thresholds on the dashboard are based on ICAR-NIBSM research. For example, brown planthopper risk is flagged when minimum temperature exceeds 22°C during the rice vegetative stage, matching the correlation (r&#x00B2; = 0.74) found in the published research.</p>
             <p><strong>Multi-language Support</strong> — Hindi, Marathi, Telugu, and Kannada were chosen because they cover the four states (UP, Maharashtra, Telangana/AP, Karnataka) that together account for 48% of India&rsquo;s agricultural GDP (Ministry of Agriculture, 2023).</p>
-            <p><strong>Free Tier</strong> — The platform costs nothing to use because pest intelligence is a public good. The World Bank study (2022) showed that each day of earlier intervention saves farmers 6\u20138% of their crop. Free access maximizes adoption among the smallholders who need it most.</p>
+            <p><strong>Free Tier</strong> — The platform costs nothing to use because pest intelligence is a public good. The World Bank study (2022) showed that each day of earlier intervention saves farmers 6–8% of their crop. Free access maximizes adoption among the smallholders who need it most.</p>
           </div>
         </div>
-      </section>\n      </FadeUp>
+      </section>
+      </FadeUp>
 
       <FadeUp delay={0.7}>
       {/* 8. Impact Projection */}
@@ -266,26 +272,27 @@ export default function ResearchPage() {
           </p>
           <ul className="list-disc pl-5 text-sm text-charcoal leading-relaxed space-y-1">
             <li><strong>1 million active users</strong> within 3 years (0.8% of farming households)</li>
-            <li><strong>$120\u2013180 million</strong> in annual crop loss averted, assuming early detection saves 8\u201312% of at-risk crops for users</li>
-            <li><strong>8,000\u201312,000 tonnes</strong> reduction in unnecessary pesticide application, based on the 34% reduction observed in the World Bank study</li>
-            <li><strong>40\u201360% reduction</strong> in outbreak response time for communities using the platform, extrapolated from the Plantwise South Asia meta-analysis</li>
+            <li><strong>$120–180 million</strong> in annual crop loss averted, assuming early detection saves 8–12% of at-risk crops for users</li>
+            <li><strong>8,000–12,000 tonnes</strong> reduction in unnecessary pesticide application, based on the 34% reduction observed in the World Bank study</li>
+            <li><strong>40–60% reduction</strong> in outbreak response time for communities using the platform, extrapolated from the Plantwise South Asia meta-analysis</li>
           </ul>
           <p className="text-xs text-charcoal-muted">
             Projections are estimates based on published research. Actual results depend on adoption rate, farmer behavior, and regional pest dynamics.
           </p>
         </div>
-      </section>\n      </FadeUp>
+      </section>
+      </FadeUp>
 
       <FadeUp delay={0.8}>
       {/* 9. References */}
       <section className="border-t border-stone pt-6 space-y-3">
         <h2 className="text-sm font-bold text-charcoal">References</h2>
         <ol className="space-y-2 text-xs text-charcoal-muted list-decimal pl-4">
-          <li>ICAR. (2023). <em>Annual Report 2022\u201323</em>. Indian Council of Agricultural Research, New Delhi. https://icar.org.in</li>
+          <li>ICAR. (2023). <em>Annual Report 2022–23</em>. Indian Council of Agricultural Research, New Delhi. https://icar.org.in</li>
           <li>ICAR-NIBSM. (2022). <em>Climate Change and Pest Dynamics in Major Crops</em>. National Institute of Biotic Stress Management, Raipur.</li>
           <li>ICAR-NRRI. (2023). <em>Rice Blast Outbreak Assessment 2023</em>. National Rice Research Institute, Cuttack.</li>
           <li>FAO. (2022). <em>India Country Report: Agricultural Extension Services</em>. Food and Agriculture Organization, Rome.</li>
-          <li>FAO. (2022). <em>Locust Watch: India Upsurge 2019\u20132022</em>. https://www.fao.org/locust-watch</li>
+          <li>FAO. (2022). <em>Locust Watch: India Upsurge 2019–2022</em>. https://www.fao.org/locust-watch</li>
           <li>CABI. (2021). <em>Plantwise Annual Report: Pest Detection and Early Warning in South Asia</em>. CAB International, Wallingford.</li>
           <li>NITI Aayog. (2023). <em>Strategy for New India: Agriculture and Allied Sectors</em>. Government of India, New Delhi.</li>
           <li>Ministry of Agriculture. (2022). <em>Agricultural Statistics at a Glance 2022</em>. Government of India.</li>
@@ -294,7 +301,7 @@ export default function ResearchPage() {
           <li>World Bank. (2022). <em>Digital Agriculture in South Asia: A Randomized Controlled Trial</em>. Policy Research Working Paper 10234.</li>
           <li>IFPRI. (2021). <em>Cost-Benefit Analysis of Digital Pest Surveillance in India</em>. International Food Policy Research Institute, Washington DC.</li>
           <li>IPCC. (2022). <em>Sixth Assessment Report: Impacts, Adaptation and Vulnerability</em>. Chapter 10: Asia. Intergovernmental Panel on Climate Change.</li>
-          <li>ICAR-ICRISAT. (2020). <em>Joint Assessment: Fall Armyworm Impact in India 2019\u201320</em>. International Crops Research Institute for the Semi-Arid Tropics.</li>
+          <li>ICAR-ICRISAT. (2020). <em>Joint Assessment: Fall Armyworm Impact in India 2019–20</em>. International Crops Research Institute for the Semi-Arid Tropics.</li>
           <li>OpenWeather. (2024). <em>Current Weather Data API</em>. https://openweathermap.org/api</li>
           <li>Google. (2024). <em>Gemini API: Multimodal AI for Image Understanding</em>. https://ai.google.dev</li>
         </ol>
