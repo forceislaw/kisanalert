@@ -170,8 +170,8 @@
 .mobile-menu-popover {
   position: absolute;
   top: calc(100% + 8px);
-  left: 0;
-  right: 0;
+  left: -16px;
+  right: -16px;
   z-index: 100;
   padding: 0.75rem;
   border-radius: 16px;
@@ -197,8 +197,7 @@
   text-decoration: none;
   transition: background 0.2s, color 0.2s;
   border-bottom: 1px solid #EDEAE5;
-  overflow-wrap: break-word;
-  word-break: break-word;
+  white-space: nowrap;
 }
 
 .mobile-menu-link:last-of-type {
