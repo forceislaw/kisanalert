@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
 import SplitText from '@/components/ui/SplitText'
+import { FadeUp } from '@/components/ui/FadeUp'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
 
@@ -159,19 +160,25 @@ export default function RootPage() {
         {/* Features Section */}
         <section className="py-24 px-6 border-t border-stone">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-charcoal text-center" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
-              {dict.landing.whyTitle}
-            </h2>
-            <p className="text-center text-charcoal-muted text-sm mt-3 max-w-lg mx-auto">
-              {dict.landing.whyDesc}
-            </p>
+            <FadeUp>
+              <h2 className="text-3xl sm:text-4xl font-bold text-charcoal text-center" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
+                {dict.landing.whyTitle}
+              </h2>
+            </FadeUp>
+            <FadeUp delay={0.1}>
+              <p className="text-center text-charcoal-muted text-sm mt-3 max-w-lg mx-auto">
+                {dict.landing.whyDesc}
+              </p>
+            </FadeUp>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-              {features.map((f) => (
-                <div key={f.title} className="card-editorial p-6">
-                  <div className="mb-4">{f.icon}</div>
-                  <h3 className="text-sm font-semibold text-charcoal mb-2">{f.title}</h3>
-                  <p className="text-xs text-charcoal-muted leading-relaxed">{f.desc}</p>
-                </div>
+              {features.map((f, i) => (
+                <FadeUp key={f.title} delay={0.1 + i * 0.08}>
+                  <div className="card-editorial p-6">
+                    <div className="mb-4">{f.icon}</div>
+                    <h3 className="text-sm font-semibold text-charcoal mb-2">{f.title}</h3>
+                    <p className="text-xs text-charcoal-muted leading-relaxed">{f.desc}</p>
+                  </div>
+                </FadeUp>
               ))}
             </div>
           </div>
@@ -180,20 +187,24 @@ export default function RootPage() {
         {/* How It Works */}
         <section className="py-24 px-6 border-t border-stone bg-parchment-tint">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-charcoal text-center" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
-              {dict.landing.howTitle}
-            </h2>
+            <FadeUp>
+              <h2 className="text-3xl sm:text-4xl font-bold text-charcoal text-center" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
+                {dict.landing.howTitle}
+              </h2>
+            </FadeUp>
             <div className="mt-12 space-y-8">
-              {steps.map((s) => (
-                <div key={s.num} className="flex items-start gap-6">
-                  <span className="text-3xl font-bold text-terra" style={{ fontFamily: 'var(--font-display), Georgia, serif', minWidth: '3rem' }}>
-                    {s.num}
-                  </span>
-                  <div>
-                    <h3 className="text-lg font-semibold text-charcoal">{s.title}</h3>
-                    <p className="text-sm text-charcoal-muted mt-1">{s.desc}</p>
+              {steps.map((s, i) => (
+                <FadeUp key={s.num} delay={i * 0.1}>
+                  <div className="flex items-start gap-6">
+                    <span className="text-3xl font-bold text-terra" style={{ fontFamily: 'var(--font-display), Georgia, serif', minWidth: '3rem' }}>
+                      {s.num}
+                    </span>
+                    <div>
+                      <h3 className="text-lg font-semibold text-charcoal">{s.title}</h3>
+                      <p className="text-sm text-charcoal-muted mt-1">{s.desc}</p>
+                    </div>
                   </div>
-                </div>
+                </FadeUp>
               ))}
             </div>
           </div>
@@ -202,56 +213,58 @@ export default function RootPage() {
         {/* Research & Impact Section */}
         <section className="py-24 px-6 border-t border-stone">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-charcoal text-center" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
-              Research &amp; Impact
-            </h2>
-            <p className="text-center text-charcoal-muted text-sm mt-3 max-w-2xl mx-auto">
-              Built on agricultural research and government data to address India&apos;s pest crisis
-            </p>
+            <FadeUp>
+              <h2 className="text-3xl sm:text-4xl font-bold text-charcoal text-center" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
+                Research &amp; Impact
+              </h2>
+            </FadeUp>
+            <FadeUp delay={0.1}>
+              <p className="text-center text-charcoal-muted text-sm mt-3 max-w-2xl mx-auto">
+                Built on agricultural research and government data to address India&apos;s pest crisis
+              </p>
+            </FadeUp>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12">
-              <div className="card-editorial p-6 space-y-2">
-                <p className="text-3xl font-bold text-terra" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>80%</p>
-                <p className="text-sm text-charcoal">of pre-harvest crop loss in India is caused by pests and diseases</p>
-                <p className="text-xs text-charcoal-muted">— <a href="https://www.icar.org.in" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-charcoal">ICAR Annual Report 2023</a></p>
-              </div>
-              <div className="card-editorial p-6 space-y-2">
-                <p className="text-3xl font-bold text-terra" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>40%</p>
-                <p className="text-sm text-charcoal">of smallholder farmers lack timely access to pest advisory services</p>
-                <p className="text-xs text-charcoal-muted">— <a href="https://www.fao.org/india/en/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-charcoal">FAO India Country Report 2022</a></p>
-              </div>
-              <div className="card-editorial p-6 space-y-2">
-                <p className="text-3xl font-bold text-terra" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>15&ndash;25%</p>
-                <p className="text-sm text-charcoal">of potential crop yield is lost annually to pest outbreaks that go undetected</p>
-                <p className="text-xs text-charcoal-muted">— <a href="https://www.plantwise.org" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-charcoal">CABI Plantwise Report 2021</a></p>
-              </div>
-              <div className="card-editorial p-6 space-y-2">
-                <p className="text-3xl font-bold text-terra" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>120M</p>
-                <p className="text-sm text-charcoal">Indian farming households that could benefit from AI-assisted pest detection</p>
-                <p className="text-xs text-charcoal-muted">— <a href="https://www.niti.gov.in" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-charcoal">NITI Aayog Agriculture Strategy 2023</a></p>
-              </div>
+              {[
+                { stat: '80%', desc: 'of pre-harvest crop loss in India is caused by pests and diseases', cite: 'ICAR Annual Report 2023', url: 'https://www.icar.org.in' },
+                { stat: '40%', desc: 'of smallholder farmers lack timely access to pest advisory services', cite: 'FAO India Country Report 2022', url: 'https://www.fao.org/india/en/' },
+                { stat: '15\u201325%', desc: 'of potential crop yield is lost annually to pest outbreaks that go undetected', cite: 'CABI Plantwise Report 2021', url: 'https://www.plantwise.org' },
+                { stat: '120M', desc: 'Indian farming households that could benefit from AI-assisted pest detection', cite: 'NITI Aayog Agriculture Strategy 2023', url: 'https://www.niti.gov.in' },
+              ].map((card, i) => (
+                <FadeUp key={card.stat} delay={0.1 + i * 0.08}>
+                  <div className="card-editorial p-6 space-y-2">
+                    <p className="text-3xl font-bold text-terra" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>{card.stat}</p>
+                    <p className="text-sm text-charcoal">{card.desc}</p>
+                    <p className="text-xs text-charcoal-muted">— <a href={card.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-charcoal">{card.cite}</a></p>
+                  </div>
+                </FadeUp>
+              ))}
             </div>
-            <div className="text-center mt-8">
-              <a href="/research" className="text-sm text-sage font-medium hover:underline">View full research &amp; methodology &rarr;</a>
-            </div>
+            <FadeUp delay={0.4}>
+              <div className="text-center mt-8">
+                <a href="/research" className="text-sm text-sage font-medium hover:underline">View full research &amp; methodology &rarr;</a>
+              </div>
+            </FadeUp>
           </div>
         </section>
 
         {/* CTA Section */}
         <section className="py-24 px-6 border-t border-stone text-center">
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
-              {dict.landing.ctaTitle}
-            </h2>
-            <p className="text-charcoal-muted text-sm mt-3">
-              {dict.landing.ctaDesc}
-            </p>
-            <Link
-              href="/register"
-              className="inline-block mt-8 bg-charcoal text-parchment px-8 py-3 text-sm font-medium no-underline border border-charcoal hover:bg-charcoal-tint transition-colors"
-            >
-              {dict.landing.ctaButton}
-            </Link>
-          </div>
+          <FadeUp>
+            <div className="max-w-2xl mx-auto">
+              <h2 className="text-3xl sm:text-4xl font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.02em' }}>
+                {dict.landing.ctaTitle}
+              </h2>
+              <p className="text-charcoal-muted text-sm mt-3">
+                {dict.landing.ctaDesc}
+              </p>
+              <Link
+                href="/register"
+                className="inline-block mt-8 bg-charcoal text-parchment px-8 py-3 text-sm font-medium no-underline border border-charcoal hover:bg-charcoal-tint transition-colors"
+              >
+                {dict.landing.ctaButton}
+              </Link>
+            </div>
+          </FadeUp>
         </section>
 
         {/* Footer */}
