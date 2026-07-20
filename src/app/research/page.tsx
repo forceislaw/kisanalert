@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { FadeUp } from '@/components/ui/FadeUp'
 
 export const metadata: Metadata = {
   title: 'Research — Apentomos',
@@ -21,6 +22,7 @@ export default function ResearchPage() {
         </p>
       </div>
 
+      <FadeUp>
       {/* 1. The Agricultural Pest Crisis in India */}
       <section className="space-y-4">
         <h2 className="text-lg font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>1. The Agricultural Pest Crisis in India</h2>
@@ -44,7 +46,9 @@ export default function ResearchPage() {
           </div>
         </div>
       </section>
+      </FadeUp>
 
+      <FadeUp delay={0.1}>
       {/* 2. The Extension Services Gap */}
       <section className="space-y-4">
         <h2 className="text-lg font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>2. The Extension Services Gap</h2>
@@ -60,8 +64,9 @@ export default function ResearchPage() {
             A <strong>World Bank study (2022)</strong> on digital agriculture in South Asia found that farmers who received smartphone-based pest alerts acted <strong>2.7 days faster</strong> and reduced pesticide overuse by <strong>34%</strong> compared to those relying on traditional extension. Each day of earlier intervention translated to approximately <strong>6\u20138% lower crop loss</strong> in the study&rsquo;s sample of 4,200 farmers across India and Bangladesh.
           </p>
         </div>
-      </section>
+      </section>\n      </FadeUp>
 
+      <FadeUp delay={0.2}>
       {/* 3. Climate Change and Pest Dynamics */}
       <section className="space-y-4">
         <h2 className="text-lg font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>3. Climate Change and Pest Dynamics</h2>
@@ -83,8 +88,9 @@ export default function ResearchPage() {
             These findings directly inform Apentomos&rsquo;s weather overlay: temperature anomalies flagged on the dashboard are drawn from these published thresholds.
           </p>
         </div>
-      </section>
+      </section>\n      </FadeUp>
 
+      <FadeUp delay={0.3}>
       {/* 4. Economic Impact on Smallholder Farmers */}
       <section className="space-y-4">
         <h2 className="text-lg font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>4. Economic Impact on Smallholder Farmers</h2>
@@ -102,8 +108,9 @@ export default function ResearchPage() {
             A cost-benefit analysis by the <strong>International Food Policy Research Institute (IFPRI, 2021)</strong> estimated that a digital pest surveillance system covering 50% of Indian farmland would generate net benefits of <strong>$8\u201312 billion per year</strong> through reduced crop losses, optimized pesticide use, and improved market timing.
           </p>
         </div>
-      </section>
+      </section>\n      </FadeUp>
 
+      <FadeUp delay={0.4}>
       {/* 5. Technology Landscape & Gap */}
       <section className="space-y-4">
         <h2 className="text-lg font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>5. Technology Landscape &amp; Gap Analysis</h2>
@@ -164,8 +171,9 @@ export default function ResearchPage() {
             Comparison based on publicly available feature lists and product documentation as of June 2026.
           </p>
         </div>
-      </section>
+      </section>\n      </FadeUp>
 
+      <FadeUp delay={0.5}>
       {/* 6. Data Sources & Methodology */}
       <section className="space-y-4">
         <h2 className="text-lg font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>6. Data Sources &amp; Methodology</h2>
@@ -226,8 +234,9 @@ export default function ResearchPage() {
             </p>
           </div>
         ))}
-      </section>
+      </section>\n      </FadeUp>
 
+      <FadeUp delay={0.6}>
       {/* 7. From Research to Product */}
       <section className="space-y-4">
         <h2 className="text-lg font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>7. From Research to Product</h2>
@@ -244,8 +253,9 @@ export default function ResearchPage() {
             <p><strong>Free Tier</strong> — The platform costs nothing to use because pest intelligence is a public good. The World Bank study (2022) showed that each day of earlier intervention saves farmers 6\u20138% of their crop. Free access maximizes adoption among the smallholders who need it most.</p>
           </div>
         </div>
-      </section>
+      </section>\n      </FadeUp>
 
+      <FadeUp delay={0.7}>
       {/* 8. Impact Projection */}
       <section className="space-y-4">
         <h2 className="text-lg font-bold text-charcoal" style={{ fontFamily: 'var(--font-display), Georgia, serif' }}>8. Impact Projection</h2>
@@ -264,8 +274,9 @@ export default function ResearchPage() {
             Projections are estimates based on published research. Actual results depend on adoption rate, farmer behavior, and regional pest dynamics.
           </p>
         </div>
-      </section>
+      </section>\n      </FadeUp>
 
+      <FadeUp delay={0.8}>
       {/* 9. References */}
       <section className="border-t border-stone pt-6 space-y-3">
         <h2 className="text-sm font-bold text-charcoal">References</h2>
@@ -291,6 +302,7 @@ export default function ResearchPage() {
           All data and statistics are from publicly available sources cited above. Figures may vary year to year; we recommend consulting the latest reports for up-to-date figures. Apentomos is an independent project and is not affiliated with any of the cited organizations.
         </p>
       </section>
+      </FadeUp>
 
       {/* Footer link back */}
       <div className="text-center pb-8">
@@ -301,3 +313,4 @@ export default function ResearchPage() {
     </div>
   )
 }
+
