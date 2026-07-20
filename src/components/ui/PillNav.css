@@ -52,8 +52,8 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 1rem;
-  min-height: 36px;
+  padding: 0 1rem;
+  height: 36px;
   border-radius: 9999px;
   background: #FDFCFA;
   color: #6B6560;
@@ -62,12 +62,13 @@
   font-weight: 500;
   text-decoration: none;
   letter-spacing: -0.01em;
-  line-height: 1.4;
+  line-height: 1;
   transition: color 0.2s;
   cursor: pointer;
   border: 1px solid #D1CCC3;
   user-select: none;
   -webkit-user-select: none;
+  overflow: hidden;
 }
 
 .pill:hover {
@@ -112,7 +113,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 1.6em;
+  height: 1.35em;
   overflow: hidden;
 }
 
