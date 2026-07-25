@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { User, Session } from '@supabase/supabase-js'
+import disposableDomains from 'disposable-email-domains'
 
 interface AuthContextType {
   user: User | null
@@ -57,6 +58,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signUp = async (email: string, password: string, fullName?: string, phone?: string) => {
+    const domain = email.split('@')[1]?.toLowerCase()
+    if (domain && (disposableDomains as readonly string[]).includes(domain)) {
+      return { error: 'Disposable email addresses are not allowed. Please use a permanent email.' }
+    }
     const supabase = createClient()
     const { data, error } = await supabase.auth.signUp({ 
       email, 
