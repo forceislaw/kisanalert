@@ -5,6 +5,11 @@ import { z } from 'zod';
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
+const LANG_NAMES: Record<string, string> = {
+  en: 'English', hi: 'Hindi (हिंदी)', mr: 'Marathi (मराठी)',
+  te: 'Telugu (తెలుగు)', kn: 'Kannada (ಕನ್ನಡ)',
+}
+
 const KNOWN_CROPS = [
   'cotton', 'soybean', 'groundnut', 'jowar', 'bajra', 'tur',
   'chili', 'sugarcane', 'grapes', 'pomegranate', 'maize', 'sunflower',
@@ -37,6 +42,12 @@ const MAX_RETRIES = 2
 
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+function langPrompt(lang: string, basePrompt: string): string {
+  const name = LANG_NAMES[lang]
+  if (!name || lang === 'en') return basePrompt
+  return `${basePrompt}\n\nIMPORTANT: Respond in ${name}. pest_name, recommended_action, and ALL text fields must be written in ${name}. The JSON key names stay in English.`
 }
 
 async function tryGenerate(
@@ -151,7 +162,15 @@ const CROP_PEST_MAP: Record<string, { pests: string[]; actions: string[] }> = {
 
 const CROPS = [...KNOWN_CROPS] as string[]
 
-function simulateAnalysis(): VisionAnalysisResult {
+const HEALTHY_MSGS: Record<string, string> = {
+  en: 'Crop appears healthy. Continue regular monitoring.',
+  hi: 'फसल स्वस्थ दिखती है। नियमित निगरानी जारी रखें।',
+  mr: 'पीक निरोगी दिसत आहे. नियमित निरीक्षण सुरू ठेवा.',
+  te: 'పంట ఆరోగ్యంగా ఉంది. క్రమం తప్పకుండా పర్యవేక్షించండి.',
+  kn: 'ಬೆಳೆ ಆರೋಗ್ಯಕರವಾಗಿದೆ. ನಿಯಮಿತ ಮೇಲ್ವಿಚಾರಣೆ ಮುಂದುವರಿಸಿ.',
+}
+
+function simulateAnalysis(lang: string = 'en'): VisionAnalysisResult {
   const rng = () => Math.random()
   const pick = <T>(arr: readonly T[]): T => arr[Math.floor(rng() * arr.length)]
   const between = (min: number, max: number) => min + rng() * (max - min)
@@ -165,7 +184,7 @@ function simulateAnalysis(): VisionAnalysisResult {
     ? pick(severity_options.slice(1))
     : 'low'
   const confidence = between(0.75, 0.97)
-  const recommended_action = is_pest_detected ? pick(pestInfo.actions) : 'Crop appears healthy. Continue regular monitoring.'
+  const recommended_action = is_pest_detected ? pick(pestInfo.actions) : (HEALTHY_MSGS[lang] || HEALTHY_MSGS.en)
 
   return {
     pest_name: is_pest_detected ? pest_name : 'none',
@@ -185,6 +204,7 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get('image') as File | null;
+    const lang = (formData.get('lang') as string) || 'en'
     
     if (!file) {
       return NextResponse.json({ error: 'No image provided.' }, { status: 400 });
@@ -201,7 +221,7 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
     const base64Image = buffer.toString('base64');
 
-    const prompt = `Analyze this agricultural image. Identify the crop and any pest/disease present.
+    const basePrompt = `Analyze this agricultural image. Identify the crop and any pest/disease present.
 If the image does NOT contain a clearly visible crop or plant, set crop_guess to "unknown".
 Return ONLY valid JSON. Use EXACT values — no synonyms.
 {
@@ -212,6 +232,8 @@ Return ONLY valid JSON. Use EXACT values — no synonyms.
   "recommended_action": "short actionable advice (or 'None' if no crop detected)",
   "is_pest_detected": true or false
 }`
+
+    const prompt = langPrompt(lang, basePrompt)
 
     let data: VisionAnalysisResult
     try {
@@ -224,11 +246,11 @@ Return ONLY valid JSON. Use EXACT values — no synonyms.
             data = await tryGroq(base64Image, prompt)
           } catch (groqErr) {
             console.warn('Groq also failed, using simulated fallback', groqErr)
-            data = simulateAnalysis()
+            data = simulateAnalysis(lang)
           }
         } else {
           console.warn('Gemini rate limited, using simulated fallback')
-          data = simulateAnalysis()
+          data = simulateAnalysis(lang)
         }
       } else {
         throw error

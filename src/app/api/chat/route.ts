@@ -66,7 +66,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { message, history } = await req.json()
+    const { message, history, locale } = await req.json()
+
+    const localeLang: Record<string, string> = { en: 'English', hi: 'Hindi', mr: 'Marathi', te: 'Telugu', kn: 'Kannada' }
+    const langHint = locale && locale !== 'en' && localeLang[locale]
+      ? `\n\nThe user has set their app language to ${localeLang[locale]}. Respond in ${localeLang[locale]}.`
+      : ''
 
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 })
@@ -84,7 +89,7 @@ export async function POST(req: NextRequest) {
     }
 
     const messages = [
-      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'system', content: SYSTEM_PROMPT + langHint },
       ...(Array.isArray(history) ? history.slice(-10) : []),
       { role: 'user', content: message },
     ]

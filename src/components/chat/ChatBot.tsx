@@ -98,7 +98,7 @@ export default function ChatBot() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, history }),
+        body: JSON.stringify({ message: text, history, locale }),
       })
       const data = await res.json()
       if (data.nonFarming) setNonFarming(true)

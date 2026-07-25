@@ -10,7 +10,7 @@ interface UploadDropzoneProps {
 }
 
 export default function UploadDropzone({ onAnalysisComplete }: UploadDropzoneProps) {
-  const { dict } = useLocale();
+  const { dict, locale } = useLocale();
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,6 +55,7 @@ export default function UploadDropzone({ onAnalysisComplete }: UploadDropzonePro
 
     const formData = new FormData();
     formData.append('image', file);
+    formData.append('lang', locale);
 
     const previewUrl = URL.createObjectURL(file);
 
