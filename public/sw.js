@@ -2,7 +2,7 @@ const CACHE = 'apentomos-v2'
 const OFFLINE_URL = '/offline.html'
 const DB_NAME = 'apentomos-offline'
 const DB_VERSION = 1
-const PUSH_PUBLIC_KEY = 'BEyRqiEDbkucm9Uw9yd3bGUqTOI1DbS_athnQpx489WSRcfx38hJ_Q1eVJPpMGnJa2-MQwAoEsaWg7lNZiwdu-M'
+const PUSH_PUBLIC_KEY = 'BGcyLFViHaoFr0B-MxHvekLVrteEfKFjGZdkwMDHyOG9KZ66ggAC5Qj9uKjU64i3w2G_z8dxb1VoHmUjhDIqWsI'
 
 const STATIC_ASSETS = [
   '/manifest.json',

@@ -37,7 +37,7 @@ export const VisionAnalysisSchema = z.object({
 
 export type VisionAnalysisResult = z.infer<typeof VisionAnalysisSchema>;
 
-const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash']
+const MODELS = ['gemini-3-flash-preview', 'gemini-3.1-flash-lite']
 const MAX_RETRIES = 2
 
 function sleep(ms: number) {
@@ -184,7 +184,12 @@ function simulateAnalysis(lang: string = 'en'): VisionAnalysisResult {
     ? pick(severity_options.slice(1))
     : 'low'
   const confidence = between(0.75, 0.97)
-  const recommended_action = is_pest_detected ? pick(pestInfo.actions) : (HEALTHY_MSGS[lang] || HEALTHY_MSGS.en)
+  const actionEn = pick(pestInfo.actions)
+  const ACTION_LOCALE: Record<string, Record<string, string>> = {
+    hi: { 'Apply neem oil': 'नीम का तेल लगाएं', 'Apply imidacloprid': 'इमिडाक्लोप्रिड लगाएं', 'Apply emamectin benzoate': 'एमामेक्टिन बेंजोएट लगाएं', 'Apply tebuconazole': 'टेबुकोनाजोल लगाएं', 'Apply spinosad': 'स्पिनोसैड लगाएं', 'Apply mancozeb': 'मैन्कोजेब लगाएं', 'Apply chlorpyrifos': 'क्लोरपायरीफॉस लगाएं', 'Apply carbendazim': 'कार्बेन्डाजिम लगाएं', 'Apply chlorothalonil': 'क्लोरोथेलोनिल लगाएं', 'Apply copper spray': 'कॉपर स्प्रे करें', 'Apply streptocycline': 'स्ट्रेप्टोसाइक्लिन लगाएं', 'Apply endosulfan': 'एंडोसल्फान लगाएं', 'Apply carbofuran': 'कार्बोफ्यूरन लगाएं', 'Apply sulfur spray': 'सल्फर स्प्रे करें', 'Spray neem oil': 'नीम का तेल छिड़कें', 'Spray propiconazole': 'प्रोपिकोनाजोल छिड़कें', 'Spray mancozeb': 'मैन्कोजेब छिड़कें', 'Spray triazophos': 'ट्रायज़ोफॉस छिड़कें', 'Use metalaxyl': 'मेटालैक्सिल का उपयोग करें', 'Use fungicide spray': 'फफूंदनाशक स्प्रे का उपयोग करें', 'Use resistant varieties': 'प्रतिरोधी किस्मों का उपयोग करें', 'Use neem cake': 'नीम की खली का उपयोग करें', 'Use yellow sticky traps': 'पीले चिपचिपे जाल का उपयोग करें', 'Use carbendazim': 'कार्बेन्डाजिम का उपयोग करें', 'Use tissue culture plants': 'ऊतक संवर्धन पौधों का उपयोग करें', 'Use biocontrol agents': 'जैव नियंत्रण एजेंटों का उपयोग करें', 'Use biocontrol': 'जैव नियंत्रण का उपयोग करें', 'Use neem spray': 'नीम स्प्रे का उपयोग करें', 'Use sulfur spray': 'सल्फर स्प्रे का उपयोग करें', 'Remove infected plants': 'संक्रमित पौधों को हटाएं', 'Remove infected leaves': 'संक्रमित पत्तियों को हटाएं', 'Remove infected tillers': 'संक्रमित टिलर हटाएं', 'Remove affected canes': 'प्रभावित गन्ने हटाएं', 'Remove infected bushes': 'संक्रमित झाड़ियाँ हटाएं', 'Remove infected fruits': 'संक्रमित फल हटाएं', 'Remove infected vines': 'संक्रमित बेलें हटाएं', 'Crop rotation': 'फसल चक्र अपनाएं', 'Early sowing': 'जल्दी बुवाई करें', 'Early harvesting': 'जल्दी कटाई करें', 'Field sanitation': 'खेत की सफाई करें', 'Install pheromone traps': 'फेरोमोन जाल लगाएं', 'Install sticky traps': 'चिपचिपे जाल लगाएं', 'Install fruit fly traps': 'फल मक्खी जाल लगाएं', 'Trap weevils': 'घुन को फंसाएं', 'Drain and dry field': 'खेत को सुखाएं और निकालें', 'Hilling up': 'मिट्टी चढ़ाएं', 'Prune affected vines': 'प्रभावित बेलों की छंटाई करें', 'Prune shade trees': 'छायादार पेड़ों की छंटाई करें', 'Seed treatment': 'बीज उपचार करें', 'Stem injection': 'तने में इंजेक्शन दें', 'Avoid overwatering': 'अधिक पानी देने से बचें', 'Copper fungicide': 'कॉपर फफूंदनाशक', 'Sulfur spray': 'सल्फर स्प्रे', 'Sulfur dusting': 'सल्फर धूल छिड़कें', 'Trap borer beetles': 'बोरर बीटल को फंसाएं' },
+  }
+  const actionMap = ACTION_LOCALE[lang]
+  const recommended_action = is_pest_detected ? (actionMap?.[actionEn] || actionEn) : (HEALTHY_MSGS[lang] || HEALTHY_MSGS.en)
 
   return {
     pest_name: is_pest_detected ? pest_name : 'none',

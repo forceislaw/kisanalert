@@ -53,7 +53,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const redirectTo = from ? `${origin}/auth/callback?from=${from}` : `${origin}/auth/callback`
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo },
+      options: {
+        redirectTo,
+        queryParams: { prompt: 'select_account' },
+      },
     })
   }
 
