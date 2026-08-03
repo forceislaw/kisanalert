@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
+import PasswordInput from '@/components/ui/PasswordInput'
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -81,11 +82,9 @@ export default function ResetPasswordPage() {
 
             <div>
               <label className="eyebrow block mb-1.5">{dict.auth.newPassword}</label>
-              <input
-                type="password"
+              <PasswordInput
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="select-editorial w-full"
                 placeholder={dict.auth.atLeast6Chars}
                 required
               />
@@ -93,11 +92,9 @@ export default function ResetPasswordPage() {
 
             <div>
               <label className="eyebrow block mb-1.5">{dict.auth.confirmPassword}</label>
-              <input
-                type="password"
+              <PasswordInput
                 value={confirm}
                 onChange={e => setConfirm(e.target.value)}
-                className="select-editorial w-full"
                 placeholder={dict.auth.repeatPassword}
                 required
               />

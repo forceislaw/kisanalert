@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import { useLocale } from '@/lib/i18n/LocaleProvider'
+import PasswordInput from '@/components/ui/PasswordInput'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -121,11 +122,9 @@ export default function RegisterPage() {
 
           <div>
             <label className="eyebrow block mb-1.5">{dict.auth.password}</label>
-            <input
-              type="password"
+            <PasswordInput
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="select-editorial w-full"
               placeholder={dict.auth.atLeast6Chars}
               required
             />
@@ -150,11 +149,9 @@ export default function RegisterPage() {
 
           <div>
             <label className="eyebrow block mb-1.5">{dict.auth.confirmPassword}</label>
-            <input
-              type="password"
+            <PasswordInput
               value={confirmPassword}
               onChange={e => setConfirmPassword(e.target.value)}
-              className="select-editorial w-full"
               placeholder={dict.auth.repeatPassword}
               required
             />
