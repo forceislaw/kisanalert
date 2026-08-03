@@ -44,7 +44,7 @@ function calcChange(current: number, previous: number): number | null {
 }
 
 function getTrendBuckets(reports: ReportRow[], bucketCount: number) {
-  const buckets: { date: string; reports: number; critical: number }[] = []
+  const buckets: { date: string; isoDate: string; reports: number; critical: number }[] = []
   for (let i = bucketCount - 1; i >= 0; i--) {
     const d = new Date()
     d.setDate(d.getDate() - i)
@@ -55,6 +55,7 @@ function getTrendBuckets(reports: ReportRow[], bucketCount: number) {
       : d.toLocaleDateString('en', { weekday: 'short' })
     buckets.push({
       date: label,
+      isoDate: dateStr,
       reports: dayReports.length,
       critical: dayReports.filter(r => r.severity_level === 'critical').length,
     })

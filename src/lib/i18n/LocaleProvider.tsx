@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { getDictionary, Dictionary, Locale, locales } from './getDictionary';
 
 const COOKIE_NAME = 'apentomos-locale';
@@ -25,27 +25,24 @@ const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
 export function LocaleProvider({
   children,
-  serverLocale,
-  serverDictionary,
 }: {
   children: React.ReactNode;
-  serverLocale: string;
-  serverDictionary: Dictionary;
 }) {
   const [locale, setLocaleState] = useState<Locale>(() => {
+    if (typeof document === 'undefined') return 'en';
     const cookie = getCookie(COOKIE_NAME) as Locale;
     if (cookie && locales.includes(cookie)) return cookie;
-    return (locales.includes(serverLocale as Locale) ? serverLocale : 'en') as Locale;
+    return 'en';
   });
-  const [dict, setDict] = useState<Dictionary>(() => {
-    const cookie = getCookie(COOKIE_NAME) as Locale;
-    if (cookie && locales.includes(cookie)) return getDictionary(cookie);
-    return serverDictionary;
-  });
+
+  const dict = useMemo(() => getDictionary(locale), [locale]);
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
-    setDict(getDictionary(newLocale));
     setCookie(COOKIE_NAME, newLocale);
   };
 

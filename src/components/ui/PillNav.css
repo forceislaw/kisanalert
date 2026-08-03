@@ -74,6 +74,7 @@
 .pill:hover {
   color: #F7F5F0;
   border-color: #E07A5F;
+  background: #E07A5F;
 }
 
 .pill::after {

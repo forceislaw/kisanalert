@@ -1,10 +1,12 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts'
 
 interface DataPoint {
   date: string
+  isoDate: string
   reports: number
   critical: number
 }
@@ -12,12 +14,14 @@ interface DataPoint {
 function makeEmptyData(count: number): DataPoint[] {
   return Array.from({ length: count }, () => ({
     date: '--',
+    isoDate: '',
     reports: 0,
     critical: 0,
   }))
 }
 
 export default function OutbreakTrendChart({ days }: { days?: number }) {
+  const router = useRouter()
   const bucketCount = (days && days > 0) ? Math.min(days, 30) : 30
   const [data, setData] = useState<DataPoint[]>(() => makeEmptyData(bucketCount))
 
@@ -58,7 +62,15 @@ export default function OutbreakTrendChart({ days }: { days?: number }) {
     <div className="card-editorial p-5">
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
+          <AreaChart
+            data={data}
+            margin={{ top: 5, right: 10, left: -10, bottom: 0 }}
+            onClick={(nextState) => {
+              const idx = nextState.activeTooltipIndex
+              const pt = typeof idx === 'number' ? data[idx] : undefined
+              if (pt?.isoDate) router.push(`/reports?from_date=${pt.isoDate}&to_date=${pt.isoDate}`)
+            }}
+          >
             <defs>
               <linearGradient id="reportsGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#4A5D23" stopOpacity={0.15} />

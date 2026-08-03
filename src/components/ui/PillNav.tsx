@@ -65,7 +65,7 @@ export default function PillNav() {
 
       tlRefs.current[i]?.kill()
       const tl = gsap.timeline({ paused: true })
-      tl.to(circle, { scale: 1.2, xPercent: -50, duration: 2, ease: 'power3.easeOut', overwrite: 'auto' }, 0)
+      tl.to(circle, { scale: 1.8, xPercent: -50, duration: 2, ease: 'power3.easeOut', overwrite: 'auto' }, 0)
       if (label) tl.to(label, { y: -(h + 8), duration: 2, ease: 'power3.easeOut', overwrite: 'auto' }, 0)
       if (hoverLabel) {
         gsap.set(hoverLabel, { y: Math.ceil(h + 100), opacity: 0 })

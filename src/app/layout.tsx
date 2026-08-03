@@ -4,7 +4,7 @@ import { Playfair_Display, DM_Sans, DM_Mono, Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { getDictionary, locales, Locale } from "@/lib/i18n/getDictionary";
+import { locales, Locale } from "@/lib/i18n/getDictionary";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 import Header from "@/components/layout/Header";
@@ -59,6 +59,7 @@ export const metadata: Metadata = {
     "theme-color": "#F7F5F0",
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "default",
+    "google": "notranslate",
   },
 };
 
@@ -70,14 +71,12 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const rawLocale = cookieStore.get("apentomos-locale")?.value || "en";
   const locale = locales.includes(rawLocale as Locale) ? rawLocale : "en";
-  const dictionary = getDictionary(locale);
-
   return (
     <html lang={locale} className={cn("scroll-smooth", playfair.variable, dmSans.variable, dmMono.variable, inter.variable, blanka.variable)}>
-      <body className="font-sans antialiased min-h-screen flex flex-col">
+      <body className="font-sans antialiased min-h-screen flex flex-col notranslate">
         <ClickSparkWrapper>
           <AuthProvider>
-            <LocaleProvider serverLocale={locale} serverDictionary={dictionary}>
+            <LocaleProvider>
               <GlobalErrorHandler>
                 <div className="min-h-screen bg-parchment">
                   <Header />
