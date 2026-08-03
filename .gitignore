@@ -46,3 +46,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# build artifact
+build_log.txt
