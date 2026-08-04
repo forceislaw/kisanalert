@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import localFont from "next/font/local";
 import { Playfair_Display, DM_Sans, DM_Mono, Inter } from "next/font/google";
 import { cookies } from "next/headers";
