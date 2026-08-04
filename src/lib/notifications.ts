@@ -14,7 +14,7 @@ export async function sendNotification(params: {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Apentomos <notifications@apentomos.app>',
+        from: 'Apentomos <onboarding@resend.dev>',
         to: params.to,
         subject: params.subject,
         text: params.text,
