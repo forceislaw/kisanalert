@@ -69,12 +69,12 @@
   user-select: none;
   -webkit-user-select: none;
   overflow: hidden;
+  transform: translateZ(0);
 }
 
 .pill:hover {
   color: #F7F5F0;
   border-color: #E07A5F;
-  background: #E07A5F;
 }
 
 .pill::after {
@@ -82,12 +82,12 @@
   position: absolute;
   bottom: 4px;
   left: 50%;
-  width: 0;
+  width: 16px;
   height: 2px;
   border-radius: 2px;
   background: transparent;
-  transform: translateX(-50%);
-  transition: width 0.2s, background 0.2s;
+  transform: translateX(-50%) scaleX(0);
+  transition: transform 0.2s, background 0.2s;
 }
 
 .pill.is-active {
@@ -97,8 +97,13 @@
 }
 
 .pill.is-active::after {
-  width: 16px;
   background: #E07A5F;
+  transform: translateX(-50%) scaleX(1);
+}
+
+.pill:hover::after {
+  background: #E07A5F;
+  transform: translateX(-50%) scaleX(1);
 }
 
 .hover-circle {
@@ -107,6 +112,8 @@
   border-radius: 9999px;
   background: #E07A5F;
   pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .label-stack {
@@ -122,6 +129,7 @@
   position: relative;
   display: block;
   white-space: nowrap;
+  will-change: transform;
 }
 
 .pill-label-hover {
@@ -131,6 +139,7 @@
   top: 0;
   left: 0;
   pointer-events: none;
+  will-change: transform, opacity;
 }
 
 .mobile-menu-button {

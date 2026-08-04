@@ -55,6 +55,7 @@ export default function PillNav() {
         xPercent: -50,
         scale: 0,
         transformOrigin: `50% ${D - delta}px`,
+        willChange: 'transform',
       })
 
       const label = pill.querySelector('.pill-label') as HTMLElement | null
