@@ -12,6 +12,7 @@ import ClickSparkWrapper from "@/components/ui/ClickSparkWrapper";
 import { GlobalErrorHandler } from "@/components/ui/GlobalErrorHandler";
 import InstallPrompt from "@/components/ui/InstallPrompt";
 import ChatBot from "@/components/chat/ChatBot";
+import { Analytics } from "@vercel/analytics/next";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -95,6 +96,7 @@ export default async function RootLayout({
             __html: `if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js')`,
           }}
         />
+        <Analytics />
       </body>
     </html>
   );
