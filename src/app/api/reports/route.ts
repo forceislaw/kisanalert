@@ -218,22 +218,33 @@ export async function POST(req: NextRequest) {
         .maybeSingle()
 
       const prefs = prefData as { email_alerts: boolean; sms_alerts: boolean; critical_only: boolean } | null
+      const emailAlerts = prefs?.email_alerts ?? true
+      const criticalOnly = prefs?.critical_only ?? false
 
-      if (prefs?.email_alerts && user?.email) {
+      if (emailAlerts && user?.email) {
         const isCritical = severity_level === 'high' || severity_level === 'critical'
-        if (!prefs.critical_only || isCritical) {
+        if (!criticalOnly || isCritical) {
           const { data: districtData } = await supabase
             .from('districts')
             .select('name_en')
             .eq('id', district_id)
             .maybeSingle()
 
-          sendNotification({
-            to: user.email,
-            subject: `Apentomos: ${severity_level} severity pest report in ${(districtData as DistrictRow | null)?.name_en || 'unknown'} district`,
-            text: `A new pest report has been recorded.\nSeverity: ${severity_level}\nStatus: ${status}\nConfidence: ${(confidence * 100).toFixed(0)}%`,
-          })
+          try {
+            await sendNotification({
+              to: user.email,
+              subject: `Apentomos: ${severity_level} severity pest report in ${(districtData as DistrictRow | null)?.name_en || 'unknown'} district`,
+              text: `A new pest report has been recorded.\nSeverity: ${severity_level}\nStatus: ${status}\nConfidence: ${(confidence * 100).toFixed(0)}%`,
+            })
+          } catch (emailErr) {
+            console.error('Notification send failed:', emailErr)
+          }
         }
+      } else {
+        console.warn('Notification skipped:', {
+          reason: prefs ? 'email_alerts_disabled' : 'no_prefs_or_email',
+          userId,
+        })
       }
     }
 

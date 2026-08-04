@@ -38,7 +38,8 @@ export async function sendNotification(params: {
 
 async function logError(type: string, payload: Record<string, unknown>) {
   try {
-    await fetch('/api/log-error', {
+    const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://apentomos.app'
+    await fetch(`${base}/api/log-error`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type, payload, timestamp: new Date().toISOString() }),
