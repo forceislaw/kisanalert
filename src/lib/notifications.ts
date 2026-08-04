@@ -20,11 +20,30 @@ export async function sendNotification(params: {
         text: params.text,
       }),
     })
-    const ok = res.ok
-    if (!ok) console.warn('Resend error:', await res.text())
-    return { sent: ok }
+
+    if (!res.ok) {
+      const errText = await res.text()
+      console.warn('Resend error:', res.status, errText)
+      await logError('resend_send_failed', { status: res.status, body: errText, to: params.to, subject: params.subject })
+      return { sent: false, reason: `resend_${res.status}` }
+    }
+
+    return { sent: true }
   } catch (e) {
     console.error('Failed to send email:', e)
+    await logError('resend_exception', { error: String(e), to: params.to, subject: params.subject })
     return { sent: false, reason: String(e) }
+  }
+}
+
+async function logError(type: string, payload: Record<string, unknown>) {
+  try {
+    await fetch('/api/log-error', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, payload, timestamp: new Date().toISOString() }),
+    })
+  } catch {
+    // swallow logging errors
   }
 }
